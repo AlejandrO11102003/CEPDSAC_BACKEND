@@ -1,0 +1,440 @@
+### Variables de entorno
+@baseUrl = http://localhost:8080
+@contentType = application/json
+@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGVqYW5kcm9AZ21haWwuY29tIiwiaWF0IjoxNzYwMzk3NzczLCJleHAiOjE3NjA0ODQxNzN9.CQAiS5dkKLZWDxwGihKlSnw4rYk3_aK7wY1NHpTq5h0
+
+### ===========================================
+### AUTHENTICATION ENDPOINTS
+### ===========================================
+
+### Login
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+    "correo": "alejandro@gmail.com",
+    "password": "1234"
+}
+
+### ===========================================
+### USUARIO ENDPOINTS
+### ===========================================
+
+### Listar todos los usuarios
+GET {{baseUrl}}/api/usuarios/listar
+Authorization: Bearer {{token}}
+
+### Listar usuarios por rol
+GET {{baseUrl}}/api/usuarios/listar/ALUMNO
+Authorization: Bearer {{token}}
+
+### Obtener usuario por ID
+GET {{baseUrl}}/api/usuarios/obtener/1
+Authorization: Bearer {{token}}
+
+### Crear usuario
+POST {{baseUrl}}/api/usuarios/crear
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "correo": "nuevo@example.com",
+    "password": "123456",
+    "nombre": "Juan Pérez",
+    "apellido": "García",
+    "telefono": "123456789",
+    "rol": "ALUMNO"
+}
+
+### Actualizar usuario
+PUT {{baseUrl}}/api/usuarios/actualizar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "idUsuario": 1,
+    "correo": "actualizado@example.com",
+    "nombre": "Juan Carlos",
+    "apellido": "García López"
+}
+
+### Actualizar usuario parcialmente
+PATCH {{baseUrl}}/api/usuarios/actualizar-parcial
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "idUsuario": 10,
+    "rol": "ALUMNO"
+}
+
+### Eliminar usuario
+DELETE {{baseUrl}}/api/usuarios/eliminar/1
+Authorization: Bearer {{token}}
+
+### Restaurar usuario
+POST {{baseUrl}}/api/usuarios/restaurar/1
+Authorization: Bearer {{token}}
+
+### ===========================================
+### DESCUENTO ENDPOINTS
+### ===========================================
+
+### Listar descuentos
+GET {{baseUrl}}/api/descuentos/listar
+Authorization: Bearer {{token}}
+
+### Obtener descuento por ID
+GET {{baseUrl}}/api/descuentos/obtener/1
+Authorization: Bearer {{token}}
+
+### Crear descuento
+POST {{baseUrl}}/api/descuentos/crear
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "tipoDescuento": "MONTO",
+    "valor": 10.00,
+    "vigente": true,
+    "fechaInicio": "2024-01-01",
+    "fechaFin": "2025-12-31",
+    "idUsuario": 1
+}
+
+### Actualizar descuento
+PUT {{baseUrl}}/api/descuentos/actualizar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "idDescuento": 1,
+    "tipoDescuento": "MONTO",
+    "valor": 25.50,
+    "vigente": true,
+    "fechaInicio": "2025-01-01",
+    "fechaFin": "2025-10-30",
+    "idUsuario": 1
+}
+
+### Eliminar descuento
+DELETE {{baseUrl}}/api/descuentos/eliminar/1
+Authorization: Bearer {{token}}
+
+### ===========================================
+### CATEGORIA ENDPOINTS
+### ===========================================
+
+### Listar categorías
+GET {{baseUrl}}/api/categorias/listar
+Authorization: Bearer {{token}}
+
+### Obtener categoría por ID
+GET {{baseUrl}}/api/categorias/obtener/1
+Authorization: Bearer {{token}}
+
+### Crear categoría
+POST {{baseUrl}}/api/categorias/crear
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "nombre": "Seguridad Informatica",
+    "descripcion": "Python"
+}
+
+### Eliminar categoría
+DELETE {{baseUrl}}/api/categorias/eliminar/1
+Authorization: Bearer {{token}}
+
+### ===========================================
+### CURSO DIPLOMADO ENDPOINTS
+### ===========================================
+
+### Listar cursos/diplomados
+GET {{baseUrl}}/api/cursos-diplomados/listar
+Authorization: Bearer {{token}}
+
+### Obtener curso/diplomado por ID
+GET {{baseUrl}}/api/cursos-diplomados/obtener/1
+Authorization: Bearer {{token}}
+
+### Crear curso/diplomado
+POST {{baseUrl}}/api/cursos-diplomados/crear
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "titulo": "Java Avanzado",
+    "objetivo": "Curso avanzado de Java para desarrolladores",
+    "idCategoria": 1,
+    "tipo": false,
+    "otorgaCertificado": true,
+    "urlCurso": "https://tenomiedo.jpg",
+    "idUsuario": 1
+}
+
+### Eliminar curso/diplomado
+DELETE {{baseUrl}}/api/cursos-diplomados/eliminar/1
+Authorization: Bearer {{token}}
+
+### ===========================================
+### MATRICULA ENDPOINTS
+### ===========================================
+
+### Listar matrículas
+GET {{baseUrl}}/api/matriculas/listar
+Authorization: Bearer {{token}}
+
+### Crear matrícula
+POST {{baseUrl}}/api/matriculas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "idProgramacionCurso": 1,
+    "idAlumno": 1
+}
+
+### Aprobar matrícula
+PUT {{baseUrl}}/api/matriculas/1/aprobar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "idAdministrador": 1
+}
+
+### Obtener detalle de matrícula
+GET {{baseUrl}}/api/matriculas/10/detalle
+Authorization: Bearer {{token}}
+
+
+### ===========================================
+### PROGRAMACION CURSO ENDPOINTS
+### ===========================================
+
+### Listar programaciones de curso
+GET {{baseUrl}}/api/programacioncursos
+Authorization: Bearer {{token}}
+
+### Obtener programación de curso por ID
+GET {{baseUrl}}/api/programacioncursos/1
+Authorization: Bearer {{token}}
+
+### Crear programación de curso
+POST {{baseUrl}}/api/programacioncursos/crear
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "modalidad": "VIRTUAL",
+    "duracionCurso": 120,
+    "horasSemanales": 8,
+    "fechaInicio": "2025-09-01",
+    "fechaFin": "2025-12-15",
+    "monto": 550.00,
+    "idUsuario": 1,
+    "idCursoDiplomado": 2
+}
+
+### Actualizar programación de curso
+PUT {{baseUrl}}/api/programacioncursos/actualizar/1
+programacion-curso/actualizar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "idProgramacionCurso": 1,
+    "modalidad": "PRESENCIAL",
+    "duracionCurso": 150,
+    "horasSemanales": 10,
+    "fechaInicio": "2026-01-10",
+    "fechaFin": "2026-04-20",
+    "monto": 650.00,
+    "idUsuario": 1,
+    "idCursoDiplomado": 2
+}
+
+### Eliminar programación de curso
+DELETE {{baseUrl}}/api/programacioncursos/eliminar/1
+Authorization: Bearer {{token}}
+
+### ===========================================
+### DESCUENTO APLICACIÓN ENDPOINTS
+### ===========================================
+
+### Listar aplicaciones de descuento
+GET {{baseUrl}}/api/aplicaciondescuento/listar
+Authorization: Bearer {{token}}
+
+### Obtener aplicación de descuento por ID
+GET {{baseUrl}}/api/aplicaciondescuento/obtener/1
+Authorization: Bearer {{token}}
+
+### Crear aplicación de descuento
+POST {{baseUrl}}/api/aplicaciondescuento/crear
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "idDescuento": 3,
+    "tipoAplicacion": "CURSO",
+    "idCursoDiplomado" : 2
+}
+
+### Eliminar aplicación de descuento
+DELETE {{baseUrl}}/api/aplicaciondescuento/eliminar/1
+Authorization: Bearer {{token}}
+
+### ===========================================
+### TIPO IDENTIFICACIÓN ENDPOINTS
+### ===========================================
+
+### Listar tipos de identificación
+GET {{baseUrl}}/api/tipos-identificacion/listar
+Authorization: Bearer {{token}}
+
+### Obtener tipo de identificación por ID
+POST {{baseUrl}}/api/tiposidentificacion/obtener
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+1
+
+### Crear tipo de identificación
+POST {{baseUrl}}/api/tipos-identificacion/crear
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "nombre": "Cédula de Ciudadanía",
+    "descripcion": "Documento de identidad colombiano"
+}
+
+### Actualizar tipo de identificación
+PUT {{baseUrl}}/api/tipos-identificacion/actualizar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "idTipoIdentificacion": 3,
+    "nombre": "CE"
+}
+
+### Eliminar tipo de identificación
+DELETE {{baseUrl}}/api/tipos-identificacion/eliminar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+1
+
+### ===========================================
+### PAÍS ENDPOINTS
+### ===========================================
+
+### Listar países
+GET {{baseUrl}}/api/paises/listar
+Authorization: Bearer {{token}}
+
+### Obtener país por ID
+POST {{baseUrl}}/api/paises/obtener
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+1
+
+### Crear país
+POST {{baseUrl}}/api/paises/crear
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "nombre": "Colombia",
+    "codigo": "CO",
+    "descripcion": "República de Colombia"
+}
+
+### Actualizar país
+POST {{baseUrl}}/api/paises/actualizar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "idPais": 1,
+    "nombre": "Colombia Actualizada",
+    "codigo": "CO",
+    "descripcion": "República de Colombia actualizada"
+}
+
+### Eliminar país
+DELETE {{baseUrl}}/api/paises/eliminar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+1
+
+### ===========================================
+### PAGO ENDPOINTS
+### ===========================================
+
+### Registrar pago
+POST {{baseUrl}}/api/pagos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "idMatricula": 10,
+    "idMetodoPago": 1,
+    "monto": 90.00,
+    "numeroCuota": 1,
+    "idUsuarioRegistro": 11
+}
+
+### ===========================================
+### MÉTODO PAGO ENDPOINTS
+### ===========================================
+
+### Listar métodos de pago activos
+GET {{baseUrl}}/api/metodos-pago/activos
+Authorization: Bearer {{token}}
+
+### Listar todos los métodos de pago (Admin)
+GET {{baseUrl}}/api/metodos-pago
+Authorization: Bearer {{token}}
+
+### Obtener método de pago por ID
+GET {{baseUrl}}/api/metodos-pago/1
+Authorization: Bearer {{token}}
+
+### Crear método de pago
+POST {{baseUrl}}/api/metodos-pago
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "nombre": "Tarjeta de Crédito",
+    "descripcion": "Pago con tarjeta de crédito",
+    "tipo": "TARJETA",
+    "activo": true
+}
+
+### Actualizar método de pago
+PUT {{baseUrl}}/api/metodos-pago/1
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "nombre": "Tarjeta de Crédito Actualizada",
+    "descripcion": "Pago con tarjeta de crédito actualizada",
+    "tipo": "TARJETA",
+    "activo": true
+}
+
+### Cambiar estado del método de pago
+PUT {{baseUrl}}/api/metodos-pago/1/estado?activo=true
+Authorization: Bearer {{token}}
+
+### Eliminar método de pago
+DELETE {{baseUrl}}/api/metodos-pago/1
+Authorization: Bearer {{token}}
