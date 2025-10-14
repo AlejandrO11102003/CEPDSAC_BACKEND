@@ -6,8 +6,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import com.example.cepsacbackend.Dto.Matricula.MatriculaCreateDTO;
-import com.example.cepsacbackend.Dto.Matricula.MatriculaResponseDTO;
 import com.example.cepsacbackend.Dto.Matricula.MatriculaDetalleResponseDTO;
+import com.example.cepsacbackend.Dto.Matricula.MatriculaResponseDTO;
 import com.example.cepsacbackend.Entity.Matricula;
 
 @Mapper(componentModel = "spring", uses = {UsuarioMapper.class, CursoDiplomadoMapper.class})
@@ -22,6 +22,7 @@ public interface MatriculaMapper {
     @Mapping(target = "montoBase", ignore = true)
     @Mapping(target = "montoDescontado", ignore = true)
     @Mapping(target = "monto", ignore = true)
+    @Mapping(target = "descuento", ignore = true)
     Matricula toEntity(MatriculaCreateDTO dto);
 
     @Mapping(source = "programacionCurso.idProgramacionCurso", target = "idProgramacionCurso")
@@ -31,6 +32,7 @@ public interface MatriculaMapper {
 
     @Mapping(source = "alumno", target = "alumno")
     @Mapping(source = "programacionCurso.cursoDiplomado", target = "cursoDiplomado")
+    @Mapping(source = "descuento.usuario.idUsuario", target = "descuento.idUsuario")
     @Mapping(source = "descuento", target = "descuento")
     @Mapping(target = "pagos", ignore = true)
     MatriculaDetalleResponseDTO toDetalleResponseDTO(Matricula entity);

@@ -12,6 +12,8 @@ import java.util.List;
 @Repository
 public interface DescuentoAplicacionRepository extends JpaRepository<DescuentoAplicacion, Integer> {
 
+    // buscamos descuentos vigentes que apliquen a un curso o categoría 
+    // o que sean generales, ordenados por valor descendente
     @Query("""
         SELECT DISTINCT d FROM DescuentoAplicacion da
         JOIN da.descuento d
