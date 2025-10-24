@@ -7,6 +7,7 @@ import org.mapstruct.Mapping;
 
 import com.example.cepsacbackend.Dto.CursoDiplomado.CursoDiplomadoCreateDTO;
 import com.example.cepsacbackend.Dto.CursoDiplomado.CursoDiplomadoResponseDTO;
+import com.example.cepsacbackend.Dto.CursoDiplomado.CursoIndexResponseDTO;
 import com.example.cepsacbackend.Entity.CursoDiplomado;
 
 @Mapper(componentModel = "spring")
@@ -24,5 +25,7 @@ public interface CursoDiplomadoMapper {
     @Mapping(source = "usuario.nombre", target = "nombreUsuario")
     CursoDiplomadoResponseDTO toResponseDto(CursoDiplomado entity);
 
+
+    List<CursoIndexResponseDTO> toIndexResponseDtoList(List<CursoDiplomado> entities);
     List<CursoDiplomadoResponseDTO> toResponseDtoList(List<CursoDiplomado> entities);
 }

@@ -13,6 +13,7 @@ import com.example.cepsacbackend.Service.CursoDiplomadoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.cepsacbackend.Dto.CursoDiplomado.CursoIndexResponseDTO;
 
 import java.util.List;
 
@@ -66,5 +67,11 @@ public class CursoDiplomadoServiceImpl implements CursoDiplomadoService {
             throw new RuntimeException("Curso/Diplomado no encontrado: " + id);
         }
         repository.deleteById(id);
+    }
+
+    @Override 
+    @Transactional(readOnly = true)
+    public List<CursoIndexResponseDTO> listarIndex() {
+        return mapper.toIndexResponseDtoList(repository.findAll());
     }
 }

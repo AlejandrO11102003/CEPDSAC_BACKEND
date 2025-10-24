@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.cepsacbackend.Dto.CursoDiplomado.CursoDiplomadoCreateDTO;
 import com.example.cepsacbackend.Dto.CursoDiplomado.CursoDiplomadoResponseDTO;
+import com.example.cepsacbackend.Dto.CursoDiplomado.CursoIndexResponseDTO;
 import com.example.cepsacbackend.Service.CursoDiplomadoService;
 
 import jakarta.validation.Valid;
@@ -29,6 +30,11 @@ public class CursoDiplomadoController {
     @GetMapping("/listar")
     public ResponseEntity<List<CursoDiplomadoResponseDTO>> listar() {
         return ResponseEntity.ok(cursoDiplomadoService.listar());
+    }
+
+    @GetMapping("/listar-index")
+    public ResponseEntity<List<CursoIndexResponseDTO>> listarIndex() {
+        return ResponseEntity.ok(cursoDiplomadoService.listarIndex());
     }
 
     @GetMapping("/obtener/{id}")

@@ -2,6 +2,7 @@ package com.example.cepsacbackend.Service;
 
 import com.example.cepsacbackend.Dto.CursoDiplomado.CursoDiplomadoCreateDTO;
 import com.example.cepsacbackend.Dto.CursoDiplomado.CursoDiplomadoResponseDTO;
+import com.example.cepsacbackend.Dto.CursoDiplomado.CursoIndexResponseDTO;
 
 import java.util.List;
 
@@ -10,4 +11,5 @@ public interface CursoDiplomadoService {
     CursoDiplomadoResponseDTO obtenerPorId(Short id);
     CursoDiplomadoResponseDTO crear(CursoDiplomadoCreateDTO dto);
     void eliminar(Short id);
+    List<CursoIndexResponseDTO> listarIndex();
 }

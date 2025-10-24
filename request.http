@@ -1,8 +1,7 @@
 ### Variables de entorno
 @baseUrl = http://localhost:8080
 @contentType = application/json
-@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGVqYW5kcm9AZ21haWwuY29tIiwiaWF0IjoxNzYwMzk3NzczLCJleHAiOjE3NjA0ODQxNzN9.CQAiS5dkKLZWDxwGihKlSnw4rYk3_aK7wY1NHpTq5h0
-
+@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGVqYW5kcm9AZ21haWwuY29tIiwiaWF0IjoxNzYxMjY2NjE0LCJleHAiOjE3NjEzNTMwMTR9.zB5rar8xG6OSniYUOru9EpBRS7nmnuiRxbistK_GM3g
 ### ===========================================
 ### AUTHENTICATION ENDPOINTS
 ### ===========================================
@@ -153,6 +152,10 @@ Authorization: Bearer {{token}}
 
 ### Listar cursos/diplomados
 GET {{baseUrl}}/api/cursos-diplomados/listar
+Authorization: Bearer {{token}}
+
+### Listar cursos/diplomados para index
+GET {{baseUrl}}/api/cursos-diplomados/listar-index
 Authorization: Bearer {{token}}
 
 ### Obtener curso/diplomado por ID
