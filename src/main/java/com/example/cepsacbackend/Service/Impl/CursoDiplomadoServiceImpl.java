@@ -69,7 +69,7 @@ public class CursoDiplomadoServiceImpl implements CursoDiplomadoService {
         repository.deleteById(id);
     }
 
-    @Override 
+    @Override
     @Transactional(readOnly = true)
     public List<CursoIndexResponseDTO> listarIndex() {
         return mapper.toIndexResponseDtoList(repository.findAll());

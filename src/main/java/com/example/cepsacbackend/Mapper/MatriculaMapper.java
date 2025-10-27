@@ -4,13 +4,14 @@ import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
 import com.example.cepsacbackend.Dto.Matricula.MatriculaCreateDTO;
 import com.example.cepsacbackend.Dto.Matricula.MatriculaDetalleResponseDTO;
 import com.example.cepsacbackend.Dto.Matricula.MatriculaResponseDTO;
 import com.example.cepsacbackend.Entity.Matricula;
 
-@Mapper(componentModel = "spring", uses = {UsuarioMapper.class, CursoDiplomadoMapper.class})
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface MatriculaMapper {
 
     @Mapping(target = "idMatricula", ignore = true)

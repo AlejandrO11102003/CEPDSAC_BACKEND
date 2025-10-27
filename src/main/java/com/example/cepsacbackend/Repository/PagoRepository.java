@@ -12,6 +12,9 @@ import java.util.List;
 @Repository
 public interface PagoRepository extends JpaRepository<Pago, Integer> {
     List<Pago> findByMatriculaIdMatricula(Integer idMatricula);
+    //obtenemos el num max x cuota en una matriucla
+    @Query("SELECT MAX(p.numeroCuota) FROM Pago p WHERE p.matricula.idMatricula = :idMatricula")
+    Integer findMaxNumeroCuotaByMatriculaId(@Param("idMatricula") Integer idMatricula);
     // traemos la matricula con su lista de pagos en una sola N
     @Query("SELECT p FROM Pago p " +
             "JOIN FETCH p.matricula m " +

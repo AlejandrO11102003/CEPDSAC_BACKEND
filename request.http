@@ -1,7 +1,7 @@
 ### Variables de entorno
 @baseUrl = http://localhost:8080
 @contentType = application/json
-@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGVqYW5kcm9AZ21haWwuY29tIiwiaWF0IjoxNzYxMjY2NjE0LCJleHAiOjE3NjEzNTMwMTR9.zB5rar8xG6OSniYUOru9EpBRS7nmnuiRxbistK_GM3g
+@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGVqYW5kcm9AZ21haWwuY29tIiwiaWF0IjoxNzYxMzI0NDExLCJleHAiOjE3NjE0MTA4MTF9.Et-lnR-uMhJ0z_47WSptgn4p86b8RwCd1xJqY6Q02oY
 ### ===========================================
 ### AUTHENTICATION ENDPOINTS
 ### ===========================================
@@ -28,7 +28,7 @@ GET {{baseUrl}}/api/usuarios/listar/ALUMNO
 Authorization: Bearer {{token}}
 
 ### Obtener usuario por ID
-GET {{baseUrl}}/api/usuarios/obtener/1
+GET {{baseUrl}}/api/usuarios/obtener/20
 Authorization: Bearer {{token}}
 
 ### Crear usuario
@@ -139,7 +139,19 @@ Authorization: Bearer {{token}}
 
 {
     "nombre": "Seguridad Informatica",
-    "descripcion": "Python"
+    "descripcion": "Python",
+    "idUsuario": 1
+}
+
+### Actualizar categoría
+PUT {{baseUrl}}/api/categorias/actualizar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "idCategoria": 1,
+    "nombre": "Seguridad Informática Avanzada",
+    "descripcion": "Curso de seguridad informática avanzado"
 }
 
 ### Eliminar categoría
@@ -196,7 +208,7 @@ Authorization: Bearer {{token}}
 
 {
     "idProgramacionCurso": 1,
-    "idAlumno": 1
+    "idAlumno": 51
 }
 
 ### Aprobar matrícula
@@ -283,7 +295,22 @@ Authorization: Bearer {{token}}
 {
     "idDescuento": 3,
     "tipoAplicacion": "CURSO",
-    "idCursoDiplomado" : 2
+    "idCursoDiplomado" : 2,
+    "idUsuario": 1
+    // "idCategoria": 1
+}
+
+### Actualizar aplicación de descuento
+PUT {{baseUrl}}/api/aplicaciondescuento/actualizar
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "idAplicacionDescuento": 1,
+    "idDescuento": 3,
+    "tipoAplicacion": "CATEGORIA",
+    "idCategoria": 1,
+    "idUsuario": 1
 }
 
 ### Eliminar aplicación de descuento
@@ -303,7 +330,9 @@ POST {{baseUrl}}/api/tiposidentificacion/obtener
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
-1
+{
+    "idTipoIdentificacion": 1
+}
 
 ### Crear tipo de identificación
 POST {{baseUrl}}/api/tipos-identificacion/crear
@@ -322,7 +351,8 @@ Authorization: Bearer {{token}}
 
 {
     "idTipoIdentificacion": 3,
-    "nombre": "CE"
+    "nombre": "CE",
+    "descripcion": "Cédula de Extranjería"
 }
 
 ### Eliminar tipo de identificación
@@ -330,7 +360,9 @@ DELETE {{baseUrl}}/api/tipos-identificacion/eliminar
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
-1
+{
+    "idTipoIdentificacion": 1
+}
 
 ### ===========================================
 ### PAÍS ENDPOINTS
@@ -345,7 +377,9 @@ POST {{baseUrl}}/api/paises/obtener
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
-1
+{
+    "idPais": 1
+}
 
 ### Crear país
 POST {{baseUrl}}/api/paises/crear
@@ -375,7 +409,9 @@ DELETE {{baseUrl}}/api/paises/eliminar
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
-1
+{
+    "idPais": 1
+}
 
 ### ===========================================
 ### PAGO ENDPOINTS
@@ -387,10 +423,9 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-    "idMatricula": 10,
+    "idMatricula": 7,
     "idMetodoPago": 1,
-    "monto": 90.00,
-    "numeroCuota": 1,
+    "monto": 74.00,
     "idUsuarioRegistro": 11
 }
 
@@ -416,10 +451,9 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-    "nombre": "Tarjeta de Crédito",
+    "tipoMetodo": "TARJETA",
     "descripcion": "Pago con tarjeta de crédito",
-    "tipo": "TARJETA",
-    "activo": true
+    "requisitos": "Número de tarjeta, fecha de vencimiento, CVV"
 }
 
 ### Actualizar método de pago
@@ -428,10 +462,9 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-    "nombre": "Tarjeta de Crédito Actualizada",
-    "descripcion": "Pago con tarjeta de crédito actualizada",
-    "tipo": "TARJETA",
-    "activo": true
+    "tipoMetodo": "TRANSFERENCIA",
+    "descripcion": "Pago por transferencia bancaria",
+    "requisitos": "Número de cuenta, banco de destino"
 }
 
 ### Cambiar estado del método de pago

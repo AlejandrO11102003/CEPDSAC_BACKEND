@@ -7,6 +7,5 @@ public record PagoCreateDTO(
     @NotNull Integer idMatricula,
     @NotNull Short idMetodoPago,
     @NotNull BigDecimal monto,
-    Short numeroCuota,
     @NotNull Integer idUsuarioRegistro
 ) {}
