@@ -1,7 +1,8 @@
-package com.example.cepsacbackend.Dto.Usuario;
+package com.example.cepsacbackend.dto.Usuario;
 
-import com.example.cepsacbackend.Enums.EstadoUsuario;
-import com.example.cepsacbackend.Enums.Rol;
+import com.example.cepsacbackend.enums.EstadoUsuario;
+import com.example.cepsacbackend.enums.Rol;
+
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
@@ -18,9 +19,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UsuarioUpdateDTO {
-
-    @NotNull(message = "El ID del usuario es obligatorio para actualización")
-    private Integer idUsuario;
 
     @NotNull(message = "El rol es obligatorio")
     @Enumerated(EnumType.STRING)

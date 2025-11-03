@@ -1,6 +1,7 @@
-package com.example.cepsacbackend.Dto.DescuentoAplicacion;
+package com.example.cepsacbackend.dto.DescuentoAplicacion;
 
-import com.example.cepsacbackend.Enums.TipoAplicacionDescuento;
+import com.example.cepsacbackend.enums.TipoAplicacionDescuento;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

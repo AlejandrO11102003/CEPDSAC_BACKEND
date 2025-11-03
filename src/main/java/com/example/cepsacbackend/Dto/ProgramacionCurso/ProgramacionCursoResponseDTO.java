@@ -1,14 +1,15 @@
-package com.example.cepsacbackend.Dto.ProgramacionCurso;
+package com.example.cepsacbackend.dto.ProgramacionCurso;
 
-import com.example.cepsacbackend.Enums.ModalidadCurso;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.example.cepsacbackend.enums.ModalidadCurso;
+
 @Data
 public class ProgramacionCursoResponseDTO {
-    private Integer idProgramacionCurso;
+    private Short idProgramacionCurso;
     private ModalidadCurso modalidad;
     private BigDecimal duracionCurso;
     private BigDecimal horasSemanales;

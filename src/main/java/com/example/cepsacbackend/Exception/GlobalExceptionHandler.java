@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Config;
+package com.example.cepsacbackend.exception;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -11,11 +11,10 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 
-import com.example.cepsacbackend.Dto.Error.ErrorResponseDTO;
-import com.example.cepsacbackend.Exception.BadRequestException;
-import com.example.cepsacbackend.Exception.ConflictException;
-import com.example.cepsacbackend.Exception.ResourceNotFoundException;
+import com.example.cepsacbackend.dto.Error.ErrorResponseDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -138,5 +137,33 @@ public class GlobalExceptionHandler {
         // log.error("Error interno del servidor: {}", ex.getMessage(), ex);
 
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponseDTO> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpServletRequest request) {
+        String errorMessage = "La solicitud tiene un formato JSON inválido.";
+        
+        // Intenta obtener un mensaje de error más específico si es posible
+        Throwable cause = ex.getCause();
+        if (cause instanceof InvalidFormatException) {
+            InvalidFormatException ife = (InvalidFormatException) cause;
+            // Verifica si el error es sobre la deserialización de un Enum
+            if (ife.getTargetType() != null && ife.getTargetType().isEnum()) {
+                errorMessage = String.format("Valor inválido '%s' para el campo '%s'. Los valores permitidos son: %s.",
+                    ife.getValue(),
+                    ife.getPath().get(ife.getPath().size()-1).getFieldName(),
+                    java.util.Arrays.toString(ife.getTargetType().getEnumConstants()));
+            }
+        }
+
+        ErrorResponseDTO errorResponse = ErrorResponseDTO.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .message(errorMessage)
+                .path(request.getRequestURI())
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }

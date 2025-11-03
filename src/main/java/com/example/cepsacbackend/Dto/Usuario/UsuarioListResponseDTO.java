@@ -1,6 +1,6 @@
-package com.example.cepsacbackend.Dto.Usuario;
+package com.example.cepsacbackend.dto.Usuario;
 
-import com.example.cepsacbackend.Enums.Rol;
+import com.example.cepsacbackend.enums.Rol;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,4 +16,6 @@ public class UsuarioListResponseDTO {
     private String correo;
     private Rol rol;
     private boolean activo;
+    private String inicialesTipoIdentificacion;
+    private String numeroIdentificacion;
 }

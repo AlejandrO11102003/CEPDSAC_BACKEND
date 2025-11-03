@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Repository;
+package com.example.cepsacbackend.repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.example.cepsacbackend.Entity.Usuario;
-import com.example.cepsacbackend.Enums.EstadoUsuario;
-import com.example.cepsacbackend.Enums.Rol;
+import com.example.cepsacbackend.model.Usuario;
+import com.example.cepsacbackend.enums.EstadoUsuario;
+import com.example.cepsacbackend.enums.Rol;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {

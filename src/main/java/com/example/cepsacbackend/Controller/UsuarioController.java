@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Controller;
+package com.example.cepsacbackend.controller;
 
 import java.util.List;
 
@@ -7,13 +7,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
-import com.example.cepsacbackend.Dto.Usuario.UsuarioCreateDTO;
-import com.example.cepsacbackend.Dto.Usuario.UsuarioListResponseDTO;
-import com.example.cepsacbackend.Dto.Usuario.UsuarioPatchDTO;
-import com.example.cepsacbackend.Dto.Usuario.UsuarioResponseDTO;
-import com.example.cepsacbackend.Dto.Usuario.UsuarioUpdateDTO;
-import com.example.cepsacbackend.Enums.Rol;
-import com.example.cepsacbackend.Service.UsuarioService;
+
+import com.example.cepsacbackend.dto.Usuario.UsuarioCreateDTO;
+import com.example.cepsacbackend.dto.Usuario.UsuarioListResponseDTO;
+import com.example.cepsacbackend.dto.Usuario.UsuarioPatchDTO;
+import com.example.cepsacbackend.dto.Usuario.UsuarioResponseDTO;
+import com.example.cepsacbackend.dto.Usuario.UsuarioUpdateDTO;
+import com.example.cepsacbackend.service.UsuarioService;
+import com.example.cepsacbackend.enums.Rol;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,48 +27,59 @@ public class UsuarioController {
 
     private final UsuarioService usuarioService;
 
-    @PreAuthorize("hasRole('ALUMNO')")
+    //EP modulo administracion 
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping("/listar")
-    public List<UsuarioListResponseDTO> listarUsuarios() {
-        return usuarioService.listarUsuarios();
+    public ResponseEntity<List<UsuarioListResponseDTO>> listarUsuarios() {
+        return ResponseEntity.ok(usuarioService.listarUsuarios());
     }
 
+    //EP modulo administracion
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping("/listar/{rol}")
-    public List<UsuarioListResponseDTO> listarUsuariosPorRol(@PathVariable Rol rol) {
-        return usuarioService.listarUsuariosPorRol(rol);
+    public ResponseEntity<List<UsuarioListResponseDTO>> listarUsuariosPorRol(@PathVariable Rol rol) {
+        return ResponseEntity.ok(usuarioService.listarUsuariosPorRol(rol));
     }
 
-    @GetMapping("/obtener/{idUsuario}")
+    //EP modulo administracion y usuario mismo
+    @GetMapping("/{idUsuario}")
     public ResponseEntity<UsuarioResponseDTO> obtenerUsuario(@PathVariable Integer idUsuario) {
         UsuarioResponseDTO usuarioDTO = usuarioService.obtenerUsuario(idUsuario);
         return ResponseEntity.ok(usuarioDTO);
     }
-
-    @PostMapping("/crear")
+    
+    //EP modulo administracion y alumno al loguearse por primera vez
+    @PostMapping
     public ResponseEntity<UsuarioResponseDTO> crearUsuario(@Valid @RequestBody UsuarioCreateDTO dto) {
         UsuarioResponseDTO nuevoUsuarioDTO = usuarioService.crearUsuario(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuarioDTO);
     }
 
-    @PutMapping("/actualizar")
-    public ResponseEntity<UsuarioResponseDTO> actualizarUsuario(@Valid @RequestBody UsuarioUpdateDTO dto) {
-        UsuarioResponseDTO usuarioActualizadoDTO = usuarioService.actualizarUsuario(dto);
+    //EP modulo administracion y usuario mismo, actualizar datos
+    @PutMapping("/{idUsuario}")
+    public ResponseEntity<UsuarioResponseDTO> actualizarUsuario(@PathVariable Integer idUsuario, @Valid @RequestBody UsuarioUpdateDTO dto) {
+        UsuarioResponseDTO usuarioActualizadoDTO = usuarioService.actualizarUsuario(idUsuario, dto);
         return ResponseEntity.ok(usuarioActualizadoDTO);
     }
 
-    @PatchMapping("/actualizar-parcial")
-    public ResponseEntity<UsuarioResponseDTO> actualizarUsuarioParcialmente(@Valid @RequestBody UsuarioPatchDTO dto) {
-        UsuarioResponseDTO usuarioActualizadoDTO = usuarioService.actualizarUsuarioParcialmente(dto);
+    //EP modulo administracion y usuario mis, actualizar correo o contraseña, falta implementar notificador email backend
+    @PatchMapping("/{idUsuario}")
+    public ResponseEntity<UsuarioResponseDTO> actualizarUsuarioParcialmente(@PathVariable Integer idUsuario, @Valid @RequestBody UsuarioPatchDTO dto) {
+        UsuarioResponseDTO usuarioActualizadoDTO = usuarioService.actualizarUsuarioParcialmente(idUsuario, dto);
         return ResponseEntity.ok(usuarioActualizadoDTO);
     }
 
-    @DeleteMapping("/eliminar/{idUsuario}")
-    public ResponseEntity<String> eliminarUsuario(@PathVariable Integer idUsuario) {
+    //EP modulo administracion, eliminar usuario (cambio de estado a SUSPENDIDO)
+    @DeleteMapping("/{idUsuario}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    public ResponseEntity<Void> eliminarUsuario(@PathVariable Integer idUsuario) {
         usuarioService.eliminarUsuario(idUsuario);
-        return ResponseEntity.ok("Usuario suspendido/eliminado correctamente");
+        return ResponseEntity.noContent().build();
     }
-
-    @PostMapping("/restaurar/{idUsuario}")
+    
+    //EP modulo administracion, restaurar usuario (cambio de estado a ACTIVO)
+    @PostMapping("/{idUsuario}/restaurar")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<UsuarioResponseDTO> restaurarUsuario(@PathVariable Integer idUsuario) {
         UsuarioResponseDTO usuarioRestaurado = usuarioService.restaurarUsuario(idUsuario);
         return ResponseEntity.ok(usuarioRestaurado);

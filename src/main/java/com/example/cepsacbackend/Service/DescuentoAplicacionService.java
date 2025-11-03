@@ -1,9 +1,9 @@
-package com.example.cepsacbackend.Service;
-
-import com.example.cepsacbackend.Dto.DescuentoAplicacion.DescuentoAplicacionCreateDTO;
-import com.example.cepsacbackend.Dto.DescuentoAplicacion.DescuentoAplicacionResponseDTO;
+package com.example.cepsacbackend.service;
 
 import java.util.List;
+
+import com.example.cepsacbackend.dto.DescuentoAplicacion.DescuentoAplicacionCreateDTO;
+import com.example.cepsacbackend.dto.DescuentoAplicacion.DescuentoAplicacionResponseDTO;
 
 public interface DescuentoAplicacionService {
     List<DescuentoAplicacionResponseDTO> listar();

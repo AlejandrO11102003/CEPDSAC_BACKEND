@@ -1,11 +1,12 @@
-package com.example.cepsacbackend.Repository;
+package com.example.cepsacbackend.repository;
 
-import com.example.cepsacbackend.Entity.Descuento;
-import com.example.cepsacbackend.Entity.DescuentoAplicacion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import com.example.cepsacbackend.model.Descuento;
+import com.example.cepsacbackend.model.DescuentoAplicacion;
 
 import java.util.List;
 
@@ -24,8 +25,16 @@ public interface DescuentoAplicacionRepository extends JpaRepository<DescuentoAp
                     da.tipoAplicacion = 'GENERAL'
                 OR (da.tipoAplicacion = 'CURSO' AND da.cursoDiplomado.idCursoDiplomado = :idCurso)
                 OR (da.tipoAplicacion = 'CATEGORIA' AND da.categoria.idCategoria = :idCategoria)
+                OR (da.tipoAplicacion = 'MATRICULA' AND da.matricula.idMatricula = :idMatricula)
             )
-            ORDER BY d.valor DESC
+            ORDER BY 
+                CASE 
+                    WHEN da.tipoAplicacion = 'MATRICULA' THEN 1
+                    WHEN da.tipoAplicacion = 'CURSO' THEN 2
+                    WHEN da.tipoAplicacion = 'CATEGORIA' THEN 3
+                    ELSE 4
+                END,
+                d.valor DESC
         """)
-    List<Descuento> findDescuentosVigentes(@Param("idCurso") Short idCurso, @Param("idCategoria") Short idCategoria);
+    List<Descuento> findDescuentosVigentes(@Param("idCurso") Short idCurso, @Param("idCategoria") Short idCategoria, @Param("idMatricula") Integer idMatricula);
 }

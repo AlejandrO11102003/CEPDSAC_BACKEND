@@ -1,10 +1,10 @@
-package com.example.cepsacbackend.Dto.Matricula;
+package com.example.cepsacbackend.dto.Matricula;
 
-import com.example.cepsacbackend.Dto.Usuario.UsuarioListResponseDTO;
-import com.example.cepsacbackend.Dto.CursoDiplomado.CursoDiplomadoResponseDTO;
-import com.example.cepsacbackend.Dto.Descuento.DescuentoResponseDTO;
-import com.example.cepsacbackend.Dto.Pago.PagoResponseDTO;
-import com.example.cepsacbackend.Enums.EstadoMatricula;
+import com.example.cepsacbackend.dto.CursoDiplomado.CursoDiplomadoResponseDTO;
+import com.example.cepsacbackend.dto.Descuento.DescuentoResponseDTO;
+import com.example.cepsacbackend.dto.Pago.PagoResponseDTO;
+import com.example.cepsacbackend.dto.Usuario.UsuarioListResponseDTO;
+import com.example.cepsacbackend.enums.EstadoMatricula;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Mapper;
+package com.example.cepsacbackend.mapper;
 
 import java.util.List;
 
@@ -8,9 +8,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
-import com.example.cepsacbackend.Dto.MetodoPago.MetodoPagoRequestDTO;
-import com.example.cepsacbackend.Dto.MetodoPago.MetodoPagoResponseDTO;
-import com.example.cepsacbackend.Entity.MetodoPago;
+import com.example.cepsacbackend.dto.MetodoPago.MetodoPagoRequestDTO;
+import com.example.cepsacbackend.dto.MetodoPago.MetodoPagoResponseDTO;
+import com.example.cepsacbackend.model.MetodoPago;
 @Mapper(componentModel = "spring")
 public interface MetodoPagoMapper {
 

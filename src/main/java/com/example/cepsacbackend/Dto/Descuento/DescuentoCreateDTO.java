@@ -1,10 +1,12 @@
-package com.example.cepsacbackend.Dto.Descuento;
+package com.example.cepsacbackend.dto.Descuento;
 
-import com.example.cepsacbackend.Enums.TipoDescuento;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import com.example.cepsacbackend.enums.TipoDescuento;
+
 import lombok.RequiredArgsConstructor;
 import lombok.Data;
 import lombok.AllArgsConstructor;

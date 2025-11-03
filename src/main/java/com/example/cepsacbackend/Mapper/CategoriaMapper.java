@@ -1,13 +1,13 @@
-package com.example.cepsacbackend.Mapper;
+package com.example.cepsacbackend.mapper;
 
 import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.example.cepsacbackend.Dto.Categoria.CategoriaCreateDTO;
-import com.example.cepsacbackend.Dto.Categoria.CategoriaResponseDTO;
-import com.example.cepsacbackend.Entity.Categoria;
+import com.example.cepsacbackend.dto.Categoria.CategoriaCreateDTO;
+import com.example.cepsacbackend.dto.Categoria.CategoriaResponseDTO;
+import com.example.cepsacbackend.model.Categoria;
 
 @Mapper(componentModel = "spring")
 public interface CategoriaMapper {

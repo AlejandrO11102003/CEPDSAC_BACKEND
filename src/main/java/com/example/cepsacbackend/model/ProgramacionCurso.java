@@ -1,9 +1,9 @@
-package com.example.cepsacbackend.Entity;
+package com.example.cepsacbackend.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.example.cepsacbackend.Enums.ModalidadCurso;
+import com.example.cepsacbackend.enums.ModalidadCurso;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

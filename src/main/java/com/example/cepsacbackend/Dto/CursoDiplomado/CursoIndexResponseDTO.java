@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Dto.CursoDiplomado;
+package com.example.cepsacbackend.dto.CursoDiplomado;
 
 import lombok.Data;
 

@@ -1,6 +1,6 @@
-package com.example.cepsacbackend.Dto.MetodoPago;
+package com.example.cepsacbackend.dto.MetodoPago;
 
-import com.example.cepsacbackend.Enums.TipoMetodo;
+import com.example.cepsacbackend.enums.TipoMetodo;
 
 public record MetodoPagoResponseDTO(
     Short idMetodoPago,

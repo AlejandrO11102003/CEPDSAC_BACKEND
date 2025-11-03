@@ -1,44 +1,53 @@
-package com.example.cepsacbackend.Controller;
+package com.example.cepsacbackend.controller;
 
-import com.example.cepsacbackend.Entity.Pais;
-import com.example.cepsacbackend.Repository.PaisRepository;
+import com.example.cepsacbackend.model.Pais;
+import com.example.cepsacbackend.service.PaisService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/paises")
 public class PaisController {
 
-    private final PaisRepository paisRepository;
+    private final PaisService paisService;
 
-    @GetMapping("/listar")
-    public List<Pais> listarPaises() {
-        return paisRepository.findAll();
+    @GetMapping
+    public ResponseEntity<List<Pais>> listarPaises() {
+        List<Pais> paises = paisService.getAllPaises();
+        return ResponseEntity.ok(paises);
     }
 
-    @PostMapping("/obtener")
-    public Pais obtenerPais(@RequestBody Short idPais) {
-        Optional<Pais> pais = paisRepository.findById(idPais);
-        return pais.orElse(null);
+    @GetMapping("/{idPais}")
+    public ResponseEntity<Pais> obtenerPais(@PathVariable Short idPais) {
+        Pais pais = paisService.getPaisById(idPais);
+        return ResponseEntity.ok(pais);
     }
 
-    @PostMapping("/crear")
-    public Pais crearPais(@RequestBody Pais pais) {
-        return paisRepository.save(pais);
+    @PostMapping
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    public ResponseEntity<Pais> crearPais(@Valid @RequestBody Pais pais) {
+        Pais nuevoPais = paisService.createPais(pais);
+        return new ResponseEntity<>(nuevoPais, HttpStatus.CREATED);
     }
 
-    @PostMapping("/actualizar")
-    public Pais actualizarPais(@RequestBody Pais pais) {
-        return paisRepository.save(pais);
+    @PutMapping("/{idPais}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    public ResponseEntity<Pais> actualizarPais(@PathVariable Short idPais, @Valid @RequestBody Pais pais) {
+        Pais paisActualizado = paisService.updatePais(idPais, pais);
+        return ResponseEntity.ok(paisActualizado);
     }
 
-    @PostMapping("/eliminar")
-    public String eliminarPais(@RequestBody Short idPais) {
-        paisRepository.deleteById(idPais);
-        return "País eliminado correctamente";
+    @DeleteMapping("/{idPais}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    public ResponseEntity<Void> eliminarPais(@PathVariable Short idPais) {
+        paisService.deletePais(idPais);
+        return ResponseEntity.noContent().build(); // Devuelve 204 No Content, estándar para eliminaciones exitosas
     }
 }

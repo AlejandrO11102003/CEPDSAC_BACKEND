@@ -1,13 +1,13 @@
-package com.example.cepsacbackend.Mapper;
+package com.example.cepsacbackend.mapper;
 
 import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.example.cepsacbackend.Dto.DescuentoAplicacion.DescuentoAplicacionCreateDTO;
-import com.example.cepsacbackend.Dto.DescuentoAplicacion.DescuentoAplicacionResponseDTO;
-import com.example.cepsacbackend.Entity.DescuentoAplicacion;
+import com.example.cepsacbackend.dto.DescuentoAplicacion.DescuentoAplicacionCreateDTO;
+import com.example.cepsacbackend.dto.DescuentoAplicacion.DescuentoAplicacionResponseDTO;
+import com.example.cepsacbackend.model.DescuentoAplicacion;
 
 @Mapper(componentModel = "spring")
 public interface DescuentoAplicacionMapper {
@@ -18,11 +18,12 @@ public interface DescuentoAplicacionMapper {
     @Mapping(target = "categoria", ignore = true)
     @Mapping(target = "cursoDiplomado", ignore = true)
     @Mapping(target = "usuario", ignore = true)
+    @Mapping(target = "matricula", ignore = true)
     DescuentoAplicacion toEntity(DescuentoAplicacionCreateDTO dto);
 
     // mapeamos las relaciones a campos simples
     @Mapping(source = "descuento.idDescuento", target = "idDescuento")
-    @Mapping(target = "infoDescuento", expression = "java(entity.getDescuento().getValor() + (entity.getDescuento().getTipoDescuento() == com.example.cepsacbackend.Enums.TipoDescuento.PORCENTAJE ? \"%\" : \" Monto Fijo\"))")
+    @Mapping(target = "infoDescuento", expression = "java(entity.getDescuento().getValor() + (entity.getDescuento().getTipoDescuento() == com.example.cepsacbackend.enums.TipoDescuento.PORCENTAJE ? \"%\" : \" Monto Fijo\"))")
     @Mapping(source = "categoria.idCategoria", target = "idCategoria")
     @Mapping(source = "categoria.nombre", target = "nombreCategoria")
     @Mapping(source = "cursoDiplomado.idCursoDiplomado", target = "idCursoDiplomado")

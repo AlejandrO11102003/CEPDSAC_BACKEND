@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Dto.Pago;
+package com.example.cepsacbackend.dto.Pago;
 
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;

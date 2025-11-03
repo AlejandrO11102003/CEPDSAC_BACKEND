@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Dto.CursoDiplomado;
+package com.example.cepsacbackend.dto.CursoDiplomado;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -15,8 +15,6 @@ public class CursoDiplomadoCreateDTO {
     @NotBlank(message = "El título es obligatorio")
     @Size(max = 100)
     private String titulo;
-
     private String urlCurso;
     private String objetivo;
-    private Integer idUsuario;
 }

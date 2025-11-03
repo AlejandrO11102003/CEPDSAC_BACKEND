@@ -1,13 +1,14 @@
-package com.example.cepsacbackend.Service.Impl;
+package com.example.cepsacbackend.service.impl;
 
-import com.example.cepsacbackend.Dto.Categoria.CategoriaCreateDTO;
-import com.example.cepsacbackend.Dto.Categoria.CategoriaResponseDTO;
-import com.example.cepsacbackend.Entity.Categoria;
-import com.example.cepsacbackend.Entity.Usuario;
-import com.example.cepsacbackend.Mapper.CategoriaMapper;
-import com.example.cepsacbackend.Repository.CategoriaRepository;
-import com.example.cepsacbackend.Repository.UsuarioRepository;
-import com.example.cepsacbackend.Service.CategoriaService;
+import com.example.cepsacbackend.dto.Categoria.CategoriaCreateDTO;
+import com.example.cepsacbackend.dto.Categoria.CategoriaResponseDTO;
+import com.example.cepsacbackend.mapper.CategoriaMapper;
+import com.example.cepsacbackend.model.Categoria;
+import com.example.cepsacbackend.model.Usuario;
+import com.example.cepsacbackend.repository.CategoriaRepository;
+import com.example.cepsacbackend.repository.UsuarioRepository;
+import com.example.cepsacbackend.service.CategoriaService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

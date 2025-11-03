@@ -1,9 +1,10 @@
-package com.example.cepsacbackend.Service;
+package com.example.cepsacbackend.service;
 
-import com.example.cepsacbackend.Dto.MetodoPago.MetodoPagoRequestDTO;
-import com.example.cepsacbackend.Entity.MetodoPago;
-import com.example.cepsacbackend.Mapper.MetodoPagoMapper;
-import com.example.cepsacbackend.Repository.MetodoPagoRepository;
+import com.example.cepsacbackend.dto.MetodoPago.MetodoPagoRequestDTO;
+import com.example.cepsacbackend.mapper.MetodoPagoMapper;
+import com.example.cepsacbackend.model.MetodoPago;
+import com.example.cepsacbackend.repository.MetodoPagoRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

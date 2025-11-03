@@ -1,7 +1,8 @@
-package com.example.cepsacbackend.Controller;
+package com.example.cepsacbackend.controller;
 
-import com.example.cepsacbackend.Entity.TipoIdentificacion;
-import com.example.cepsacbackend.Repository.TipoIdentificacionRepository;
+import com.example.cepsacbackend.model.TipoIdentificacion;
+import com.example.cepsacbackend.repository.TipoIdentificacionRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

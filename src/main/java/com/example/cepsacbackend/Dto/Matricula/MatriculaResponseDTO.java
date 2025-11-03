@@ -1,8 +1,9 @@
-package com.example.cepsacbackend.Dto.Matricula;
+package com.example.cepsacbackend.dto.Matricula;
 
-import com.example.cepsacbackend.Enums.EstadoMatricula;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import com.example.cepsacbackend.enums.EstadoMatricula;
 
 public record MatriculaResponseDTO(
     Integer idMatricula,

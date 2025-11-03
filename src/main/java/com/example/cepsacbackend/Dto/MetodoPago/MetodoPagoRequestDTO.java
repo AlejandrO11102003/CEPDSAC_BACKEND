@@ -1,8 +1,9 @@
-package com.example.cepsacbackend.Dto.MetodoPago;
+package com.example.cepsacbackend.dto.MetodoPago;
+
+import com.example.cepsacbackend.enums.TipoMetodo;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import com.example.cepsacbackend.Enums.TipoMetodo;
 
 public record MetodoPagoRequestDTO(
     @NotNull

@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Config.Security;
+package com.example.cepsacbackend.config.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

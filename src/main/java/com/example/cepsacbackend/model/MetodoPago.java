@@ -1,6 +1,7 @@
-package com.example.cepsacbackend.Entity;
+package com.example.cepsacbackend.model;
 
-import com.example.cepsacbackend.Enums.TipoMetodo;
+import com.example.cepsacbackend.enums.TipoMetodo;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

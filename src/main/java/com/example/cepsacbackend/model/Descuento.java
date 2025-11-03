@@ -1,21 +1,22 @@
-package com.example.cepsacbackend.Entity;
+package com.example.cepsacbackend.model;
 
-import com.example.cepsacbackend.Enums.TipoDescuento;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import com.example.cepsacbackend.auditory.AuditoriaListener;
+import com.example.cepsacbackend.enums.TipoDescuento;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Descuento {
+@EntityListeners(AuditoriaListener.class)
+public class Descuento extends AuditableEntity { 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +39,4 @@ public class Descuento {
     @Column(name = "FechaFin")
     private LocalDate fechaFin;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "IdUsuario")
-    private Usuario usuario;
 }

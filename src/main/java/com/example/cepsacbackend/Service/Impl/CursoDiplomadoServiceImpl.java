@@ -1,19 +1,21 @@
-package com.example.cepsacbackend.Service.Impl;
+package com.example.cepsacbackend.service.impl;
 
-import com.example.cepsacbackend.Dto.CursoDiplomado.CursoDiplomadoCreateDTO;
-import com.example.cepsacbackend.Dto.CursoDiplomado.CursoDiplomadoResponseDTO;
-import com.example.cepsacbackend.Entity.Categoria;
-import com.example.cepsacbackend.Entity.CursoDiplomado;
-import com.example.cepsacbackend.Entity.Usuario;
-import com.example.cepsacbackend.Mapper.CursoDiplomadoMapper;
-import com.example.cepsacbackend.Repository.CategoriaRepository;
-import com.example.cepsacbackend.Repository.CursoDiplomadoRepository;
-import com.example.cepsacbackend.Repository.UsuarioRepository;
-import com.example.cepsacbackend.Service.CursoDiplomadoService;
+import com.example.cepsacbackend.dto.CursoDiplomado.CursoDiplomadoCreateDTO;
+import com.example.cepsacbackend.dto.CursoDiplomado.CursoDiplomadoResponseDTO;
+import com.example.cepsacbackend.dto.CursoDiplomado.CursoIndexResponseDTO;
+import com.example.cepsacbackend.mapper.CursoDiplomadoMapper;
+import com.example.cepsacbackend.model.Categoria;
+import com.example.cepsacbackend.model.CursoDiplomado;
+import com.example.cepsacbackend.model.Usuario;
+import com.example.cepsacbackend.repository.CategoriaRepository;
+import com.example.cepsacbackend.repository.CursoDiplomadoRepository;
+import com.example.cepsacbackend.repository.UsuarioRepository;
+import com.example.cepsacbackend.service.CursoDiplomadoService;
+
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.example.cepsacbackend.Dto.CursoDiplomado.CursoIndexResponseDTO;
 
 import java.util.List;
 
@@ -43,18 +45,18 @@ public class CursoDiplomadoServiceImpl implements CursoDiplomadoService {
     @Override
     @Transactional
     public CursoDiplomadoResponseDTO crear(CursoDiplomadoCreateDTO dto) {
+        //obtenemos correo del token
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Usuario usuario = usuarioRepository.findByCorreo(userEmail)
+                .orElseThrow(() -> new RuntimeException("Usuario del token no encontrado"));
         CursoDiplomado entity = mapper.toEntity(dto);
+        // mapeamos user del jwt
+        entity.setUsuario(usuario);
 
         if (dto.getIdCategoria() != null) {
             Categoria categoria = categoriaRepository.findById(dto.getIdCategoria())
                     .orElseThrow(() -> new RuntimeException("Categoría no encontrada: " + dto.getIdCategoria()));
             entity.setCategoria(categoria);
-        }
-
-        if (dto.getIdUsuario() != null) {
-            Usuario usuario = usuarioRepository.findById(dto.getIdUsuario())
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + dto.getIdUsuario()));
-            entity.setUsuario(usuario);
         }
 
         return mapper.toResponseDto(repository.save(entity));

@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Entity;
+package com.example.cepsacbackend.model;
 
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
@@ -25,6 +25,6 @@ public class Pais {
     private String codigo;
 
     @Column(name = "CodigoTelefono", length = 5)
-    private String codigotelefono;
+    private String codigoTelefono;
 
 }

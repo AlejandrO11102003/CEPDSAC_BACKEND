@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Controller;
+package com.example.cepsacbackend.controller;
 
 import java.util.List;
 
@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.cepsacbackend.Dto.Descuento.DescuentoCreateDTO;
-import com.example.cepsacbackend.Dto.Descuento.DescuentoResponseDTO;
-import com.example.cepsacbackend.Dto.Descuento.DescuentoUpdateDTO;
-import com.example.cepsacbackend.Service.DescuentoService;
+import com.example.cepsacbackend.dto.Descuento.DescuentoCreateDTO;
+import com.example.cepsacbackend.dto.Descuento.DescuentoResponseDTO;
+import com.example.cepsacbackend.dto.Descuento.DescuentoUpdateDTO;
+import com.example.cepsacbackend.service.DescuentoService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

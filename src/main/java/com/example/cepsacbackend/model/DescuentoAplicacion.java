@@ -1,6 +1,7 @@
-package com.example.cepsacbackend.Entity;
+package com.example.cepsacbackend.model;
 
-import com.example.cepsacbackend.Enums.TipoAplicacionDescuento;
+import com.example.cepsacbackend.enums.TipoAplicacionDescuento;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -49,4 +50,8 @@ public class DescuentoAplicacion {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IdUsuario")
     private Usuario usuario; //registra la aplicacion de descuento
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "IdMatricula")
+    private Matricula matricula;
 }

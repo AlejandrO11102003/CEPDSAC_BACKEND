@@ -1,11 +1,13 @@
-package com.example.cepsacbackend.Repository;
+package com.example.cepsacbackend.repository;
 
-import com.example.cepsacbackend.Entity.Pais;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.example.cepsacbackend.model.Pais;
 
 @Repository
 public interface PaisRepository extends JpaRepository<Pais, Short> {
 
-    java.util.Optional<Pais> findByNombre(String nombre);
+    Optional<Pais> findByNombre(String nombre);
 }

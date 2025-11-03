@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Enums;
+package com.example.cepsacbackend.enums;
 
 public enum TipoMetodo {
     EFECTIVO,

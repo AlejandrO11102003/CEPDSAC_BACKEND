@@ -1,10 +1,11 @@
-package com.example.cepsacbackend.Controller;
+package com.example.cepsacbackend.controller;
 
-import com.example.cepsacbackend.Dto.MetodoPago.MetodoPagoRequestDTO;
-import com.example.cepsacbackend.Dto.MetodoPago.MetodoPagoResponseDTO;
-import com.example.cepsacbackend.Entity.MetodoPago;
-import com.example.cepsacbackend.Mapper.MetodoPagoMapper;
-import com.example.cepsacbackend.Service.MetodoPagoService;
+import com.example.cepsacbackend.dto.MetodoPago.MetodoPagoRequestDTO;
+import com.example.cepsacbackend.dto.MetodoPago.MetodoPagoResponseDTO;
+import com.example.cepsacbackend.mapper.MetodoPagoMapper;
+import com.example.cepsacbackend.model.MetodoPago;
+import com.example.cepsacbackend.service.MetodoPagoService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

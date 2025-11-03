@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Dto.Categoria;
+package com.example.cepsacbackend.dto.Categoria;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

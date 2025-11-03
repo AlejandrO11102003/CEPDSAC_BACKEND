@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Config.Security;
+package com.example.cepsacbackend.config.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

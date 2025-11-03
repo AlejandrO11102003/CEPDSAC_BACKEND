@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Dto.Login;
+package com.example.cepsacbackend.dto.Login;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

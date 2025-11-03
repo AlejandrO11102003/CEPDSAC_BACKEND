@@ -1,7 +1,8 @@
-package com.example.cepsacbackend.Repository;
+package com.example.cepsacbackend.repository;
 
-import com.example.cepsacbackend.Entity.CursoDiplomado;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.example.cepsacbackend.model.CursoDiplomado;
 
 public interface CursoDiplomadoRepository extends JpaRepository<CursoDiplomado, Short> {
 }

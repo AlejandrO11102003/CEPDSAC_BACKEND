@@ -1,8 +1,9 @@
-package com.example.cepsacbackend.Repository;
+package com.example.cepsacbackend.repository;
 
-import com.example.cepsacbackend.Entity.TipoIdentificacion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.example.cepsacbackend.model.TipoIdentificacion;
 
 @Repository
 public interface TipoIdentificacionRepository extends JpaRepository<TipoIdentificacion, Short> {

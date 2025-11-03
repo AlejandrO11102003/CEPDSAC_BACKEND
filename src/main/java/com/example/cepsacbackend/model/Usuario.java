@@ -1,7 +1,9 @@
-package com.example.cepsacbackend.Entity;
+package com.example.cepsacbackend.model;
 
-import com.example.cepsacbackend.Enums.EstadoUsuario;
-import com.example.cepsacbackend.Enums.Rol;
+import com.example.cepsacbackend.auditory.AuditoriaListener;
+import com.example.cepsacbackend.enums.EstadoUsuario;
+import com.example.cepsacbackend.enums.Rol;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -13,6 +15,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditoriaListener.class) 
 public class Usuario {
 
     @Id

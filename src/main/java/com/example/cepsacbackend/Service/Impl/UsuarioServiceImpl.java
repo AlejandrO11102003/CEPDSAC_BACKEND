@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Service.Impl;
+package com.example.cepsacbackend.service.impl;
 
 import java.util.List;
 
@@ -10,24 +10,24 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.cepsacbackend.Dto.Usuario.UsuarioCreateDTO;
-import com.example.cepsacbackend.Dto.Usuario.UsuarioListResponseDTO;
-import com.example.cepsacbackend.Dto.Usuario.UsuarioPatchDTO;
-import com.example.cepsacbackend.Dto.Usuario.UsuarioResponseDTO;
-import com.example.cepsacbackend.Dto.Usuario.UsuarioUpdateDTO;
-import com.example.cepsacbackend.Entity.Pais;
-import com.example.cepsacbackend.Entity.TipoIdentificacion;
-import com.example.cepsacbackend.Entity.Usuario;
-import com.example.cepsacbackend.Enums.EstadoUsuario;
-import com.example.cepsacbackend.Enums.Rol;
-import com.example.cepsacbackend.Exception.BadRequestException;
-import com.example.cepsacbackend.Exception.ConflictException;
-import com.example.cepsacbackend.Exception.ResourceNotFoundException;
-import com.example.cepsacbackend.Mapper.UsuarioMapper;
-import com.example.cepsacbackend.Repository.PaisRepository;
-import com.example.cepsacbackend.Repository.TipoIdentificacionRepository;
-import com.example.cepsacbackend.Repository.UsuarioRepository;
-import com.example.cepsacbackend.Service.UsuarioService;
+import com.example.cepsacbackend.dto.Usuario.UsuarioCreateDTO;
+import com.example.cepsacbackend.dto.Usuario.UsuarioListResponseDTO;
+import com.example.cepsacbackend.dto.Usuario.UsuarioPatchDTO;
+import com.example.cepsacbackend.dto.Usuario.UsuarioResponseDTO;
+import com.example.cepsacbackend.dto.Usuario.UsuarioUpdateDTO;
+import com.example.cepsacbackend.exception.BadRequestException;
+import com.example.cepsacbackend.exception.ConflictException;
+import com.example.cepsacbackend.exception.ResourceNotFoundException;
+import com.example.cepsacbackend.mapper.UsuarioMapper;
+import com.example.cepsacbackend.model.Pais;
+import com.example.cepsacbackend.model.TipoIdentificacion;
+import com.example.cepsacbackend.model.Usuario;
+import com.example.cepsacbackend.repository.PaisRepository;
+import com.example.cepsacbackend.repository.TipoIdentificacionRepository;
+import com.example.cepsacbackend.repository.UsuarioRepository;
+import com.example.cepsacbackend.service.UsuarioService;
+import com.example.cepsacbackend.enums.EstadoUsuario;
+import com.example.cepsacbackend.enums.Rol;
 
 import lombok.RequiredArgsConstructor;
 
@@ -94,16 +94,15 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     @Transactional
     @CacheEvict(value = "usuarios", key = "'all'")
-    @CachePut(value = "usuarios", key = "#dto.idUsuario")
-    public UsuarioResponseDTO actualizarUsuario(UsuarioUpdateDTO dto) {
-        Usuario usuarioExistente = usuarioRepository.findById(dto.getIdUsuario())
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + dto.getIdUsuario()));
+    @CachePut(value = "usuarios", key = "#idUsuario")
+    public UsuarioResponseDTO actualizarUsuario(Integer idUsuario, UsuarioUpdateDTO dto) {
+        Usuario usuarioExistente = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + idUsuario));
         if (dto.getCorreo() != null && !dto.getCorreo().equals(usuarioExistente.getCorreo())) {
             if (usuarioRepository.findByCorreo(dto.getCorreo()).isPresent()) {
                 throw new ConflictException("Ya existe otro usuario con el correo: " + dto.getCorreo());
             }
         }
-
         usuarioMapper.updateEntityFromUpdateDTO(dto, usuarioExistente);
         usuarioExistente.setPais(resolverPais(dto.getNombrePais()));
         usuarioExistente.setTipoIdentificacion(resolverTipoIdentificacion(dto.getIdTipoIdentificacion()));
@@ -117,16 +116,15 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     @Transactional
     @CacheEvict(value = "usuarios", key = "'all'")
-    @CachePut(value = "usuarios", key = "#dto.idUsuario")
-    public UsuarioResponseDTO actualizarUsuarioParcialmente(UsuarioPatchDTO dto) {
-        Usuario usuarioExistente = usuarioRepository.findById(dto.getIdUsuario())
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + dto.getIdUsuario()));
+    @CachePut(value = "usuarios", key = "#idUsuario")
+    public UsuarioResponseDTO actualizarUsuarioParcialmente(Integer idUsuario, UsuarioPatchDTO dto) {
+        Usuario usuarioExistente = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + idUsuario));
         if (dto.getCorreo() != null && !dto.getCorreo().equals(usuarioExistente.getCorreo())) {
             if (usuarioRepository.findByCorreo(dto.getCorreo()).isPresent()) {
                 throw new ConflictException("Ya existe otro usuario con el correo: " + dto.getCorreo());
             }
         }
-
         usuarioMapper.updateEntityFromPatchDTO(dto, usuarioExistente);
         if (dto.getNombrePais() != null) {
             usuarioExistente.setPais(resolverPais(dto.getNombrePais()));

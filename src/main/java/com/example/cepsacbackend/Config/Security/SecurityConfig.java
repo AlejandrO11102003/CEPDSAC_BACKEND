@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Config.Security;
+package com.example.cepsacbackend.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -43,11 +43,12 @@ public class SecurityConfig {
     public SecurityFilterChain cadenaFiltroSeguridad(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults()) // Habilita CORS usando el bean 'corsConfigurationSource'
+                .cors(Customizer.withDefaults()) // habilitar cors
                 .authorizeHttpRequests(autorizacion -> autorizacion
                         //aqui vamos agregando las rutas publicas
+                        .requestMatchers("/api/monitor/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Permitir peticiones OPTIONS para CORS preflight
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // cors
                         // necesario jwt
                         .anyRequest().authenticated()
                 )

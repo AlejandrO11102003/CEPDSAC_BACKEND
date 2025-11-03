@@ -1,9 +1,9 @@
-package com.example.cepsacbackend.Service;
+package com.example.cepsacbackend.service;
 
-import com.example.cepsacbackend.Dto.Matricula.MatriculaCreateDTO;
-import com.example.cepsacbackend.Entity.Matricula;
-import com.example.cepsacbackend.Dto.Matricula.MatriculaResponseDTO;
-import com.example.cepsacbackend.Dto.Matricula.MatriculaDetalleResponseDTO;
+import com.example.cepsacbackend.dto.Matricula.MatriculaCreateDTO;
+import com.example.cepsacbackend.dto.Matricula.MatriculaDetalleResponseDTO;
+import com.example.cepsacbackend.dto.Matricula.MatriculaResponseDTO;
+import com.example.cepsacbackend.model.Matricula;
 
 import java.util.List;
 

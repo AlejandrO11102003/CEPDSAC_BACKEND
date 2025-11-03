@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Service.Impl;
+package com.example.cepsacbackend.service.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -12,26 +12,26 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.cepsacbackend.Dto.Matricula.MatriculaCreateDTO;
-import com.example.cepsacbackend.Dto.Matricula.MatriculaDetalleResponseDTO;
-import com.example.cepsacbackend.Dto.Matricula.MatriculaResponseDTO;
-import com.example.cepsacbackend.Dto.Pago.PagoResponseDTO;
-import com.example.cepsacbackend.Entity.Descuento;
-import com.example.cepsacbackend.Entity.Matricula;
-import com.example.cepsacbackend.Entity.Pago;
-import com.example.cepsacbackend.Entity.ProgramacionCurso;
-import com.example.cepsacbackend.Entity.Usuario;
-import com.example.cepsacbackend.Enums.EstadoMatricula;
-import com.example.cepsacbackend.Enums.Rol;
-import com.example.cepsacbackend.Enums.TipoDescuento;
-import com.example.cepsacbackend.Mapper.MatriculaMapper;
-import com.example.cepsacbackend.Mapper.PagoMapper;
-import com.example.cepsacbackend.Repository.DescuentoAplicacionRepository;
-import com.example.cepsacbackend.Repository.MatriculaRepository;
-import com.example.cepsacbackend.Repository.PagoRepository;
-import com.example.cepsacbackend.Repository.ProgramacionCursoRepository;
-import com.example.cepsacbackend.Repository.UsuarioRepository;
-import com.example.cepsacbackend.Service.MatriculaService;
+import com.example.cepsacbackend.dto.Matricula.MatriculaCreateDTO;
+import com.example.cepsacbackend.dto.Matricula.MatriculaDetalleResponseDTO;
+import com.example.cepsacbackend.dto.Matricula.MatriculaResponseDTO;
+import com.example.cepsacbackend.dto.Pago.PagoResponseDTO;
+import com.example.cepsacbackend.mapper.MatriculaMapper;
+import com.example.cepsacbackend.mapper.PagoMapper;
+import com.example.cepsacbackend.model.Descuento;
+import com.example.cepsacbackend.model.Matricula;
+import com.example.cepsacbackend.model.Pago;
+import com.example.cepsacbackend.model.ProgramacionCurso;
+import com.example.cepsacbackend.model.Usuario;
+import com.example.cepsacbackend.repository.DescuentoAplicacionRepository;
+import com.example.cepsacbackend.repository.MatriculaRepository;
+import com.example.cepsacbackend.repository.PagoRepository;
+import com.example.cepsacbackend.repository.ProgramacionCursoRepository;
+import com.example.cepsacbackend.repository.UsuarioRepository;
+import com.example.cepsacbackend.service.MatriculaService;
+import com.example.cepsacbackend.enums.EstadoMatricula;
+import com.example.cepsacbackend.enums.Rol;
+import com.example.cepsacbackend.enums.TipoDescuento;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -67,7 +67,16 @@ public class MatriculaServiceImpl implements MatriculaService {
             montoBase = BigDecimal.ZERO; // si no hay monto configurado aun
         }
         // automatizacion para encontrar y asignar el mejor descuento
-        Descuento descuentoAplicado = encontrarMejorDescuento(programacion);
+        // Primero guardamos la matrícula para obtener su ID
+        Matricula m = matriculaMapper.toEntity(dto);
+        m.setProgramacionCurso(programacion);
+        m.setAlumno(alumno);
+        m.setMontoBase(montoBase.setScale(2, RoundingMode.HALF_UP));
+        m.setMontoDescontado(BigDecimal.ZERO); // Inicialmente sin descuento
+        m.setMonto(montoBase.setScale(2, RoundingMode.HALF_UP)); // Inicialmente monto base
+        Matricula matriculaGuardada = matriculaRepository.save(m);
+
+        Descuento descuentoAplicado = encontrarMejorDescuento(programacion, matriculaGuardada.getIdMatricula());
         BigDecimal montoDescontado = calcularMontoDescontado(montoBase, descuentoAplicado);
 
         BigDecimal montoFinal = montoBase.subtract(montoDescontado);
@@ -75,19 +84,16 @@ public class MatriculaServiceImpl implements MatriculaService {
             montoFinal = BigDecimal.ZERO;
         }
         montoFinal = montoFinal.setScale(2, RoundingMode.HALF_UP);
-        // mapeamos campos con el mapper
-        Matricula m = matriculaMapper.toEntity(dto);
-        // set relaciones y montos calculados
-        m.setProgramacionCurso(programacion);
-        m.setAlumno(alumno);
-        m.setMontoBase(montoBase.setScale(2, RoundingMode.HALF_UP));
-        m.setMontoDescontado(montoDescontado);
-        m.setMonto(montoFinal);
-        return matriculaRepository.save(m);
+
+        // Actualizamos la matrícula con el descuento y monto final
+        matriculaGuardada.setMontoDescontado(montoDescontado);
+        matriculaGuardada.setMonto(montoFinal);
+        matriculaGuardada.setDescuento(descuentoAplicado);
+        return matriculaRepository.save(matriculaGuardada);
     }
 
     @Cacheable(value = "descuentos", key = "#programacion.idProgramacionCurso")
-    private Descuento encontrarMejorDescuento(ProgramacionCurso programacion) {
+    private Descuento encontrarMejorDescuento(ProgramacionCurso programacion, Integer idMatricula) {
         if (programacion.getCursoDiplomado() == null) {
             return null;
         }
@@ -95,7 +101,7 @@ public class MatriculaServiceImpl implements MatriculaService {
         Short idCategoria = (programacion.getCursoDiplomado().getCategoria() != null)
                 ? programacion.getCursoDiplomado().getCategoria().getIdCategoria()
                 : null;
-        List<Descuento> descuentos = descuentoAplicacionRepository.findDescuentosVigentes(idCurso, idCategoria);
+        List<Descuento> descuentos = descuentoAplicacionRepository.findDescuentosVigentes(idCurso, idCategoria, idMatricula);
         return descuentos.isEmpty() ? null : descuentos.get(0);
     }
 

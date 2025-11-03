@@ -1,7 +1,11 @@
 ### Variables de entorno
 @baseUrl = http://localhost:8080
 @contentType = application/json
-@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGVqYW5kcm9AZ21haWwuY29tIiwiaWF0IjoxNzYxMzI0NDExLCJleHAiOjE3NjE0MTA4MTF9.Et-lnR-uMhJ0z_47WSptgn4p86b8RwCd1xJqY6Q02oY
+@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsdWNoaXRvQGdtYWlsLmNvbSIsImlhdCI6MTc2MjE3NzgzNywiZXhwIjoxNzYyMjY0MjM3fQ.512HnX-z84KQDJGiB5FjroYb-2BdC9N6Jx_Fiqbldm0
+
+#API MONITOR
+GET http://localhost:8080/api/monitor/metrics
+
 ### ===========================================
 ### AUTHENTICATION ENDPOINTS
 ### ===========================================
@@ -11,7 +15,7 @@ POST {{baseUrl}}/api/auth/login
 Content-Type: {{contentType}}
 
 {
-    "correo": "alejandro@gmail.com",
+    "correo": "luchito@gmail.com",
     "password": "1234"
 }
 
@@ -24,55 +28,58 @@ GET {{baseUrl}}/api/usuarios/listar
 Authorization: Bearer {{token}}
 
 ### Listar usuarios por rol
-GET {{baseUrl}}/api/usuarios/listar/ALUMNO
+GET {{baseUrl}}/api/usuarios/listar/ADMINISTRADOR
 Authorization: Bearer {{token}}
 
 ### Obtener usuario por ID
-GET {{baseUrl}}/api/usuarios/obtener/20
+GET {{baseUrl}}/api/usuarios/20
 Authorization: Bearer {{token}}
 
 ### Crear usuario
-POST {{baseUrl}}/api/usuarios/crear
+POST {{baseUrl}}/api/usuarios
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
     "correo": "nuevo@example.com",
     "password": "123456",
-    "nombre": "Juan Pérez",
-    "apellido": "García",
-    "telefono": "123456789",
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "numeroCelular": "123456789",
     "rol": "ALUMNO"
 }
 
-### Actualizar usuario
-PUT {{baseUrl}}/api/usuarios/actualizar
+### Actualizar usuario (PUT)
+PUT {{baseUrl}}/api/usuarios/28
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-    "idUsuario": 1,
     "correo": "actualizado@example.com",
     "nombre": "Juan Carlos",
-    "apellido": "García López"
+    "apellido": "García López",
+    "estado": "ACTIVO",
+    "numeroCelular": "987654321",
+    "numeroIdentificacion": "12345678",
+    "nombrePais": "Perú",
+    "idTipoIdentificacion": 1
 }
 
-### Actualizar usuario parcialmente
-PATCH {{baseUrl}}/api/usuarios/actualizar-parcial
+### Actualizar usuario parcialmente (PATCH)
+PATCH {{baseUrl}}/api/usuarios/20
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-    "idUsuario": 10,
-    "rol": "ALUMNO"
+    "rol": "ADMINISTRADOR"
 }
 
-### Eliminar usuario
-DELETE {{baseUrl}}/api/usuarios/eliminar/1
+### Eliminar usuario (ahora es un cambio de estado a SUSPENDIDO)
+DELETE {{baseUrl}}/api/usuarios/29
 Authorization: Bearer {{token}}
 
 ### Restaurar usuario
-POST {{baseUrl}}/api/usuarios/restaurar/1
+POST {{baseUrl}}/api/usuarios/29/restaurar
 Authorization: Bearer {{token}}
 
 ### ===========================================
@@ -94,7 +101,7 @@ Authorization: Bearer {{token}}
 
 {
     "tipoDescuento": "MONTO",
-    "valor": 10.00,
+    "valor": 60.00,
     "vigente": true,
     "fechaInicio": "2024-01-01",
     "fechaFin": "2025-12-31",
@@ -109,7 +116,7 @@ Authorization: Bearer {{token}}
 {
     "idDescuento": 1,
     "tipoDescuento": "MONTO",
-    "valor": 25.50,
+    "valor": 10.00,
     "vigente": true,
     "fechaInicio": "2025-01-01",
     "fechaFin": "2025-10-30",
@@ -117,7 +124,7 @@ Authorization: Bearer {{token}}
 }
 
 ### Eliminar descuento
-DELETE {{baseUrl}}/api/descuentos/eliminar/1
+DELETE {{baseUrl}}/api/descuentos/eliminar/51
 Authorization: Bearer {{token}}
 
 ### ===========================================
@@ -167,6 +174,7 @@ GET {{baseUrl}}/api/cursos-diplomados/listar
 Authorization: Bearer {{token}}
 
 ### Listar cursos/diplomados para index
+### falta agrupar por seccion, lista para front
 GET {{baseUrl}}/api/cursos-diplomados/listar-index
 Authorization: Bearer {{token}}
 
@@ -180,13 +188,12 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-    "titulo": "Java Avanzado",
-    "objetivo": "Curso avanzado de Java para desarrolladores",
+    "titulo": "Algoritmos Avanzados",
+    "objetivo": "Curso avanzado de Algoritmos para desarrolladores",
     "idCategoria": 1,
     "tipo": false,
     "otorgaCertificado": true,
-    "urlCurso": "https://tenomiedo.jpg",
-    "idUsuario": 1
+    "urlCurso": "https://tenomiedo.jpg"
 }
 
 ### Eliminar curso/diplomado
@@ -233,12 +240,16 @@ Authorization: Bearer {{token}}
 GET {{baseUrl}}/api/programacioncursos
 Authorization: Bearer {{token}}
 
+### Listar programaciones de  disponibles para matrícula
+GET {{baseUrl}}/api/programacioncursos/disponibles
+Authorization: Bearer {{token}}
+
 ### Obtener programación de curso por ID
 GET {{baseUrl}}/api/programacioncursos/1
 Authorization: Bearer {{token}}
 
 ### Crear programación de curso
-POST {{baseUrl}}/api/programacioncursos/crear
+POST {{baseUrl}}/api/programacioncursos
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -246,11 +257,11 @@ Authorization: Bearer {{token}}
     "modalidad": "VIRTUAL",
     "duracionCurso": 120,
     "horasSemanales": 8,
-    "fechaInicio": "2025-09-01",
-    "fechaFin": "2025-12-15",
-    "monto": 550.00,
+    "fechaInicio": "2025-11-25",
+    "fechaFin": "2026-05-25",
+    "monto": 350.00,
     "idUsuario": 1,
-    "idCursoDiplomado": 2
+    "idCursoDiplomado": 1
 }
 
 ### Actualizar programación de curso

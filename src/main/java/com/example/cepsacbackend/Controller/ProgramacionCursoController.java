@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Controller;
+package com.example.cepsacbackend.controller;
 
 import java.util.List;
 
@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.cepsacbackend.Dto.ProgramacionCurso.ProgramacionCursoRequestDTO;
-import com.example.cepsacbackend.Dto.ProgramacionCurso.ProgramacionCursoResponseDTO;
-import com.example.cepsacbackend.Service.ProgramacionCursoService;
+import com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoRequestDTO;
+import com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoResponseDTO;
+import com.example.cepsacbackend.service.ProgramacionCursoService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +27,15 @@ public class ProgramacionCursoController {
 
     private final ProgramacionCursoService programacionCursoService;
 
+    //EP modulo administracion,
     @GetMapping
     public ResponseEntity<List<ProgramacionCursoResponseDTO>> getAllProgramacionCursos() {
         return ResponseEntity.ok(programacionCursoService.getAll());
+    }
+
+    @GetMapping("/disponibles")
+    public ResponseEntity<List<ProgramacionCursoResponseDTO>> getProgramacionesDisponibles() {
+        return ResponseEntity.ok(programacionCursoService.getDisponibles());
     }
 
     @GetMapping("/{id}")

@@ -1,7 +1,8 @@
-package com.example.cepsacbackend.Mapper;
+package com.example.cepsacbackend.mapper;
 
-import com.example.cepsacbackend.Dto.Pago.PagoResponseDTO;
-import com.example.cepsacbackend.Entity.Pago;
+import com.example.cepsacbackend.dto.Pago.PagoResponseDTO;
+import com.example.cepsacbackend.model.Pago;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import java.util.List;

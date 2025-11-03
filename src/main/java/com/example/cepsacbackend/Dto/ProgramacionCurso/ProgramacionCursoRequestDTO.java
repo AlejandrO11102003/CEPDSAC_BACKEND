@@ -1,11 +1,12 @@
-package com.example.cepsacbackend.Dto.ProgramacionCurso;
+package com.example.cepsacbackend.dto.ProgramacionCurso;
 
-import com.example.cepsacbackend.Enums.ModalidadCurso;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
+import com.example.cepsacbackend.enums.ModalidadCurso;
 
 @Data
 public class ProgramacionCursoRequestDTO {
@@ -31,5 +32,5 @@ public class ProgramacionCursoRequestDTO {
     private Integer idUsuario;
 
     @NotNull(message = "El ID del curso diplomado no puede ser nulo")
-    private Integer idCursoDiplomado;
+    private Short idCursoDiplomado;
 }

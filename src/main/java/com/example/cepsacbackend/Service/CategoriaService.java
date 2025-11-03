@@ -1,9 +1,9 @@
-package com.example.cepsacbackend.Service;
-
-import com.example.cepsacbackend.Dto.Categoria.CategoriaCreateDTO;
-import com.example.cepsacbackend.Dto.Categoria.CategoriaResponseDTO;
+package com.example.cepsacbackend.service;
 
 import java.util.List;
+
+import com.example.cepsacbackend.dto.Categoria.CategoriaCreateDTO;
+import com.example.cepsacbackend.dto.Categoria.CategoriaResponseDTO;
 
 public interface CategoriaService {
     List<CategoriaResponseDTO> listar();

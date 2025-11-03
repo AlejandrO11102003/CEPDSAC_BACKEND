@@ -1,11 +1,11 @@
-package com.example.cepsacbackend.Dto.Usuario;
+package com.example.cepsacbackend.dto.Usuario;
 
-import com.example.cepsacbackend.Enums.EstadoUsuario;
-import com.example.cepsacbackend.Enums.Rol;
+import com.example.cepsacbackend.enums.EstadoUsuario;
+import com.example.cepsacbackend.enums.Rol;
+
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -17,10 +17,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UsuarioPatchDTO {
-
-    @NotNull(message = "El ID del usuario es obligatorio")
-    @Positive(message = "El ID del usuario debe ser un número positivo")
-    private Integer idUsuario;
 
     // campos opcionales para patch
     @Enumerated(EnumType.STRING)

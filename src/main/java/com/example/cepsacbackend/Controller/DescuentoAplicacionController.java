@@ -1,8 +1,9 @@
-package com.example.cepsacbackend.Controller;
+package com.example.cepsacbackend.controller;
 
-import com.example.cepsacbackend.Dto.DescuentoAplicacion.DescuentoAplicacionCreateDTO;
-import com.example.cepsacbackend.Dto.DescuentoAplicacion.DescuentoAplicacionResponseDTO;
-import com.example.cepsacbackend.Service.DescuentoAplicacionService;
+import com.example.cepsacbackend.dto.DescuentoAplicacion.DescuentoAplicacionCreateDTO;
+import com.example.cepsacbackend.dto.DescuentoAplicacion.DescuentoAplicacionResponseDTO;
+import com.example.cepsacbackend.service.DescuentoAplicacionService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

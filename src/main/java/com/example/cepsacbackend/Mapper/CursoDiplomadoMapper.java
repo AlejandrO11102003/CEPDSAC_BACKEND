@@ -1,14 +1,14 @@
-package com.example.cepsacbackend.Mapper;
+package com.example.cepsacbackend.mapper;
 
 import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.example.cepsacbackend.Dto.CursoDiplomado.CursoDiplomadoCreateDTO;
-import com.example.cepsacbackend.Dto.CursoDiplomado.CursoDiplomadoResponseDTO;
-import com.example.cepsacbackend.Dto.CursoDiplomado.CursoIndexResponseDTO;
-import com.example.cepsacbackend.Entity.CursoDiplomado;
+import com.example.cepsacbackend.dto.CursoDiplomado.CursoDiplomadoCreateDTO;
+import com.example.cepsacbackend.dto.CursoDiplomado.CursoDiplomadoResponseDTO;
+import com.example.cepsacbackend.dto.CursoDiplomado.CursoIndexResponseDTO;
+import com.example.cepsacbackend.model.CursoDiplomado;
 
 @Mapper(componentModel = "spring")
 public interface CursoDiplomadoMapper {
@@ -20,7 +20,7 @@ public interface CursoDiplomadoMapper {
 
     @Mapping(source = "categoria.idCategoria", target = "idCategoria")
     @Mapping(source = "categoria.nombre", target = "nombreCategoria")
-    @Mapping(target = "tipo", expression = "java(entity.getTipo() != null && entity.getTipo() ? \"DIPLOMADO\" : \"CURSO\")")
+    @Mapping(source = "tipo", target = "tipo")
     @Mapping(source = "usuario.idUsuario", target = "idUsuario")
     @Mapping(source = "usuario.nombre", target = "nombreUsuario")
     CursoDiplomadoResponseDTO toResponseDto(CursoDiplomado entity);
@@ -28,4 +28,12 @@ public interface CursoDiplomadoMapper {
 
     List<CursoIndexResponseDTO> toIndexResponseDtoList(List<CursoDiplomado> entities);
     List<CursoDiplomadoResponseDTO> toResponseDtoList(List<CursoDiplomado> entities);
+
+    //metodo para mapear el tipo de curso a string
+    default String mapTipoToString(Boolean tipo) {
+        if (tipo != null && tipo) {
+            return "DIPLOMADO";
+        }
+        return "CURSO";
+    }
 }

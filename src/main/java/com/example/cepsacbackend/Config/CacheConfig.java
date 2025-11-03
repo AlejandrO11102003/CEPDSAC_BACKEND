@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Config;
+package com.example.cepsacbackend.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.cache.CacheManager;

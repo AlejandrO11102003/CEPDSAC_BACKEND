@@ -1,9 +1,9 @@
-package com.example.cepsacbackend.Service;
-
-import com.example.cepsacbackend.Dto.ProgramacionCurso.ProgramacionCursoRequestDTO;
-import com.example.cepsacbackend.Dto.ProgramacionCurso.ProgramacionCursoResponseDTO;
+package com.example.cepsacbackend.service;
 
 import java.util.List;
+
+import com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoRequestDTO;
+import com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoResponseDTO;
 
 public interface ProgramacionCursoService {
     List<ProgramacionCursoResponseDTO> getAll();
@@ -11,4 +11,5 @@ public interface ProgramacionCursoService {
     ProgramacionCursoResponseDTO create(ProgramacionCursoRequestDTO programacionCursoRequestDTO);
     ProgramacionCursoResponseDTO update(int id, ProgramacionCursoRequestDTO programacionCursoRequestDTO);
     void delete(int id);
+    List<ProgramacionCursoResponseDTO> getDisponibles();
 }

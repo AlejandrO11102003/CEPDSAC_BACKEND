@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Dto.Pago;
+package com.example.cepsacbackend.dto.Pago;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

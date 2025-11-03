@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Exception;
+package com.example.cepsacbackend.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

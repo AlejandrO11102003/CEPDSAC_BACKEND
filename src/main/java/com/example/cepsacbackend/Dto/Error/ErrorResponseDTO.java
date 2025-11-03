@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Dto.Error;
+package com.example.cepsacbackend.dto.Error;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

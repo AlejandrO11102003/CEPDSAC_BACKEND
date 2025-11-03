@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Entity;
+package com.example.cepsacbackend.model;
 
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;

@@ -1,25 +1,27 @@
-package com.example.cepsacbackend.Service.Impl;
+package com.example.cepsacbackend.service.impl;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.cepsacbackend.Dto.DescuentoAplicacion.DescuentoAplicacionCreateDTO;
-import com.example.cepsacbackend.Dto.DescuentoAplicacion.DescuentoAplicacionResponseDTO;
-import com.example.cepsacbackend.Entity.Categoria;
-import com.example.cepsacbackend.Entity.CursoDiplomado;
-import com.example.cepsacbackend.Entity.Descuento;
-import com.example.cepsacbackend.Entity.DescuentoAplicacion;
-import com.example.cepsacbackend.Entity.Usuario;
-import com.example.cepsacbackend.Enums.TipoAplicacionDescuento;
-import com.example.cepsacbackend.Mapper.DescuentoAplicacionMapper;
-import com.example.cepsacbackend.Repository.CategoriaRepository;
-import com.example.cepsacbackend.Repository.CursoDiplomadoRepository;
-import com.example.cepsacbackend.Repository.DescuentoAplicacionRepository;
-import com.example.cepsacbackend.Repository.DescuentoRepository;
-import com.example.cepsacbackend.Repository.UsuarioRepository;
-import com.example.cepsacbackend.Service.DescuentoAplicacionService;
+import com.example.cepsacbackend.dto.DescuentoAplicacion.DescuentoAplicacionCreateDTO;
+import com.example.cepsacbackend.dto.DescuentoAplicacion.DescuentoAplicacionResponseDTO;
+import com.example.cepsacbackend.mapper.DescuentoAplicacionMapper;
+import com.example.cepsacbackend.model.Categoria;
+import com.example.cepsacbackend.model.CursoDiplomado;
+import com.example.cepsacbackend.model.Descuento;
+import com.example.cepsacbackend.model.DescuentoAplicacion;
+import com.example.cepsacbackend.model.Matricula;
+import com.example.cepsacbackend.model.Usuario;
+import com.example.cepsacbackend.repository.CategoriaRepository;
+import com.example.cepsacbackend.repository.CursoDiplomadoRepository;
+import com.example.cepsacbackend.repository.DescuentoAplicacionRepository;
+import com.example.cepsacbackend.repository.DescuentoRepository;
+import com.example.cepsacbackend.repository.MatriculaRepository;
+import com.example.cepsacbackend.repository.UsuarioRepository;
+import com.example.cepsacbackend.service.DescuentoAplicacionService;
+import com.example.cepsacbackend.enums.TipoAplicacionDescuento;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,6 +34,7 @@ public class DescuentoAplicacionServiceImpl implements DescuentoAplicacionServic
     private final CategoriaRepository categoriaRepository;
     private final CursoDiplomadoRepository cursoDiplomadoRepository;
     private final UsuarioRepository usuarioRepository;
+    private final MatriculaRepository matriculaRepository;
     private final DescuentoAplicacionMapper mapper;
 
     @Override
@@ -71,6 +74,12 @@ public class DescuentoAplicacionServiceImpl implements DescuentoAplicacionServic
             Usuario usuario = usuarioRepository.findById(dto.getIdUsuario())
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + dto.getIdUsuario()));
             entity.setUsuario(usuario);
+        }
+
+        if (dto.getIdMatricula() != null) {
+            Matricula matricula = matriculaRepository.findById(dto.getIdMatricula())
+                    .orElseThrow(() -> new RuntimeException("Matrícula no encontrada: " + dto.getIdMatricula()));
+            entity.setMatricula(matricula);
         }
 
         DescuentoAplicacion guardado = repository.save(entity);

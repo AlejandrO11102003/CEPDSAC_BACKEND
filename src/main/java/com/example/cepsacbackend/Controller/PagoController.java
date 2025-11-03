@@ -1,12 +1,13 @@
-package com.example.cepsacbackend.Controller;
+package com.example.cepsacbackend.controller;
 
-import com.example.cepsacbackend.Dto.Pago.*;
-import com.example.cepsacbackend.Dto.Pago.PagoUpdateDTO;
-import com.example.cepsacbackend.Service.PagoService;
+import com.example.cepsacbackend.dto.Pago.*;
+import com.example.cepsacbackend.service.PagoService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/pagos")
+@PreAuthorize("hasRole('ADMINISTRADOR')")
 public class PagoController {
 
     private final PagoService pagoService;

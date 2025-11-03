@@ -1,22 +1,34 @@
-package com.example.cepsacbackend.Service;
+package com.example.cepsacbackend.service;
 
-import com.example.cepsacbackend.Dto.Pago.PagoCreateDTO;
-import com.example.cepsacbackend.Dto.Pago.PagoResponseDTO;
-import com.example.cepsacbackend.Dto.Pago.PagoUpdateDTO;
-import com.example.cepsacbackend.Entity.*;
-import com.example.cepsacbackend.Enums.EstadoMatricula;
-import com.example.cepsacbackend.Enums.Rol;
-import com.example.cepsacbackend.Mapper.PagoMapper;
-import com.example.cepsacbackend.Repository.*;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import com.example.cepsacbackend.dto.Pago.PagoCreateDTO;
+import com.example.cepsacbackend.dto.Pago.PagoResponseDTO;
+import com.example.cepsacbackend.dto.Pago.PagoUpdateDTO;
+import com.example.cepsacbackend.enums.EstadoMatricula;
+import com.example.cepsacbackend.enums.Rol;
+import com.example.cepsacbackend.exception.BadRequestException;
+import com.example.cepsacbackend.exception.ResourceNotFoundException;
+import com.example.cepsacbackend.mapper.PagoMapper;
+import com.example.cepsacbackend.model.Matricula;
+import com.example.cepsacbackend.model.MetodoPago;
+import com.example.cepsacbackend.model.Pago;
+import com.example.cepsacbackend.model.Usuario;
+import com.example.cepsacbackend.repository.MatriculaRepository;
+import com.example.cepsacbackend.repository.MetodoPagoRepository;
+import com.example.cepsacbackend.repository.PagoRepository;
+import com.example.cepsacbackend.repository.UsuarioRepository;
+import org.springframework.validation.annotation.Validated;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Validated
 public class PagoService {
 
     private final PagoRepository pagoRepository;
@@ -27,18 +39,18 @@ public class PagoService {
 
     @Transactional
     @CacheEvict(value = "matriculas-detalle", key = "#dto.idMatricula()")
-    public PagoResponseDTO registrarPago(PagoCreateDTO dto) {
+    public PagoResponseDTO registrarPago(@Valid PagoCreateDTO dto) {
         Matricula matricula = matriculaRepository.findById(dto.idMatricula())
-                .orElseThrow(() -> new RuntimeException("Matrícula no encontrada: " + dto.idMatricula()));
+                .orElseThrow(() -> new ResourceNotFoundException("Matrícula no encontrada: " + dto.idMatricula()));
 
         MetodoPago metodoPago = metodoPagoRepository.findById(dto.idMetodoPago())
-                .orElseThrow(() -> new RuntimeException("Método de pago no encontrado: " + dto.idMetodoPago()));
+                .orElseThrow(() -> new ResourceNotFoundException("Método de pago no encontrado: " + dto.idMetodoPago()));
 
         Usuario admin = usuarioRepository.findById(dto.idUsuarioRegistro())
-                .orElseThrow(() -> new RuntimeException("Usuario (registro) no encontrado: " + dto.idUsuarioRegistro()));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario que registro el pago no encontrado: " + dto.idUsuarioRegistro()));
 
         if (admin.getRol() != Rol.ADMINISTRADOR) {
-            throw new RuntimeException("El usuario que registra el pago debe ser ADMINISTRADOR");
+            throw new BadRequestException("El usuario que registra el pago debe ser ADMINISTRADOR"); 
         }
 
         Pago pago = new Pago();
@@ -66,17 +78,13 @@ public class PagoService {
     @CacheEvict(value = "matriculas-detalle", key = "#id")
     public PagoResponseDTO actualizarPago(Integer id, PagoUpdateDTO dto) {
         Pago pago = pagoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pago no encontrado: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Pago no encontrado: " + id));
 
         MetodoPago metodoPago = metodoPagoRepository.findById(dto.idMetodoPago())
-                .orElseThrow(() -> new RuntimeException("Método de pago no encontrado: " + dto.idMetodoPago()));
+                .orElseThrow(() -> new ResourceNotFoundException("Método de pago no encontrado: " + dto.idMetodoPago())); 
 
         Usuario admin = usuarioRepository.findById(dto.idUsuarioRegistro())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + dto.idUsuarioRegistro()));
-
-        if (admin.getRol() != Rol.ADMINISTRADOR) {
-            throw new RuntimeException("El usuario que registra el pago debe ser ADMINISTRADOR");
-        }
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado: " + dto.idUsuarioRegistro())); 
 
         pago.setMetodoPago(metodoPago);
         pago.setMonto(dto.monto());

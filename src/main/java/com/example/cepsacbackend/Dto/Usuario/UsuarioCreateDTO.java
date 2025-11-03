@@ -1,7 +1,8 @@
-package com.example.cepsacbackend.Dto.Usuario;
+package com.example.cepsacbackend.dto.Usuario;
 
-import com.example.cepsacbackend.Enums.EstadoUsuario;
-import com.example.cepsacbackend.Enums.Rol;
+import com.example.cepsacbackend.enums.EstadoUsuario;
+import com.example.cepsacbackend.enums.Rol;
+
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
@@ -57,6 +58,6 @@ public class UsuarioCreateDTO {
     @Size(max = 50, message = "El nombre del país no puede exceder 50 caracteres")
     private String nombrePais;
 
-    @Positive(message = "El ID del tipo de identificación debe ser un número positivo")
+    @NotNull(message = "El ID del tipo de identificación es obligatorio")
     private Short idTipoIdentificacion;
 }

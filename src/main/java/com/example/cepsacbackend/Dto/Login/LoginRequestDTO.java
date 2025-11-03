@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Dto.Login;
+package com.example.cepsacbackend.dto.Login;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

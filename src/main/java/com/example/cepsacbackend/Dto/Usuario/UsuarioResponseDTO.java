@@ -1,8 +1,10 @@
-package com.example.cepsacbackend.Dto.Usuario;
+package com.example.cepsacbackend.dto.Usuario;
 
-import com.example.cepsacbackend.Enums.Rol;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import com.example.cepsacbackend.enums.Rol;
+
 import lombok.AllArgsConstructor;
 
 @Data
@@ -18,11 +20,10 @@ public class UsuarioResponseDTO {
     private boolean activo;
     private String numeroCelular;
     private String numeroIdentificacion;
-
-    // pais y tipo response
     private Short idPais;
     private String nombrePais;
     private String codigoTelefono;
     private Short idTipoIdentificacion;
-    private String nombreTipoIdentificacion;
+    private String inicialesTipoIdentificacion;
+
 }

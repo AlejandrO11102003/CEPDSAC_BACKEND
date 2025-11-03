@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Entity;
+package com.example.cepsacbackend.model;
 
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
@@ -20,5 +20,8 @@ public class TipoIdentificacion {
 
     @Column(name = "Nombre", nullable = false, length = 50)
     private String nombre;
+
+    @Column(name = "Iniciales", nullable = false, length = 10)
+    private String iniciales;
 
 }

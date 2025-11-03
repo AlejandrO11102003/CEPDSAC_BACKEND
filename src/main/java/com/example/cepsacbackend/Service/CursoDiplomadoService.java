@@ -1,10 +1,10 @@
-package com.example.cepsacbackend.Service;
-
-import com.example.cepsacbackend.Dto.CursoDiplomado.CursoDiplomadoCreateDTO;
-import com.example.cepsacbackend.Dto.CursoDiplomado.CursoDiplomadoResponseDTO;
-import com.example.cepsacbackend.Dto.CursoDiplomado.CursoIndexResponseDTO;
+package com.example.cepsacbackend.service;
 
 import java.util.List;
+
+import com.example.cepsacbackend.dto.CursoDiplomado.CursoDiplomadoCreateDTO;
+import com.example.cepsacbackend.dto.CursoDiplomado.CursoDiplomadoResponseDTO;
+import com.example.cepsacbackend.dto.CursoDiplomado.CursoIndexResponseDTO;
 
 public interface CursoDiplomadoService {
     List<CursoDiplomadoResponseDTO> listar();

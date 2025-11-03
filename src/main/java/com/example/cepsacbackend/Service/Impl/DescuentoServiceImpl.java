@@ -1,13 +1,14 @@
-package com.example.cepsacbackend.Service.Impl;
+package com.example.cepsacbackend.service.impl;
 
-import com.example.cepsacbackend.Dto.Descuento.DescuentoCreateDTO;
-import com.example.cepsacbackend.Dto.Descuento.DescuentoResponseDTO;
-import com.example.cepsacbackend.Dto.Descuento.DescuentoUpdateDTO;
-import com.example.cepsacbackend.Entity.Descuento;
-import com.example.cepsacbackend.Entity.Usuario;
-import com.example.cepsacbackend.Repository.DescuentoRepository;
-import com.example.cepsacbackend.Repository.UsuarioRepository;
-import com.example.cepsacbackend.Service.DescuentoService;
+import com.example.cepsacbackend.dto.Descuento.DescuentoCreateDTO;
+import com.example.cepsacbackend.dto.Descuento.DescuentoResponseDTO;
+import com.example.cepsacbackend.dto.Descuento.DescuentoUpdateDTO;
+import com.example.cepsacbackend.model.Descuento;
+import com.example.cepsacbackend.model.Usuario;
+import com.example.cepsacbackend.repository.DescuentoRepository;
+import com.example.cepsacbackend.repository.UsuarioRepository;
+import com.example.cepsacbackend.service.DescuentoService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

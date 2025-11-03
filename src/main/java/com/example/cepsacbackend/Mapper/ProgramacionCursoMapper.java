@@ -1,8 +1,9 @@
-package com.example.cepsacbackend.Mapper;
+package com.example.cepsacbackend.mapper;
 
-import com.example.cepsacbackend.Dto.ProgramacionCurso.ProgramacionCursoRequestDTO;
-import com.example.cepsacbackend.Dto.ProgramacionCurso.ProgramacionCursoResponseDTO;
-import com.example.cepsacbackend.Entity.ProgramacionCurso;
+import com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoRequestDTO;
+import com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoResponseDTO;
+import com.example.cepsacbackend.model.ProgramacionCurso;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

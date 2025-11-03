@@ -1,11 +1,13 @@
-package com.example.cepsacbackend.Entity;
+package com.example.cepsacbackend.model;
 
-import com.example.cepsacbackend.Enums.EstadoMatricula;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import com.example.cepsacbackend.enums.EstadoMatricula;
+
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,6 +1,7 @@
-package com.example.cepsacbackend.Dto.DescuentoAplicacion;
+package com.example.cepsacbackend.dto.DescuentoAplicacion;
 
-import com.example.cepsacbackend.Enums.TipoAplicacionDescuento;
+import com.example.cepsacbackend.enums.TipoAplicacionDescuento;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,4 +23,6 @@ public class DescuentoAplicacionCreateDTO {
     private Short idCursoDiplomado;
 
     private Integer idUsuario; // Usuario que registra
+
+    private Integer idMatricula;
 }

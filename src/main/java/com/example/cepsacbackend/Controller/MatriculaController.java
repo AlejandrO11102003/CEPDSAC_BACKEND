@@ -1,12 +1,13 @@
-package com.example.cepsacbackend.Controller;
+package com.example.cepsacbackend.controller;
 
-import com.example.cepsacbackend.Dto.Matricula.MatriculaApprovalDTO;
-import com.example.cepsacbackend.Dto.Matricula.MatriculaCreateDTO;
-import com.example.cepsacbackend.Dto.Matricula.MatriculaResponseDTO;
-import com.example.cepsacbackend.Dto.Matricula.MatriculaDetalleResponseDTO;
-import com.example.cepsacbackend.Entity.Matricula;
-import com.example.cepsacbackend.Mapper.MatriculaMapper;
-import com.example.cepsacbackend.Service.MatriculaService;
+import com.example.cepsacbackend.dto.Matricula.MatriculaApprovalDTO;
+import com.example.cepsacbackend.dto.Matricula.MatriculaCreateDTO;
+import com.example.cepsacbackend.dto.Matricula.MatriculaDetalleResponseDTO;
+import com.example.cepsacbackend.dto.Matricula.MatriculaResponseDTO;
+import com.example.cepsacbackend.mapper.MatriculaMapper;
+import com.example.cepsacbackend.model.Matricula;
+import com.example.cepsacbackend.service.MatriculaService;
+
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

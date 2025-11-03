@@ -1,4 +1,4 @@
-package com.example.cepsacbackend.Dto.Matricula;
+package com.example.cepsacbackend.dto.Matricula;
 
 import jakarta.validation.constraints.NotNull;
 
