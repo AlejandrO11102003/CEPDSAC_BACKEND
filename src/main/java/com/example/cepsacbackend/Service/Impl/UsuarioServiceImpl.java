@@ -38,15 +38,16 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final PaisRepository repopais;
     private final TipoIdentificacionRepository repotipo;
-    private final UsuarioMapper usuarioMapper;
+    protected final UsuarioMapper usuarioMapper;
     private final PasswordEncoder passwordEncoder;
 
     private Pais resolverPais(String nombrePais) {
         if (nombrePais == null || nombrePais.trim().isEmpty()) {
             return null;
         }
-        return repopais.findByNombre(nombrePais)
-                .orElseThrow(() -> new BadRequestException("País no encontrado: " + nombrePais));
+        return repopais.findByNombre(nombrePais.trim())
+                .orElseThrow(() -> new BadRequestException(
+                    String.format("El país '%s' no existe en el sistema. Verifique el nombre e intente nuevamente.", nombrePais)));
     }
 
     private TipoIdentificacion resolverTipoIdentificacion(Short idTipo) {
@@ -54,16 +55,16 @@ public class UsuarioServiceImpl implements UsuarioService {
             return null;
         }
         return repotipo.findById(idTipo)
-                .orElseThrow(() -> new BadRequestException("Tipo de Identificación no encontrado id=" + idTipo));
+                .orElseThrow(() -> new BadRequestException(
+                    String.format("El tipo de identificación con ID %d no existe. Por favor, seleccione un tipo válido.", idTipo)));
     }
 
-    //una sola consulta con join fetch
+    //una sola consulta con dto projection optimizada
     @Override
     @Transactional(readOnly = true)
     @Cacheable(value = "usuarios", key = "'all'")
     public List<UsuarioListResponseDTO> listarUsuarios() {
-        List<Usuario> usuarios = usuarioRepository.findAllActivos();
-        return usuarioMapper.toListResponseDTOList(usuarios);
+        return usuarioRepository.findAllActivosAsDTO();
     }
 
     @Override
@@ -71,7 +72,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Cacheable(value = "usuarios", key = "#idUsuario")
     public UsuarioResponseDTO obtenerUsuario(Integer idUsuario) {
         Usuario usuario = usuarioRepository.findByIdActivo(idUsuario)
-            .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + idUsuario));
+            .orElseThrow(() -> new ResourceNotFoundException(
+                String.format("No se encontró el usuario con ID %d o ha sido suspendido.", idUsuario)));
         return usuarioMapper.toResponseDTO(usuario);
     }
 
@@ -80,8 +82,9 @@ public class UsuarioServiceImpl implements UsuarioService {
     @CacheEvict(value = "usuarios", key = "'all'")
     @CachePut(value = "usuarios", key = "#result.idUsuario")
     public UsuarioResponseDTO crearUsuario(UsuarioCreateDTO dto) {
-        if (usuarioRepository.findByCorreo(dto.getCorreo()).isPresent()) {
-            throw new ConflictException("Ya existe un usuario con el correo: " + dto.getCorreo());
+        if (usuarioRepository.existsByCorreo(dto.getCorreo())) {
+            throw new ConflictException(
+                String.format("El correo electrónico '%s' ya está registrado en el sistema. Por favor, use otro correo.", dto.getCorreo()));
         }
         Usuario usuario = usuarioMapper.toEntity(dto);
         usuario.setPais(resolverPais(dto.getNombrePais()));
@@ -93,13 +96,17 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     @Transactional
-    @CacheEvict(value = "usuarios", key = "'all'")
-    @CachePut(value = "usuarios", key = "#idUsuario")
+    @Caching(evict = {
+        @CacheEvict(value = "usuarios", key = "'all'"),
+        @CacheEvict(value = "usuarios", key = "#idUsuario"),
+        @CacheEvict(value = "usuarios", allEntries = true)
+    })
     public UsuarioResponseDTO actualizarUsuario(Integer idUsuario, UsuarioUpdateDTO dto) {
-        Usuario usuarioExistente = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + idUsuario));
+        Usuario usuarioExistente = usuarioRepository.findByIdActivo(idUsuario)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                    String.format("No se puede actualizar. El usuario con ID %d no existe o está suspendido.", idUsuario)));
         if (dto.getCorreo() != null && !dto.getCorreo().equals(usuarioExistente.getCorreo())) {
-            if (usuarioRepository.findByCorreo(dto.getCorreo()).isPresent()) {
+            if (usuarioRepository.existsByCorreo(dto.getCorreo())) {
                 throw new ConflictException("Ya existe otro usuario con el correo: " + dto.getCorreo());
             }
         }
@@ -115,13 +122,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     @Transactional
-    @CacheEvict(value = "usuarios", key = "'all'")
-    @CachePut(value = "usuarios", key = "#idUsuario")
+    @Caching(evict = {
+        @CacheEvict(value = "usuarios", key = "'all'"),
+        @CacheEvict(value = "usuarios", key = "#idUsuario"),
+        @CacheEvict(value = "usuarios", allEntries = true)
+    })
     public UsuarioResponseDTO actualizarUsuarioParcialmente(Integer idUsuario, UsuarioPatchDTO dto) {
-        Usuario usuarioExistente = usuarioRepository.findById(idUsuario)
+        Usuario usuarioExistente = usuarioRepository.findByIdActivo(idUsuario)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + idUsuario));
         if (dto.getCorreo() != null && !dto.getCorreo().equals(usuarioExistente.getCorreo())) {
-            if (usuarioRepository.findByCorreo(dto.getCorreo()).isPresent()) {
+            if (usuarioRepository.existsByCorreo(dto.getCorreo())) {
                 throw new ConflictException("Ya existe otro usuario con el correo: " + dto.getCorreo());
             }
         }
@@ -146,8 +156,9 @@ public class UsuarioServiceImpl implements UsuarioService {
         @CacheEvict(value = "usuarios", key = "#idUsuario")
     })
     public void eliminarUsuario(Integer idUsuario) {
-        Usuario usuario = usuarioRepository.findByIdActivo(idUsuario)
-                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + idUsuario)); // Usar ResourceNotFoundException
+        Usuario usuario = usuarioRepository.findById(idUsuario)
+            .orElseThrow(() -> new ResourceNotFoundException(
+                String.format("No se puede eliminar. El usuario con ID %d no existe.", idUsuario)));
         usuario.setEstado(EstadoUsuario.SUSPENDIDO);
         usuarioRepository.save(usuario);
     }
@@ -159,7 +170,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         @CacheEvict(value = "usuarios", key = "#idUsuario")
     })
     public UsuarioResponseDTO restaurarUsuario(Integer idUsuario) {
-        Usuario usuario = usuarioRepository.findById(idUsuario)
+        Usuario usuario = usuarioRepository.findByIdActivo(idUsuario)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + idUsuario));
         if (usuario.getEstado() != EstadoUsuario.SUSPENDIDO) {
             throw new BadRequestException("El usuario no está suspendido/eliminado");
@@ -173,7 +184,17 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     @Cacheable(value = "usuarios", key = "'rol_' + #rol.name()")
     public List<UsuarioListResponseDTO> listarUsuariosPorRol(Rol rol) {
-        List<Usuario> usuarios = usuarioRepository.findByRolActivo(rol);
-        return usuarioMapper.toListResponseDTOList(usuarios);
+        return usuarioRepository.findByRolActivoAsDTO(rol);
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(value = "usuarios", allEntries = true)
+    public void cambiarPassword(Integer idUsuario, String nuevaPassword) {
+        Usuario usuario = usuarioRepository.findById(idUsuario)
+            .orElseThrow(() -> new ResourceNotFoundException(
+                String.format("Usuario con ID %d no encontrado", idUsuario)));
+        usuario.setPassword(passwordEncoder.encode(nuevaPassword));
+        usuarioRepository.save(usuario);
     }
 }

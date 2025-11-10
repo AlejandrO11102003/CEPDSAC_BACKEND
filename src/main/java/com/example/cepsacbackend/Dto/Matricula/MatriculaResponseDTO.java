@@ -9,10 +9,10 @@ public record MatriculaResponseDTO(
     Integer idMatricula,
     Integer idProgramacionCurso,
     Integer idAlumno,
-    Integer idAdministradorAprobador,
     LocalDateTime fechaMatricula,
     EstadoMatricula estado,
     BigDecimal montoBase,
     BigDecimal montoDescontado,
-    BigDecimal monto
+    BigDecimal monto,
+    Boolean pagoPersonalizado
 ) {}

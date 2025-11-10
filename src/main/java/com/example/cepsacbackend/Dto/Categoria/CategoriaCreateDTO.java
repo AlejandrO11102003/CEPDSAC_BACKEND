@@ -13,5 +13,4 @@ public class CategoriaCreateDTO {
     @Size(max = 100, message = "La descripción no puede exceder los 100 caracteres")
     private String descripcion;
 
-    private Integer idUsuario;
 }

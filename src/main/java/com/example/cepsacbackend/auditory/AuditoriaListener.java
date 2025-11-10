@@ -71,16 +71,26 @@ public class AuditoriaListener {
         }
     }
     
+    //este metodo establece los campos del abstract auditable en las entidades
     private void setAuditableFields(Object object) {
         if (object instanceof AuditableEntity auditableEntity) { 
             auditableEntity.setFechaModificacion(LocalDateTime.now());
             Integer usuarioId = getUsuarioId();
             if (usuarioId != null) {
-                UsuarioRepository usuarioRepository = BeanUtil.getBean(UsuarioRepository.class);
-                if (usuarioRepository != null) {
-                    usuarioRepository.findById(usuarioId).ifPresent(auditableEntity::setUsuario);
+                EntityManager entityManager = BeanUtil.getBean(EntityManager.class);
+                if (entityManager != null) {
+                    try {
+                        // usar getReference para evitar consulta innecesaria
+                        var usuarioRef = entityManager.getReference(
+                            com.example.cepsacbackend.model.Usuario.class, 
+                            usuarioId
+                        );
+                        auditableEntity.setUsuarioModificador(usuarioRef);
+                    } catch (Exception e) {
+                        LOGGER.log(Level.WARNING, "No se pudo establecer usuario modificador: " + e.getMessage());
+                    }
                 } else {
-                     LOGGER.log(Level.WARNING, "UsuarioRepository no disponible.");
+                    LOGGER.log(Level.WARNING, "EntityManager no disponible.");
                 }
             }
         }

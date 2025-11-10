@@ -1,14 +1,23 @@
 package com.example.cepsacbackend.dto.MetodoPago;
 
 import com.example.cepsacbackend.enums.TipoMetodo;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
-public record MetodoPagoRequestDTO(
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class MetodoPagoRequestDTO {
+
     @NotNull
-    TipoMetodo tipoMetodo,
+    private TipoMetodo tipoMetodo;
+
     @NotBlank
-    String descripcion,
-    String requisitos // Puede ser nulo
-) {}
+    private String descripcion;
+
+    @NotNull
+    private String requisitos;
+}

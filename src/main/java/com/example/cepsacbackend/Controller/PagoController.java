@@ -27,13 +27,13 @@ public class PagoController {
     }
 
     @GetMapping("/matricula/{idMatricula}")
-    public List<PagoResponseDTO> listarPagosPorMatricula(@PathVariable Integer idMatricula) {
-        return pagoService.listarPagosPorMatricula(idMatricula);
+    public ResponseEntity<List<PagoResponseDTO>> listarPagosPorMatricula(@PathVariable Integer idMatricula) {
+        return ResponseEntity.ok(pagoService.listarPagosPorMatricula(idMatricula));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<PagoResponseDTO> actualizar(@PathVariable Integer id, @RequestBody @Valid PagoUpdateDTO dto) {
         PagoResponseDTO response = pagoService.actualizarPago(id, dto);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 }

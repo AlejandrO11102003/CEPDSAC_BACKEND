@@ -24,5 +24,5 @@ public class DescuentoAplicacionResponseDTO {
     private String nombreCategoria;
     private Short idCursoDiplomado;
     private String tituloCursoDiplomado;
-    private String nombreUsuario;
+    private Integer idMatricula;
 }

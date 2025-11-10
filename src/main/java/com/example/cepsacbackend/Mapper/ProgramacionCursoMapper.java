@@ -14,12 +14,9 @@ import java.util.List;
 public interface ProgramacionCursoMapper {
 
     @Mapping(target = "idProgramacionCurso", ignore = true)
-    @Mapping(target = "usuario", ignore = true)
     @Mapping(target = "cursoDiplomado", ignore = true)
     ProgramacionCurso toEntity(ProgramacionCursoRequestDTO dto);
 
-    @Mapping(source = "usuario.idUsuario", target = "idUsuario")
-    @Mapping(source = "usuario.nombre", target = "nombreUsuario")
     @Mapping(source = "cursoDiplomado.idCursoDiplomado", target = "idCursoDiplomado")
     @Mapping(source = "cursoDiplomado.titulo", target = "nombreCursoDiplomado")
     ProgramacionCursoResponseDTO toResponseDTO(ProgramacionCurso entity);
@@ -27,7 +24,6 @@ public interface ProgramacionCursoMapper {
     List<ProgramacionCursoResponseDTO> toResponseDTOList(List<ProgramacionCurso> entities);
 
     @Mapping(target = "idProgramacionCurso", ignore = true)
-    @Mapping(target = "usuario", ignore = true)
     @Mapping(target = "cursoDiplomado", ignore = true)
     void updateEntity(ProgramacionCursoRequestDTO dto, @MappingTarget ProgramacionCurso entity);
 }

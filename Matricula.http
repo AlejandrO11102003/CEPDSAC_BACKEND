@@ -1,0 +1,100 @@
+### Variables de entorno
+@baseUrl = http://localhost:8080
+@contentType = application/json
+@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGVqYW5kcm9AZ21haWwuY29tIiwiaWF0IjoxNzYyNzUwOTk4LCJleHAiOjE3NjI4MzczOTh9.8lKHUYAM882R7lEWMQLhzvxtFflJDEyKQggKMf974_k
+
+
+### ===========================================
+### EJEMPLO COMPLETO: Sistema de Cuotas Automáticas
+### ===========================================
+
+### PASO 1: Crear una programación con duracionMeses (habilita cuotas)
+POST {{baseUrl}}/api/programacioncursos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "modalidad": "VIRTUAL",
+    "duracionCurso": 120,
+    "horasSemanales": 8,
+    "fechaInicio": "2025-12-01",
+    "fechaFin": "2026-03-01",
+    "monto": 400.00,
+    "idCursoDiplomado": 3,
+    "duracionMeses": 4
+}
+
+### → Resultado: Programación ID=X con 3 meses de duración
+
+### PASO 2: Crear matrícula (detecta automáticamente si debe generar cuotas)
+POST {{baseUrl}}/api/matriculas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "idProgramacionCurso": 6,
+    "idAlumno": 30
+}
+### → Resultado: Matrícula con 3 cuotas automáticas de $100 c/u (por duracionMeses)
+
+### PASO 2B: Crear matrícula con PAGOS PERSONALIZADOS (sin cuotas automáticas)
+POST {{baseUrl}}/api/matriculas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "idProgramacionCurso": 5,
+    "idAlumno": 22,
+    "pagoPersonalizado": true
+}
+### → Resultado: Matrícula SIN cuotas automáticas (pagos manuales)
+### → Cada pago incrementa numeroCuota automáticamente (1, 2, 3...)
+
+### PASO 3: Verificar las cuotas generadas
+GET {{baseUrl}}/api/pagos/matricula/22
+Authorization: Bearer {{token}}
+### → Verás 3 cuotas PENDIENTES con fechas de vencimiento
+
+### PASO 4: Pagar la primera cuota (monto opcional - usa el de la cuota automática)
+POST {{baseUrl}}/api/pagos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "idMatricula": 22,
+    "idMetodoPago": 1
+}
+### → Marca cuota #1 como PAGADA con el monto de la cuota automática
+### → El monto es OPCIONAL para cuotas automáticas (usa el predefinido)
+### → El monto es OBLIGATORIO para pagos manuales
+
+### PASO 5: Pagar la segunda cuota (puedes enviar monto diferente si lo deseas)
+POST {{baseUrl}}/api/pagos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "idMatricula": 21,
+    "idMetodoPago": 1,
+    "monto": 100.00
+}
+### → Marca cuota #2 como PAGADA con el monto especificado
+
+### PASO 6: Pagar la tercera cuota
+POST {{baseUrl}}/api/pagos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "idMatricula": 17,
+    "idMetodoPago": 1
+}
+### → Marca cuota #3 como PAGADA
+### → Matrícula cambia a estado PAGADO ✓
+
+### PASO 7: Ver detalle completo de la matrícula
+GET {{baseUrl}}/api/matriculas/17/detalle
+Authorization: Bearer {{token}}
+### → Muestra todas las cuotas pagadas con fechas y montos
+
+

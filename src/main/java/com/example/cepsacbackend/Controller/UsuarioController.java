@@ -18,11 +18,13 @@ import com.example.cepsacbackend.enums.Rol;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Validated
 @RequiredArgsConstructor
 @RequestMapping("/api/usuarios")
+@Slf4j
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
@@ -66,6 +68,7 @@ public class UsuarioController {
     @PatchMapping("/{idUsuario}")
     public ResponseEntity<UsuarioResponseDTO> actualizarUsuarioParcialmente(@PathVariable Integer idUsuario, @Valid @RequestBody UsuarioPatchDTO dto) {
         UsuarioResponseDTO usuarioActualizadoDTO = usuarioService.actualizarUsuarioParcialmente(idUsuario, dto);
+        log.info("fin del hilo principal");
         return ResponseEntity.ok(usuarioActualizadoDTO);
     }
 

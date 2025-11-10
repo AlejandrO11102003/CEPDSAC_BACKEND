@@ -19,7 +19,7 @@ public interface MetodoPagoMapper {
     @Mapping(target = "activo", constant = "true")
     MetodoPago toEntity(MetodoPagoRequestDTO dto);
 
-    // actualizar entidad existente desde RequestDTO put
+    //actualizo la entidad existente con los datos del requestDTO ignorando valores null
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "idMetodoPago", ignore = true)
     @Mapping(target = "activo", ignore = true)

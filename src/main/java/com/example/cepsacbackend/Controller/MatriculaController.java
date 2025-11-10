@@ -1,8 +1,9 @@
 package com.example.cepsacbackend.controller;
 
-import com.example.cepsacbackend.dto.Matricula.MatriculaApprovalDTO;
+import com.example.cepsacbackend.dto.Matricula.AplicarDescuentoDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaCreateDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaDetalleResponseDTO;
+import com.example.cepsacbackend.dto.Matricula.MatriculaListResponseDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaResponseDTO;
 import com.example.cepsacbackend.mapper.MatriculaMapper;
 import com.example.cepsacbackend.model.Matricula;
@@ -25,26 +26,28 @@ public class MatriculaController {
     private final MatriculaMapper matriculaMapper;
 
     @GetMapping("/listar")
-    public List<MatriculaResponseDTO> listarMatriculas() {
-        return matriculaService.listarMatriculas();
+    public ResponseEntity<List<MatriculaListResponseDTO>> listarMatriculas() {
+        List<MatriculaListResponseDTO> matriculas = matriculaService.listarMatriculas();
+        return ResponseEntity.ok(matriculas);
+    }
+
+    @GetMapping("/alumno/{idAlumno}")
+    public ResponseEntity<List<MatriculaListResponseDTO>> listarMatriculasPorAlumno(@PathVariable Integer idAlumno) {
+        List<MatriculaListResponseDTO> matriculas = matriculaService.listarMatriculasPorAlumno(idAlumno);
+        return ResponseEntity.ok(matriculas);
     }
 
     @PostMapping
     public ResponseEntity<MatriculaResponseDTO> crear(@RequestBody @Valid MatriculaCreateDTO dto) {
-        Matricula m = matriculaService.crearMatricula(dto);
-        return new ResponseEntity<>(matriculaMapper.toResponseDTO(m), HttpStatus.CREATED);
-    }
-
-    @PutMapping("/{id}/aprobar")
-    public ResponseEntity<MatriculaResponseDTO> aprobar(@PathVariable Integer id, @RequestBody @Valid MatriculaApprovalDTO dto) {
-        Matricula m = matriculaService.aprobarMatricula(id);
-        return ResponseEntity.ok(matriculaMapper.toResponseDTO(m));
+        Matricula matricula = matriculaService.crearMatricula(dto);
+        MatriculaResponseDTO response = matriculaMapper.toResponseDTO(matricula);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}/cancelar")
     public ResponseEntity<MatriculaResponseDTO> cancelar(@PathVariable Integer id) {
-        Matricula m = matriculaService.cancelarMatricula(id);
-        return ResponseEntity.ok(matriculaMapper.toResponseDTO(m));
+        Matricula matricula = matriculaService.cancelarMatricula(id);
+        return ResponseEntity.ok(matriculaMapper.toResponseDTO(matricula));
     }
 
     @GetMapping("/{id}/detalle")
@@ -53,4 +56,11 @@ public class MatriculaController {
         return ResponseEntity.ok(detalle);
     }
 
+    @PutMapping("/{id}/aplicar-descuento")
+    public ResponseEntity<MatriculaResponseDTO> aplicarDescuento(
+            @PathVariable Integer id,
+            @RequestBody @Valid AplicarDescuentoDTO dto) {
+        Matricula matricula = matriculaService.aplicarDescuentoAMatricula(id, dto);
+        return ResponseEntity.ok(matriculaMapper.toResponseDTO(matricula));
+    }
 }

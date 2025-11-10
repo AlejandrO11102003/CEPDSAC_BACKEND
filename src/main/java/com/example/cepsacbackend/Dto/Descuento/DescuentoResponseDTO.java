@@ -19,6 +19,5 @@ public class DescuentoResponseDTO {
     private Boolean vigente;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
-    private Integer idUsuario;
-
+    
 }

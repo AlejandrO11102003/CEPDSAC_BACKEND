@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 public abstract class AuditableEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "IdUsuario")
-    private Usuario usuario;
+    @JoinColumn(name = "usuario_modificador")
+    private Usuario usuarioModificador;
 
     @Column(name = "fecha_modificacion")
     private LocalDateTime fechaModificacion;

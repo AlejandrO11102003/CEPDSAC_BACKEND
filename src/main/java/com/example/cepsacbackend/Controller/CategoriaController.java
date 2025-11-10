@@ -33,11 +33,7 @@ public class CategoriaController {
 
     @GetMapping("/obtener/{id}")
     public ResponseEntity<CategoriaResponseDTO> obtenerPorId(@PathVariable Short id) {
-        try {
-            return ResponseEntity.ok(categoriaService.obtenerPorId(id));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(categoriaService.obtenerPorId(id));
     }
 
     @PostMapping("/crear")
@@ -47,11 +43,7 @@ public class CategoriaController {
 
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Short id) {
-        try {
-            categoriaService.eliminar(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        categoriaService.eliminar(id);
+        return ResponseEntity.noContent().build();
     }
 }

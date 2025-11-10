@@ -13,10 +13,8 @@ import com.example.cepsacbackend.model.Categoria;
 public interface CategoriaMapper {
 
     @Mapping(target = "idCategoria", ignore = true)
-    @Mapping(target = "usuario", ignore = true)
     Categoria toEntity(CategoriaCreateDTO dto);
 
-    @Mapping(source = "usuario.idUsuario", target = "idUsuario")
     CategoriaResponseDTO toResponseDto(Categoria entity);
 
     List<CategoriaResponseDTO> toResponseDtoList(List<Categoria> entities);

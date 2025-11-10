@@ -28,9 +28,10 @@ public class ProgramacionCursoRequestDTO {
     @NotNull(message = "El monto no puede ser nulo")
     private BigDecimal monto;
 
-    @NotNull(message = "El ID del usuario no puede ser nulo")
-    private Integer idUsuario;
-
     @NotNull(message = "El ID del curso diplomado no puede ser nulo")
     private Short idCursoDiplomado;
+
+    //campo opcional para generar cuotas automaticas segun los meses del curso
+    //si tiene valor se generan cuotas al matricular si es null funciona como antes
+    private Short duracionMeses;
 }

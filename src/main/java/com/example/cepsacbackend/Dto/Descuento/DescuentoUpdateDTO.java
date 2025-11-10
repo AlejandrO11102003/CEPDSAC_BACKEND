@@ -2,7 +2,6 @@ package com.example.cepsacbackend.dto.Descuento;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -33,10 +32,5 @@ public class DescuentoUpdateDTO {
     private LocalDate fechaInicio;
 
     private LocalDate fechaFin;
-
-    // id del usuario que edita (opcional), no cambia el creador en bd
-    @Positive
-    private Integer idUsuario;
-
 
 }

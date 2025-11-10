@@ -19,5 +19,6 @@ public interface UsuarioService {
     void eliminarUsuario(Integer idUsuario);
     UsuarioResponseDTO restaurarUsuario(Integer idUsuario);
     List<UsuarioListResponseDTO> listarUsuariosPorRol(Rol rol);
+    void cambiarPassword(Integer idUsuario, String nuevaPassword);
 
 }

@@ -12,7 +12,6 @@ public interface PagoMapper {
 
     @Mapping(target = "metodoPagoDescripcion", source = "metodoPago.descripcion")
     @Mapping(target = "tipoMetodo", source = "metodoPago.tipoMetodo")
-    @Mapping(target = "usuarioRegistroNombre", source = "usuarioRegistro.nombre")
     PagoResponseDTO toResponseDTO(Pago pago);
 
     List<PagoResponseDTO> toResponseDTOList(List<Pago> pagos);

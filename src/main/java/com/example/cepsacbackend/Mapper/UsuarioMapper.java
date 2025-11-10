@@ -23,12 +23,16 @@ public interface UsuarioMapper {
     @Mapping(target = "idUsuario", ignore = true)
     @Mapping(target = "pais", ignore = true)
     @Mapping(target = "tipoIdentificacion", ignore = true)
+    @Mapping(target = "usuarioModificador", ignore = true)
+    @Mapping(target = "fechaModificacion", ignore = true)
     Usuario toEntity(UsuarioCreateDTO dto);
 
     // para actualizar con PUT
     @Mapping(target = "idUsuario", ignore = true)
     @Mapping(target = "pais", ignore = true)
     @Mapping(target = "tipoIdentificacion", ignore = true)
+    @Mapping(target = "usuarioModificador", ignore = true)
+    @Mapping(target = "fechaModificacion", ignore = true)
     void updateEntityFromUpdateDTO(UsuarioUpdateDTO dto, @MappingTarget Usuario entity);
 
     // para actualizar con PATCH
@@ -36,6 +40,8 @@ public interface UsuarioMapper {
     @Mapping(target = "idUsuario", ignore = true)
     @Mapping(target = "pais", ignore = true)
     @Mapping(target = "tipoIdentificacion", ignore = true)
+    @Mapping(target = "usuarioModificador", ignore = true)
+    @Mapping(target = "fechaModificacion", ignore = true)
     void updateEntityFromPatchDTO(UsuarioPatchDTO dto, @MappingTarget Usuario entity);
 
     // mapeo de entidad a responseDTO

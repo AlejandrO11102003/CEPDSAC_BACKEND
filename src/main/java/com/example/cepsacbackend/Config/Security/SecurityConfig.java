@@ -48,6 +48,7 @@ public class SecurityConfig {
                         //aqui vamos agregando las rutas publicas
                         .requestMatchers("/api/monitor/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll() // registro publico de alumnos
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // cors
                         // necesario jwt
                         .anyRequest().authenticated()

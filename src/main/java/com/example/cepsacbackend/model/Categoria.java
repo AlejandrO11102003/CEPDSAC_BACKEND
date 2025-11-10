@@ -22,7 +22,4 @@ public class Categoria {
     @Column(name = "Descripcion", length = 100)
     private String descripcion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "IdUsuario")
-    private Usuario usuario;
 }

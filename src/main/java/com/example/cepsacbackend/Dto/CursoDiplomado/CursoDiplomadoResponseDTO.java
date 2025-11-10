@@ -1,8 +1,11 @@
 package com.example.cepsacbackend.dto.CursoDiplomado;
 
 import lombok.Data;
+import lombok.NonNull;
+
 
 @Data
+@NonNull
 public class CursoDiplomadoResponseDTO {
     private Short idCursoDiplomado;
     private Short idCategoria;
@@ -12,6 +15,4 @@ public class CursoDiplomadoResponseDTO {
     private String titulo;
     private String urlCurso;
     private String objetivo;
-    private Integer idUsuario;
-    private String nombreUsuario;
 }

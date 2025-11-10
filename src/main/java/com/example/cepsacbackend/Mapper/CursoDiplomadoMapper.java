@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import com.example.cepsacbackend.dto.CursoDiplomado.CursoDiplomadoCreateDTO;
 import com.example.cepsacbackend.dto.CursoDiplomado.CursoDiplomadoResponseDTO;
 import com.example.cepsacbackend.dto.CursoDiplomado.CursoIndexResponseDTO;
+import com.example.cepsacbackend.dto.CursoDiplomado.CursoDiplomadoUpdateDTO;
 import com.example.cepsacbackend.model.CursoDiplomado;
 
 @Mapper(componentModel = "spring")
@@ -15,17 +17,16 @@ public interface CursoDiplomadoMapper {
 
     @Mapping(target = "idCursoDiplomado", ignore = true)
     @Mapping(target = "categoria", ignore = true)
-    @Mapping(target = "usuario", ignore = true)
     CursoDiplomado toEntity(CursoDiplomadoCreateDTO dto);
+
+    @Mapping(target = "idCursoDiplomado", ignore = true)
+    @Mapping(target = "categoria", ignore = true)
+    void updateEntityFromDto(CursoDiplomadoUpdateDTO dto, @MappingTarget CursoDiplomado entity);
 
     @Mapping(source = "categoria.idCategoria", target = "idCategoria")
     @Mapping(source = "categoria.nombre", target = "nombreCategoria")
     @Mapping(source = "tipo", target = "tipo")
-    @Mapping(source = "usuario.idUsuario", target = "idUsuario")
-    @Mapping(source = "usuario.nombre", target = "nombreUsuario")
     CursoDiplomadoResponseDTO toResponseDto(CursoDiplomado entity);
-
-
     List<CursoIndexResponseDTO> toIndexResponseDtoList(List<CursoDiplomado> entities);
     List<CursoDiplomadoResponseDTO> toResponseDtoList(List<CursoDiplomado> entities);
 

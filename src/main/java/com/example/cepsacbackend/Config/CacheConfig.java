@@ -14,12 +14,15 @@ import java.util.concurrent.TimeUnit;
 public class CacheConfig {
 
     @Bean
+    @SuppressWarnings("null")
     public CacheManager cacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
-        cacheManager.setCaffeine(Caffeine.newBuilder()
-            .maximumSize(1000)
-            .expireAfterWrite(10, TimeUnit.MINUTES)
-            .recordStats());
+        cacheManager.setCaffeine(
+            Caffeine.newBuilder()
+                .maximumSize(1000)
+                .expireAfterWrite(20, TimeUnit.MINUTES)
+                .recordStats()
+        );
         return cacheManager;
     }
 }

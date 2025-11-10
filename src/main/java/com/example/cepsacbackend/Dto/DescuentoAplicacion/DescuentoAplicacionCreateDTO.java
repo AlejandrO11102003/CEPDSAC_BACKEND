@@ -22,7 +22,5 @@ public class DescuentoAplicacionCreateDTO {
 
     private Short idCursoDiplomado;
 
-    private Integer idUsuario; // Usuario que registra
-
     private Integer idMatricula;
 }

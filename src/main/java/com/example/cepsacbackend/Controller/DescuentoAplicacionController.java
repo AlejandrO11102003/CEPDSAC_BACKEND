@@ -26,11 +26,7 @@ public class DescuentoAplicacionController {
 
     @GetMapping("/obtener/{id}")
     public ResponseEntity<DescuentoAplicacionResponseDTO> obtenerPorId(@PathVariable Integer id) {
-        try {
-            return ResponseEntity.ok(descuentoAplicacionService.obtenerPorId(id));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(descuentoAplicacionService.obtenerPorId(id));
     }
 
     @PostMapping("/crear")
@@ -38,13 +34,14 @@ public class DescuentoAplicacionController {
         return new ResponseEntity<>(descuentoAplicacionService.crear(dto), HttpStatus.CREATED);
     }
 
+    @PutMapping("/actualizar/{id}")
+    public ResponseEntity<DescuentoAplicacionResponseDTO> actualizar(@PathVariable Integer id, @Valid @RequestBody DescuentoAplicacionCreateDTO dto) {
+        return ResponseEntity.ok(descuentoAplicacionService.actualizar(id, dto));
+    }
+
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
-        try {
-            descuentoAplicacionService.eliminar(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        descuentoAplicacionService.eliminar(id);
+        return ResponseEntity.noContent().build();
     }
 }

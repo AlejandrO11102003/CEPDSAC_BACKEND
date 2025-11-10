@@ -2,13 +2,13 @@ package com.example.cepsacbackend.service.impl;
 
 import com.example.cepsacbackend.dto.Categoria.CategoriaCreateDTO;
 import com.example.cepsacbackend.dto.Categoria.CategoriaResponseDTO;
+import com.example.cepsacbackend.exception.ResourceNotFoundException;
 import com.example.cepsacbackend.mapper.CategoriaMapper;
 import com.example.cepsacbackend.model.Categoria;
-import com.example.cepsacbackend.model.Usuario;
 import com.example.cepsacbackend.repository.CategoriaRepository;
-import com.example.cepsacbackend.repository.UsuarioRepository;
 import com.example.cepsacbackend.service.CategoriaService;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +20,6 @@ import java.util.List;
 public class CategoriaServiceImpl implements CategoriaService {
 
     private final CategoriaRepository repository;
-    private final UsuarioRepository usuarioRepository;
     private final CategoriaMapper mapper;
 
     @Override
@@ -31,32 +30,27 @@ public class CategoriaServiceImpl implements CategoriaService {
 
     @Override
     @Transactional(readOnly = true)
-    public CategoriaResponseDTO obtenerPorId(Short id) {
+    public CategoriaResponseDTO obtenerPorId(@NonNull Short id) {
         Categoria entity = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                    String.format("No se encontró la categoría con ID %d. Verifique que el ID sea correcto.", id)));
         return mapper.toResponseDto(entity);
     }
 
     @Override
     @Transactional
-    public CategoriaResponseDTO crear(CategoriaCreateDTO dto) {
+    public CategoriaResponseDTO crear( CategoriaCreateDTO dto) {
         Categoria entity = mapper.toEntity(dto);
-
-        if (dto.getIdUsuario() != null) {
-            Usuario usuario = usuarioRepository.findById(dto.getIdUsuario())
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + dto.getIdUsuario()));
-            entity.setUsuario(usuario);
-        }
-
         Categoria guardado = repository.save(entity);
         return mapper.toResponseDto(guardado);
     }
 
     @Override
     @Transactional
-    public void eliminar(Short id) {
+    public void eliminar(@NonNull Short id) {
         if (!repository.existsById(id)) {
-            throw new RuntimeException("Categoría no encontrada: " + id);
+            throw new ResourceNotFoundException(
+                String.format("No se puede eliminar. La categoría con ID %d no existe.", id));
         }
         repository.deleteById(id);
     }

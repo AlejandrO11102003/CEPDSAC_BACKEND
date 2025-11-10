@@ -37,40 +37,24 @@ public class DescuentoController {
 
     @GetMapping("/obtener/{id}")
     public ResponseEntity<DescuentoResponseDTO> obtener(@PathVariable("id") Short id) {
-        try {
-            return ResponseEntity.ok(descuentoService.obtener(id));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(descuentoService.obtener(id));
     }
 
     @PostMapping("/crear")
     public ResponseEntity<DescuentoResponseDTO> crear(@Valid @RequestBody DescuentoCreateDTO dto) {
-        try {
-            DescuentoResponseDTO creado = descuentoService.crear(dto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(creado);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        DescuentoResponseDTO creado = descuentoService.crear(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
 
     @PutMapping("/actualizar")
     public ResponseEntity<DescuentoResponseDTO> actualizar(@Valid @RequestBody DescuentoUpdateDTO dto) {
-        try {
-            DescuentoResponseDTO actualizado = descuentoService.actualizar(dto);
-            return ResponseEntity.ok(actualizado);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
-        }
+        DescuentoResponseDTO actualizado = descuentoService.actualizar(dto);
+        return ResponseEntity.ok(actualizado);
     }
 
     @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<String> eliminar(@PathVariable("id") Short id) {
-        try {
-            descuentoService.eliminar(id);
-            return ResponseEntity.ok("descuento eliminado correctamente");
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Void> eliminar(@PathVariable("id") Short id) {
+        descuentoService.eliminar(id);
+        return ResponseEntity.noContent().build();
     }
 }

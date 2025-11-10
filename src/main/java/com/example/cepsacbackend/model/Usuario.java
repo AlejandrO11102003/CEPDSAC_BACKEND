@@ -3,7 +3,6 @@ package com.example.cepsacbackend.model;
 import com.example.cepsacbackend.auditory.AuditoriaListener;
 import com.example.cepsacbackend.enums.EstadoUsuario;
 import com.example.cepsacbackend.enums.Rol;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -15,8 +14,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EntityListeners(AuditoriaListener.class) 
-public class Usuario {
+@EntityListeners(AuditoriaListener.class)
+@Table(name = "usuario", indexes = {
+    @Index(name = "idx_usuario_correo", columnList = "Correo", unique = true),
+    @Index(name = "idx_usuario_estado", columnList = "Estado"),
+    @Index(name = "idx_usuario_estado_rol", columnList = "Estado,Rol")
+})
+public class Usuario extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +37,7 @@ public class Usuario {
     @Column(name = "Apellido", length = 50)
     private String apellido;
 
-    @Column(name = "Correo", unique = true, length = 255)
+    @Column(name = "Correo", length = 255)
     private String correo;
 
     @Column(name = "Password", length = 255)

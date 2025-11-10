@@ -3,10 +3,12 @@ package com.example.cepsacbackend.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.example.cepsacbackend.auditory.AuditoriaListener;
 import com.example.cepsacbackend.enums.ModalidadCurso;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -25,7 +27,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProgramacionCurso {
+@EntityListeners(AuditoriaListener.class)
+public class ProgramacionCurso extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,13 +51,14 @@ public class ProgramacionCurso {
     @Column(name = "FechaFin")
     private LocalDate fechaFin;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "IdUsuario")
-    private Usuario usuario;
-
     // precio base del curso programado
     @Column(name = "Monto", precision = 10, scale = 2)
     private BigDecimal monto;
+
+    //campo opcional para fraccionar el pago en cuotas mensuales (3 4 6 meses etc)
+    //si es null o 0 no se generan cuotas automaticas y funciona como antes
+    @Column(name = "DuracionMeses", columnDefinition = "TINYINT UNSIGNED")
+    private Short duracionMeses;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IdCursoDiplomado", nullable = false)

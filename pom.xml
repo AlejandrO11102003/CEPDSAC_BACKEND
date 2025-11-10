@@ -64,6 +64,10 @@
             <artifactId>jackson-datatype-hibernate6</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
@@ -92,7 +96,6 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-processor</artifactId>
             <version>1.5.5.Final</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -129,6 +132,10 @@
             <artifactId>sentry-spring-boot-starter-jakarta</artifactId>
             <version>7.11.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -141,18 +148,19 @@
                     <target>${java.version}</target>
                     <annotationProcessorPaths>
                         <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>1.5.5.Final</version>
-                        </path>
-                        <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
                         </path>
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok-mapstruct-binding</artifactId>
                             <version>0.2.0</version>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>1.5.5.Final</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

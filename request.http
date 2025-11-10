@@ -1,10 +1,13 @@
 ### Variables de entorno
 @baseUrl = http://localhost:8080
 @contentType = application/json
-@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsdWNoaXRvQGdtYWlsLmNvbSIsImlhdCI6MTc2MjE3NzgzNywiZXhwIjoxNzYyMjY0MjM3fQ.512HnX-z84KQDJGiB5FjroYb-2BdC9N6Jx_Fiqbldm0
+@token = .eyJzdWIiOiJsdWNoaXRvQGdtYWlsLmNvbSIsImlhdCI6MTc2Mjc3OTczNywiZXhwIjoxNzYyODY2MTM3fQ.uS3zpmyS1lDqkIdzGKFEq-MEjXIMkLy7uXqEXMuYVVQ
+### ===========================================
+### MONITOR ENDPOINTS
+### ===========================================
 
-#API MONITOR
-GET http://localhost:8080/api/monitor/metrics
+### Obtener monitoreo del sistema
+GET {{baseUrl}}/api/monitor/metrics
 
 ### ===========================================
 ### AUTHENTICATION ENDPOINTS
@@ -15,8 +18,25 @@ POST {{baseUrl}}/api/auth/login
 Content-Type: {{contentType}}
 
 {
-    "correo": "luchito@gmail.com",
-    "password": "1234"
+    "correo": "u22239328@utp.edu.pe",
+    "password": "Alejandro123!"
+}
+
+### Solicitar restablecimiento de contraseña (olvido de contraseña)
+POST {{baseUrl}}/api/auth/forgot-password
+Content-Type: {{contentType}}
+
+{
+    "correo": "u22239328@utp.edu.pe"
+}
+
+### Restablecer contraseña con token
+POST {{baseUrl}}/api/auth/reset-password
+Content-Type: {{contentType}}
+
+{
+    "token": "e99def40-5578-4dfe-9c70-8367732200cf",
+    "nuevaPassword": "Alejandro123!"
 }
 
 ### ===========================================
@@ -32,7 +52,7 @@ GET {{baseUrl}}/api/usuarios/listar/ADMINISTRADOR
 Authorization: Bearer {{token}}
 
 ### Obtener usuario por ID
-GET {{baseUrl}}/api/usuarios/20
+GET {{baseUrl}}/api/usuarios/21
 Authorization: Bearer {{token}}
 
 ### Crear usuario
@@ -41,12 +61,15 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-    "correo": "nuevo@example.com",
-    "password": "123456",
-    "nombre": "Juan",
-    "apellido": "Pérez",
+    "correo": "u22239328@utp.edu.pe",
+    "password": "",
+    "nombre": "Alejandro",
+    "apellido": "Castillo J",
     "numeroCelular": "123456789",
-    "rol": "ALUMNO"
+    "rol": "ALUMNO",
+    "numeroIdentificacion": "87654321",
+    "nombrePais": "Perú",
+    "idTipoIdentificacion": 1
 }
 
 ### Actualizar usuario (PUT)
@@ -66,21 +89,180 @@ Authorization: Bearer {{token}}
 }
 
 ### Actualizar usuario parcialmente (PATCH)
-PATCH {{baseUrl}}/api/usuarios/20
+PATCH {{baseUrl}}/api/usuarios/4
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-    "rol": "ADMINISTRADOR"
+    "password": "Luchito13!"
 }
 
-### Eliminar usuario (ahora es un cambio de estado a SUSPENDIDO)
-DELETE {{baseUrl}}/api/usuarios/29
+### Eliminar usuario (cambio de estado a SUSPENDIDO)
+DELETE {{baseUrl}}/api/usuarios/20
 Authorization: Bearer {{token}}
 
 ### Restaurar usuario
 POST {{baseUrl}}/api/usuarios/29/restaurar
 Authorization: Bearer {{token}}
+
+### ===========================================
+### CATEGORÍA ENDPOINTS
+### ===========================================
+
+### Listar categorías
+GET {{baseUrl}}/api/categorias/listar
+Authorization: Bearer {{token}}
+
+### Obtener categoría por ID
+GET {{baseUrl}}/api/categorias/obtener/5
+Authorization: Bearer {{token}}
+
+### Crear categoría
+POST {{baseUrl}}/api/categorias/crear
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "nombre": "Seguridad Informática"
+}
+
+### Eliminar categoría
+DELETE {{baseUrl}}/api/categorias/eliminar/1
+Authorization: Bearer {{token}}
+
+### ===========================================
+### CURSO/DIPLOMADO ENDPOINTS
+### ===========================================
+
+### Listar cursos/diplomados
+GET {{baseUrl}}/api/cursos-diplomados/listar
+Authorization: Bearer {{token}}
+
+### Listar cursos/diplomados para index
+GET {{baseUrl}}/api/cursos-diplomados/listar-index
+Authorization: Bearer {{token}}
+
+### Obtener curso/diplomado por ID
+GET {{baseUrl}}/api/cursos-diplomados/obtener/5
+Authorization: Bearer {{token}}
+
+### Crear curso/diplomado
+POST {{baseUrl}}/api/cursos-diplomados/crear
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "titulo": "Base de Datos 2",
+    "objetivo": "Curso avanzado de Base de Datos para desarrolladores",
+    "idCategoria": 2,
+    "tipo": false,
+    "otorgaCertificado": true,
+    "urlCurso": "https://ejemplo.com/base-de-datos-2"
+}
+
+### Eliminar curso/diplomado
+DELETE {{baseUrl}}/api/cursos-diplomados/eliminar/1
+Authorization: Bearer {{token}}
+
+### ===========================================
+### PROGRAMACIÓN CURSO ENDPOINTS
+### ===========================================
+
+### Listar todas las programaciones
+GET {{baseUrl}}/api/programacioncursos
+Authorization: Bearer {{token}}
+
+### Listar programaciones disponibles
+GET {{baseUrl}}/api/programacioncursos/disponibles
+Authorization: Bearer {{token}}
+
+### Obtener programación por ID
+GET {{baseUrl}}/api/programacioncursos/1
+Authorization: Bearer {{token}}
+
+### Crear programación de curso
+POST {{baseUrl}}/api/programacioncursos
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "modalidad": "VIRTUAL",
+    "duracionCurso": 120,
+    "horasSemanales": 8,
+    "fechaInicio": "2025-12-01",
+    "fechaFin": "2026-06-01",
+    "monto": 300.00,
+    "idCursoDiplomado": 4,
+    "duracionMeses": 6
+}
+
+###  Campo "duracionMeses" es opcional:
+###  Si tiene valor : Se generan cuotas AUTO al matricular
+###  Si es null o 0: funciona sin cuotas automaticas xd
+
+### Actualizar programación de curso
+PUT {{baseUrl}}/api/programacioncursos/1
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "modalidad": "PRESENCIAL",
+    "duracionCurso": 150,
+    "horasSemanales": 10,
+    "fechaInicio": "2026-01-10",
+    "fechaFin": "2026-04-20",
+    "monto": 650.00,
+    "idCursoDiplomado": 2,
+    "duracionMeses": 3
+}
+
+### Eliminar programación de curso
+DELETE {{baseUrl}}/api/programacioncursos/1
+Authorization: Bearer {{token}}
+
+### ===========================================
+### MATRÍCULA ENDPOINTS
+### ===========================================
+
+### Listar matrículas
+GET {{baseUrl}}/api/matriculas/listar
+Authorization: Bearer {{token}}
+
+### Crear matrícula 
+POST {{baseUrl}}/api/matriculas
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "idProgramacionCurso": 1,
+    "idAlumno": 51,
+    "duracionMeses": 3  // depende si quieres cuotas automaticas o no
+}
+
+### el estado de la matricula se actualiza automaticamente a EN_PROCESO al ser aprobada.
+
+### Cancelar matrícula
+PUT {{baseUrl}}/api/matriculas/1/cancelar
+Authorization: Bearer {{token}}
+
+### Obtener detalle de matrícula (incluye cuotas si las tiene)
+GET {{baseUrl}}/api/matriculas/22/detalle
+Authorization: Bearer {{token}}
+
+### Aplicar descuento personalizado a matrícula existente
+###  valida que la matrícula no esté cancelada ni pagada
+###  valida que el descuento esté vigente
+### recalcula el monto total con el nuevo descuento
+### mantiene intactas las cuotas ya pagadas
+### redistribuye el saldo pendiente entre las cuotas pendientes
+PUT {{baseUrl}}/api/matriculas/22/aplicar-descuento
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "idDescuento": 2
+}
+
 
 ### ===========================================
 ### DESCUENTO ENDPOINTS
@@ -104,8 +286,7 @@ Authorization: Bearer {{token}}
     "valor": 60.00,
     "vigente": true,
     "fechaInicio": "2024-01-01",
-    "fechaFin": "2025-12-31",
-    "idUsuario": 1
+    "fechaFin": "2025-12-31"
 }
 
 ### Actualizar descuento
@@ -119,171 +300,11 @@ Authorization: Bearer {{token}}
     "valor": 10.00,
     "vigente": true,
     "fechaInicio": "2025-01-01",
-    "fechaFin": "2025-10-30",
-    "idUsuario": 1
+    "fechaFin": "2025-10-30"
 }
 
 ### Eliminar descuento
-DELETE {{baseUrl}}/api/descuentos/eliminar/51
-Authorization: Bearer {{token}}
-
-### ===========================================
-### CATEGORIA ENDPOINTS
-### ===========================================
-
-### Listar categorías
-GET {{baseUrl}}/api/categorias/listar
-Authorization: Bearer {{token}}
-
-### Obtener categoría por ID
-GET {{baseUrl}}/api/categorias/obtener/1
-Authorization: Bearer {{token}}
-
-### Crear categoría
-POST {{baseUrl}}/api/categorias/crear
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-    "nombre": "Seguridad Informatica",
-    "descripcion": "Python",
-    "idUsuario": 1
-}
-
-### Actualizar categoría
-PUT {{baseUrl}}/api/categorias/actualizar
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-    "idCategoria": 1,
-    "nombre": "Seguridad Informática Avanzada",
-    "descripcion": "Curso de seguridad informática avanzado"
-}
-
-### Eliminar categoría
-DELETE {{baseUrl}}/api/categorias/eliminar/1
-Authorization: Bearer {{token}}
-
-### ===========================================
-### CURSO DIPLOMADO ENDPOINTS
-### ===========================================
-
-### Listar cursos/diplomados
-GET {{baseUrl}}/api/cursos-diplomados/listar
-Authorization: Bearer {{token}}
-
-### Listar cursos/diplomados para index
-### falta agrupar por seccion, lista para front
-GET {{baseUrl}}/api/cursos-diplomados/listar-index
-Authorization: Bearer {{token}}
-
-### Obtener curso/diplomado por ID
-GET {{baseUrl}}/api/cursos-diplomados/obtener/1
-Authorization: Bearer {{token}}
-
-### Crear curso/diplomado
-POST {{baseUrl}}/api/cursos-diplomados/crear
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-    "titulo": "Algoritmos Avanzados",
-    "objetivo": "Curso avanzado de Algoritmos para desarrolladores",
-    "idCategoria": 1,
-    "tipo": false,
-    "otorgaCertificado": true,
-    "urlCurso": "https://tenomiedo.jpg"
-}
-
-### Eliminar curso/diplomado
-DELETE {{baseUrl}}/api/cursos-diplomados/eliminar/1
-Authorization: Bearer {{token}}
-
-### ===========================================
-### MATRICULA ENDPOINTS
-### ===========================================
-
-### Listar matrículas
-GET {{baseUrl}}/api/matriculas/listar
-Authorization: Bearer {{token}}
-
-### Crear matrícula
-POST {{baseUrl}}/api/matriculas
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-    "idProgramacionCurso": 1,
-    "idAlumno": 51
-}
-
-### Aprobar matrícula
-PUT {{baseUrl}}/api/matriculas/1/aprobar
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-    "idAdministrador": 1
-}
-
-### Obtener detalle de matrícula
-GET {{baseUrl}}/api/matriculas/10/detalle
-Authorization: Bearer {{token}}
-
-
-### ===========================================
-### PROGRAMACION CURSO ENDPOINTS
-### ===========================================
-
-### Listar programaciones de curso
-GET {{baseUrl}}/api/programacioncursos
-Authorization: Bearer {{token}}
-
-### Listar programaciones de  disponibles para matrícula
-GET {{baseUrl}}/api/programacioncursos/disponibles
-Authorization: Bearer {{token}}
-
-### Obtener programación de curso por ID
-GET {{baseUrl}}/api/programacioncursos/1
-Authorization: Bearer {{token}}
-
-### Crear programación de curso
-POST {{baseUrl}}/api/programacioncursos
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-    "modalidad": "VIRTUAL",
-    "duracionCurso": 120,
-    "horasSemanales": 8,
-    "fechaInicio": "2025-11-25",
-    "fechaFin": "2026-05-25",
-    "monto": 350.00,
-    "idUsuario": 1,
-    "idCursoDiplomado": 1
-}
-
-### Actualizar programación de curso
-PUT {{baseUrl}}/api/programacioncursos/actualizar/1
-programacion-curso/actualizar
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-    "idProgramacionCurso": 1,
-    "modalidad": "PRESENCIAL",
-    "duracionCurso": 150,
-    "horasSemanales": 10,
-    "fechaInicio": "2026-01-10",
-    "fechaFin": "2026-04-20",
-    "monto": 650.00,
-    "idUsuario": 1,
-    "idCursoDiplomado": 2
-}
-
-### Eliminar programación de curso
-DELETE {{baseUrl}}/api/programacioncursos/eliminar/1
+DELETE {{baseUrl}}/api/descuentos/eliminar/1
 Authorization: Bearer {{token}}
 
 ### ===========================================
@@ -305,23 +326,19 @@ Authorization: Bearer {{token}}
 
 {
     "idDescuento": 3,
-    "tipoAplicacion": "CURSO",
-    "idCursoDiplomado" : 2,
-    "idUsuario": 1
-    // "idCategoria": 1
+    "tipoAplicacion": "GENERAL",
+    "idMatricula": 10
 }
 
 ### Actualizar aplicación de descuento
-PUT {{baseUrl}}/api/aplicaciondescuento/actualizar
+PUT {{baseUrl}}/api/aplicaciondescuento/actualizar/4
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-    "idAplicacionDescuento": 1,
     "idDescuento": 3,
     "tipoAplicacion": "CATEGORIA",
-    "idCategoria": 1,
-    "idUsuario": 1
+    "idCategoria": 1
 }
 
 ### Eliminar aplicación de descuento
@@ -329,106 +346,10 @@ DELETE {{baseUrl}}/api/aplicaciondescuento/eliminar/1
 Authorization: Bearer {{token}}
 
 ### ===========================================
-### TIPO IDENTIFICACIÓN ENDPOINTS
-### ===========================================
-
-### Listar tipos de identificación
-GET {{baseUrl}}/api/tipos-identificacion/listar
-Authorization: Bearer {{token}}
-
-### Obtener tipo de identificación por ID
-POST {{baseUrl}}/api/tiposidentificacion/obtener
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-    "idTipoIdentificacion": 1
-}
-
-### Crear tipo de identificación
-POST {{baseUrl}}/api/tipos-identificacion/crear
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-    "nombre": "Cédula de Ciudadanía",
-    "descripcion": "Documento de identidad colombiano"
-}
-
-### Actualizar tipo de identificación
-PUT {{baseUrl}}/api/tipos-identificacion/actualizar
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-    "idTipoIdentificacion": 3,
-    "nombre": "CE",
-    "descripcion": "Cédula de Extranjería"
-}
-
-### Eliminar tipo de identificación
-DELETE {{baseUrl}}/api/tipos-identificacion/eliminar
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-    "idTipoIdentificacion": 1
-}
-
-### ===========================================
-### PAÍS ENDPOINTS
-### ===========================================
-
-### Listar países
-GET {{baseUrl}}/api/paises/listar
-Authorization: Bearer {{token}}
-
-### Obtener país por ID
-POST {{baseUrl}}/api/paises/obtener
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-    "idPais": 1
-}
-
-### Crear país
-POST {{baseUrl}}/api/paises/crear
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-    "nombre": "Colombia",
-    "codigo": "CO",
-    "descripcion": "República de Colombia"
-}
-
-### Actualizar país
-POST {{baseUrl}}/api/paises/actualizar
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-    "idPais": 1,
-    "nombre": "Colombia Actualizada",
-    "codigo": "CO",
-    "descripcion": "República de Colombia actualizada"
-}
-
-### Eliminar país
-DELETE {{baseUrl}}/api/paises/eliminar
-Content-Type: {{contentType}}
-Authorization: Bearer {{token}}
-
-{
-    "idPais": 1
-}
-
-### ===========================================
 ### PAGO ENDPOINTS
 ### ===========================================
 
-### Registrar pago
+### Registrar pago (FORMA TRADICIONAL - pago manual)
 POST {{baseUrl}}/api/pagos
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
@@ -436,8 +357,23 @@ Authorization: Bearer {{token}}
 {
     "idMatricula": 7,
     "idMetodoPago": 1,
-    "monto": 74.00,
-    "idUsuarioRegistro": 11
+    "monto": 74.00
+}
+
+### El endpoint POST /api/pagos detecta automáticamente cuotas pendientes
+### Listar pagos por matrícula automaticas y las normales
+GET {{baseUrl}}/api/pagos/matricula/7
+Authorization: Bearer {{token}}
+
+### Actualizar pago
+PUT {{baseUrl}}/api/pagos/1
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "idMetodoPago": 1,
+    "monto": 100.00,
+    "numeroCuota": 1
 }
 
 ### ===========================================
@@ -448,7 +384,7 @@ Authorization: Bearer {{token}}
 GET {{baseUrl}}/api/metodos-pago/activos
 Authorization: Bearer {{token}}
 
-### Listar todos los métodos de pago (Admin)
+### Listar todos los métodos de pago
 GET {{baseUrl}}/api/metodos-pago
 Authorization: Bearer {{token}}
 
@@ -464,7 +400,8 @@ Authorization: Bearer {{token}}
 {
     "tipoMetodo": "TARJETA",
     "descripcion": "Pago con tarjeta de crédito",
-    "requisitos": "Número de tarjeta, fecha de vencimiento, CVV"
+    "requisitos": "Número de tarjeta, fecha de vencimiento, CVV",
+    "activo": true
 }
 
 ### Actualizar método de pago
@@ -475,13 +412,84 @@ Authorization: Bearer {{token}}
 {
     "tipoMetodo": "TRANSFERENCIA",
     "descripcion": "Pago por transferencia bancaria",
-    "requisitos": "Número de cuenta, banco de destino"
+    "requisitos": "Número de cuenta, banco de destino",
+    "activo": true
 }
 
 ### Cambiar estado del método de pago
-PUT {{baseUrl}}/api/metodos-pago/1/estado?activo=true
+PUT {{baseUrl}}/api/metodos-pago/1/estado?activo=false
 Authorization: Bearer {{token}}
 
 ### Eliminar método de pago
 DELETE {{baseUrl}}/api/metodos-pago/1
+Authorization: Bearer {{token}}
+
+### ===========================================
+### TIPO IDENTIFICACIÓN ENDPOINTS
+### ===========================================
+
+### Listar tipos de identificación
+GET {{baseUrl}}/api/tipos-identificacion
+Authorization: Bearer {{token}}
+
+### Obtener tipo de identificación por ID
+GET {{baseUrl}}/api/tipos-identificacion/1
+Authorization: Bearer {{token}}
+
+### Crear tipo de identificación
+POST {{baseUrl}}/api/tipos-identificacion
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "nombre": "Pasaporte",
+    "descripcion": "Documento de viaje internacional"
+}
+
+### Actualizar tipo de identificación
+PUT {{baseUrl}}/api/tipos-identificacion/1
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "nombre": "CE",
+    "descripcion": "Carnet de Extranjería"
+}
+
+### Eliminar tipo de identificación
+DELETE {{baseUrl}}/api/tipos-identificacion/1
+Authorization: Bearer {{token}}
+
+### ===========================================
+### PAÍS ENDPOINTS
+### ===========================================
+
+### Listar países
+GET {{baseUrl}}/api/paises
+Authorization: Bearer {{token}}
+
+### Obtener país por ID
+GET {{baseUrl}}/api/paises/1
+Authorization: Bearer {{token}}
+
+### Crear país
+POST {{baseUrl}}/api/paises
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "nombre": "Colombia"
+}
+
+### Actualizar país
+PUT {{baseUrl}}/api/paises/1
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "nombre": "Colombia Actualizada"
+}
+
+### Eliminar país
+DELETE {{baseUrl}}/api/paises/1
 Authorization: Bearer {{token}}

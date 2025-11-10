@@ -39,11 +39,7 @@ public class CursoDiplomadoController {
 
     @GetMapping("/obtener/{id}")
     public ResponseEntity<CursoDiplomadoResponseDTO> obtenerPorId(@PathVariable Short id) {
-        try {
-            return ResponseEntity.ok(cursoDiplomadoService.obtenerPorId(id));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(cursoDiplomadoService.obtenerPorId(id));
     }
 
     @PostMapping("/crear")
@@ -53,11 +49,7 @@ public class CursoDiplomadoController {
 
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Short id) {
-        try {
-            cursoDiplomadoService.eliminar(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        cursoDiplomadoService.eliminar(id);
+        return ResponseEntity.noContent().build();
     }
 }

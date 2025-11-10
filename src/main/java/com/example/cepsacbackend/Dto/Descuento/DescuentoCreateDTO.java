@@ -27,7 +27,4 @@ public class DescuentoCreateDTO {
 
     private LocalDate fechaFin;
 
-    // id del usuario creador
-    private Integer idUsuario;
-
 }

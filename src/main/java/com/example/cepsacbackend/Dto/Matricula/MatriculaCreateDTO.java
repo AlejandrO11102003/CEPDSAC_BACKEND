@@ -1,8 +1,21 @@
 package com.example.cepsacbackend.dto.Matricula;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
-public record MatriculaCreateDTO(
-    @NotNull Integer idProgramacionCurso,
-    @NotNull Integer idAlumno
-) {}
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@NonNull
+public class MatriculaCreateDTO{
+
+    @NotNull 
+    private Integer idProgramacionCurso;
+    @NotNull 
+    private Integer idAlumno;
+    
+    private Boolean pagoPersonalizado; //opcional: true = sin cuotas automáticas, pagos manuales
+}

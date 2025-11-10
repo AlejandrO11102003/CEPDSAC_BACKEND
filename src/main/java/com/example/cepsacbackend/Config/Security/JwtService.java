@@ -36,6 +36,7 @@ public class JwtService {
 
     //generamos token con userdetail
     public String generarToken(UserDetails detallesUsuario) {
+        
         return generarToken(new HashMap<>(), detallesUsuario);
     }
 
@@ -44,7 +45,7 @@ public class JwtService {
         return Jwts
                 .builder()
                 .setClaims(claimsExtra)
-                .setSubject(detallesUsuario.getUsername())
+                .setSubject(detallesUsuario.getUsername()) 
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpiracion))
                 .signWith(obtenerClaveFirma(), SignatureAlgorithm.HS256)

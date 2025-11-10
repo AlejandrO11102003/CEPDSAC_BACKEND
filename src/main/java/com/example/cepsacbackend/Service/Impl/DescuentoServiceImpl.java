@@ -3,10 +3,9 @@ package com.example.cepsacbackend.service.impl;
 import com.example.cepsacbackend.dto.Descuento.DescuentoCreateDTO;
 import com.example.cepsacbackend.dto.Descuento.DescuentoResponseDTO;
 import com.example.cepsacbackend.dto.Descuento.DescuentoUpdateDTO;
+import com.example.cepsacbackend.exception.ResourceNotFoundException;
 import com.example.cepsacbackend.model.Descuento;
-import com.example.cepsacbackend.model.Usuario;
 import com.example.cepsacbackend.repository.DescuentoRepository;
-import com.example.cepsacbackend.repository.UsuarioRepository;
 import com.example.cepsacbackend.service.DescuentoService;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 public class DescuentoServiceImpl implements DescuentoService {
 
     private final DescuentoRepository repo;
-    private final UsuarioRepository repoUsuario;
 
     private DescuentoResponseDTO toDTO(Descuento d) {
         DescuentoResponseDTO dto = new DescuentoResponseDTO();
@@ -31,7 +29,6 @@ public class DescuentoServiceImpl implements DescuentoService {
         dto.setVigente(d.getVigente());
         dto.setFechaInicio(d.getFechaInicio());
         dto.setFechaFin(d.getFechaFin());
-        dto.setIdUsuario(d.getUsuario() != null ? d.getUsuario().getIdUsuario() : null);
         return dto;
     }
 
@@ -46,7 +43,8 @@ public class DescuentoServiceImpl implements DescuentoService {
     @Transactional(readOnly = true)
     public DescuentoResponseDTO obtener(Short idDescuento) {
         Descuento d = repo.findById(idDescuento)
-                .orElseThrow(() -> new RuntimeException("Descuento no encontrado: " + idDescuento));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                    String.format("No se encontró el descuento con ID %d. Verifique que el ID sea correcto.", idDescuento)));
         return toDTO(d);
     }
 
@@ -59,13 +57,7 @@ public class DescuentoServiceImpl implements DescuentoService {
         d.setValor(dto.getValor());
         d.setVigente(dto.getVigente() == null ? Boolean.TRUE : dto.getVigente());
         d.setFechaInicio(dto.getFechaInicio());
-        d.setFechaFin(dto.getFechaFin());
-        // set usuario creador si viene id
-        if (dto.getIdUsuario() != null) {
-            Usuario u = repoUsuario.findById(dto.getIdUsuario())
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + dto.getIdUsuario()));
-            d.setUsuario(u);
-        }
+        d.setFechaFin(dto.getFechaFin());        
         Descuento guardado = repo.save(d);
         return toDTO(guardado);
     }
@@ -74,19 +66,14 @@ public class DescuentoServiceImpl implements DescuentoService {
     @Transactional
     public DescuentoResponseDTO actualizar(DescuentoUpdateDTO dto) {
         Descuento d = repo.findById(dto.getIdDescuento())
-                .orElseThrow(() -> new RuntimeException("Descuento no encontrado: " + dto.getIdDescuento()));
-        // actualizar campos
+                .orElseThrow(() -> new ResourceNotFoundException(
+                    String.format("No se puede actualizar. El descuento con ID %d no existe.", dto.getIdDescuento())));
+        //actualizo los campos del descuento con los nuevos valores
         d.setTipoDescuento(dto.getTipoDescuento());
         d.setValor(dto.getValor());
         d.setVigente(dto.getVigente());
         d.setFechaInicio(dto.getFechaInicio());
         d.setFechaFin(dto.getFechaFin());
-        // no cambiamos creador, pero si llega un usuario válido lo referenciamos
-        if (dto.getIdUsuario() != null) {
-            Usuario u = repoUsuario.findById(dto.getIdUsuario())
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado: " + dto.getIdUsuario()));
-            d.setUsuario(u);
-        }
         Descuento actualizado = repo.save(d);
         return toDTO(actualizado);
     }
@@ -96,7 +83,8 @@ public class DescuentoServiceImpl implements DescuentoService {
     public void eliminar(Short idDescuento) {
         // borrado fisico simple acorde a fk on delete cascade en aplicaciones
         if (!repo.existsById(idDescuento)) {
-            throw new RuntimeException("Descuento no encontrado: " + idDescuento);
+            throw new ResourceNotFoundException(
+                String.format("No se puede eliminar. El descuento con ID %d no existe.", idDescuento));
         }
         repo.deleteById(idDescuento);
     }

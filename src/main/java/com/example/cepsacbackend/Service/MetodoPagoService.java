@@ -1,63 +1,23 @@
 package com.example.cepsacbackend.service;
 
 import com.example.cepsacbackend.dto.MetodoPago.MetodoPagoRequestDTO;
-import com.example.cepsacbackend.mapper.MetodoPagoMapper;
 import com.example.cepsacbackend.model.MetodoPago;
-import com.example.cepsacbackend.repository.MetodoPagoRepository;
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class MetodoPagoService {
+public interface MetodoPagoService {
 
-    private final MetodoPagoRepository metodorepo;
-    private final MetodoPagoMapper metodoPagoMapper;
+    List<MetodoPago> obtenerActivos();
 
-    public List<MetodoPago> obtenerActivos() {
-        return metodorepo.findByActivoTrue();
-    }
+    List<MetodoPago> obtenerTodos();
 
-    public List<MetodoPago> obtenerTodos() {
-        return metodorepo.findAll();
-    }
+    MetodoPago obtenerPorId(Short id);
 
-    // obtener por id de metodopago
-    public MetodoPago obtenerPorId(Short id) {
-        return metodorepo.findById(id)
-            .orElseThrow(() -> new RuntimeException("Método de pago no encontrado con ID: " + id));
-    }
+    MetodoPago crearMetodo(MetodoPagoRequestDTO dto);
 
-    @Transactional
-    public MetodoPago crearMetodo(MetodoPagoRequestDTO dto) {
-        MetodoPago metodo = metodoPagoMapper.toEntity(dto);
-        return metodorepo.save(metodo);
-    }
+    MetodoPago actualizarMetodo(Short id, MetodoPagoRequestDTO dto);
 
-    @Transactional
-    public MetodoPago actualizarMetodo(Short id, MetodoPagoRequestDTO dto) {
-        MetodoPago metodoExistente = obtenerPorId(id);
-        metodoPagoMapper.updateEntityFromRequestDTO(dto, metodoExistente);
-        return metodorepo.save(metodoExistente);
-    }
+    MetodoPago cambiarEstado(Short id, Boolean nuevoEstado);
 
-    @Transactional
-    public MetodoPago cambiarEstado(Short id, Boolean nuevoEstado) {
-        MetodoPago metodoExistente = obtenerPorId(id);
-        if (metodoExistente.getActivo().equals(nuevoEstado)) {
-            return metodoExistente;
-        }
-        metodoExistente.setActivo(nuevoEstado);
-        return metodorepo.save(metodoExistente);
-    }
-
-    @Transactional
-    public void eliminarMetodo(Short id) {
-        MetodoPago metodoExistente = obtenerPorId(id);
-        metodorepo.delete(metodoExistente);
-    }
+    void eliminarMetodo(Short id);
 }

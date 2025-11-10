@@ -4,42 +4,54 @@ import com.example.cepsacbackend.model.TipoIdentificacion;
 import com.example.cepsacbackend.repository.TipoIdentificacionRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import lombok.NonNull;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/tiposidentificacion")
+@RequestMapping("/api/tipos-identificacion")
 public class TipoIdentificacionController {
 
     private final TipoIdentificacionRepository tipoRepository;
 
-    @GetMapping("/listar")
-    public List<TipoIdentificacion> listarTiposIdentificacion() {
-        return tipoRepository.findAll();
+    @GetMapping
+    public ResponseEntity<List<TipoIdentificacion>> listar() {
+        return ResponseEntity.ok(tipoRepository.findAll());
     }
 
-    @PostMapping("/obtener")
-    public TipoIdentificacion obtenerTipoIdentificacion(@RequestBody Short idTipoIdentificacion) {
-        Optional<TipoIdentificacion> tipoIdentificacion = tipoRepository.findById(idTipoIdentificacion);
-        return tipoIdentificacion.orElse(null);
+    @GetMapping("/{id}")
+    public ResponseEntity<TipoIdentificacion> obtenerPorId(@NonNull @PathVariable Short id) {
+        return tipoRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/crear")
-    public TipoIdentificacion crearTipoIdentificacion(@RequestBody TipoIdentificacion tipoIdentificacion) {
-        return tipoRepository.save(tipoIdentificacion);
+    @PostMapping
+    public ResponseEntity<TipoIdentificacion> crear(@RequestBody TipoIdentificacion tipoIdentificacion) {
+        tipoIdentificacion.setIdTipoIdentificacion(null);
+        TipoIdentificacion nuevo = tipoRepository.save(tipoIdentificacion);
+        return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
     }
 
-    @PostMapping("/actualizar")
-    public TipoIdentificacion actualizarTipoIdentificacion(@RequestBody TipoIdentificacion tipoIdentificacion) {
-        return tipoRepository.save(tipoIdentificacion);
+    @PutMapping("/{id}")
+    public ResponseEntity<TipoIdentificacion> actualizar(@NonNull @PathVariable Short id, @RequestBody TipoIdentificacion tipoIdentificacion) {
+        if (!tipoRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        tipoIdentificacion.setIdTipoIdentificacion(id);
+        return ResponseEntity.ok(tipoRepository.save(tipoIdentificacion));
     }
 
-    @PostMapping("/eliminar")
-    public String eliminarTipoIdentificacion(@RequestBody Short idTipoIdentificacion) {
-        tipoRepository.deleteById(idTipoIdentificacion);
-        return "Tipo de identificación eliminado correctamente";
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@NonNull @PathVariable Short id) {
+        if (!tipoRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        tipoRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

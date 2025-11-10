@@ -1,5 +1,6 @@
 package com.example.cepsacbackend.model;
 
+import com.example.cepsacbackend.auditory.AuditoriaListener;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Matricula {
+@EntityListeners(AuditoriaListener.class)
+@Table(name = "matricula", indexes = {
+    @Index(name = "idx_matricula_alumno", columnList = "IdAlumno"),
+    @Index(name = "idx_matricula_programacion", columnList = "IdProgramacionCurso"),
+    @Index(name = "idx_matricula_estado", columnList = "Estado")
+})
+public class Matricula extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,4 +61,7 @@ public class Matricula {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IdDescuento")
     private Descuento descuento;
+
+    @Column(name = "PagoPersonalizado")
+    private Boolean pagoPersonalizado = false; //true = pagos manuales, false = cuotas automáticas
 }

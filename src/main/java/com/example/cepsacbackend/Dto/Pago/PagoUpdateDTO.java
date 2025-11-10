@@ -1,15 +1,17 @@
 package com.example.cepsacbackend.dto.Pago;
 
-import jakarta.validation.constraints.NotNull;
-import java.math.BigDecimal;
+import lombok.Data;
+import lombok.NonNull;
 
-public record PagoUpdateDTO(
-    @NotNull
-    Short idMetodoPago,
-    @NotNull
-    BigDecimal monto,
-    @NotNull
-    Short numeroCuota,
-    @NotNull
-    Integer idUsuarioRegistro
-) {}
+import java.math.BigDecimal;
+import lombok.AllArgsConstructor;
+
+
+@NonNull
+@Data
+@AllArgsConstructor
+public class PagoUpdateDTO{
+    private Short idMetodoPago;
+    private BigDecimal monto;
+    private Short numeroCuota;
+}

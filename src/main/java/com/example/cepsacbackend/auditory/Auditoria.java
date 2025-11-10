@@ -3,16 +3,20 @@ package com.example.cepsacbackend.auditory;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "auditoria")
+@Table(name = "auditoria", indexes = {
+    @Index(name = "idx_auditoria_usuario", columnList = "usuario_id")
+})
 @Getter
 @Setter
 @NoArgsConstructor
+@NonNull
 public class Auditoria {
 
     @Id

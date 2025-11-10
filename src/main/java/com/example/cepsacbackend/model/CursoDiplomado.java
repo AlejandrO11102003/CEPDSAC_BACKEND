@@ -1,16 +1,20 @@
 package com.example.cepsacbackend.model;
 
+import com.example.cepsacbackend.auditory.AuditoriaListener;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Setter;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditoriaListener.class)
 @Table(name = "CursoDiplomado")
-public class CursoDiplomado {
+public class CursoDiplomado extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdCursoDiplomado")
@@ -35,7 +39,4 @@ public class CursoDiplomado {
     @Column(name = "Objetivo", length = 255)
     private String objetivo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "IdUsuario")
-    private Usuario usuario;
 }

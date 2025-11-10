@@ -15,7 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.hibernate6.Hibernate6Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Configuration
 @RequiredArgsConstructor
@@ -49,14 +51,15 @@ public class ApplicationConfig {
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
-        // Configura el módulo de Hibernate para Jackson
+        
+        //configura el módulo de hibernate para jackson
         Hibernate6Module hibernate6Module = new Hibernate6Module();
-        // Deshabilita la característica que fuerza la inicialización de propiedades lazy
         hibernate6Module.configure(Hibernate6Module.Feature.FORCE_LAZY_LOADING, false);
         objectMapper.registerModule(hibernate6Module);
         
-        // Es buena práctica registrar también el módulo de Java Time si no lo hace Spring Boot por defecto
-        objectMapper.findAndRegisterModules(); 
+        //configura el módulo de java time para serializar fechas como strings iso-8601
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         
         return objectMapper;
     }

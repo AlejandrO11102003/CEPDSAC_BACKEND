@@ -10,4 +10,5 @@ public interface DescuentoAplicacionService {
     DescuentoAplicacionResponseDTO obtenerPorId(Integer id);
     DescuentoAplicacionResponseDTO crear(DescuentoAplicacionCreateDTO dto);
     void eliminar(Integer id);
+    DescuentoAplicacionResponseDTO actualizar(Integer id, DescuentoAplicacionCreateDTO dto);
 }

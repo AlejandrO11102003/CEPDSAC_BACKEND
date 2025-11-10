@@ -1,14 +1,29 @@
 package com.example.cepsacbackend.dto.Pago;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public record PagoResponseDTO(
-        Integer idPago,
-        BigDecimal monto,
-        Short numeroCuota,
-        LocalDateTime fechaPago,
-        String metodoPagoDescripcion,
-        String tipoMetodo,
-        String usuarioRegistroNombre
-) {}
+import com.example.cepsacbackend.enums.EstadoCuota;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+
+@Data
+@NonNull
+@NoArgsConstructor
+public class PagoResponseDTO{
+        private Integer idPago;
+        private BigDecimal monto;
+        private Short numeroCuota;
+        private LocalDateTime fechaPago;
+        private String metodoPagoDescripcion;
+        private String tipoMetodo;
+        
+        // Nuevos campos opcionales para cuotas automáticas
+        private LocalDate fechaVencimiento;
+        private EstadoCuota estadoCuota;
+        private BigDecimal montoPagado;
+        private Boolean esAutomatico;
+}
