@@ -25,9 +25,12 @@ public interface ProgramacionCursoRepository extends JpaRepository<ProgramacionC
            "pc.monto, " +
            "cd.idCursoDiplomado, " +
            "cd.titulo, " +
-           "pc.duracionMeses) " +
+           "pc.duracionMeses, " +
+           "doc.idUsuario, " +
+           "CONCAT(doc.nombre, ' ', doc.apellido)) " +
            "FROM ProgramacionCurso pc " +
-           "JOIN pc.cursoDiplomado cd")
+           "JOIN pc.cursoDiplomado cd " +
+           "LEFT JOIN pc.docente doc")
     List<ProgramacionCursoResponseDTO> findAllAsDTO();
 
     // cargamos la programacion junto con el curso/diplomado
@@ -41,4 +44,25 @@ public interface ProgramacionCursoRepository extends JpaRepository<ProgramacionC
            "LEFT JOIN FETCH pc.cursoDiplomado " +
            "WHERE pc.idProgramacionCurso = :id")
     Optional<ProgramacionCurso> findByIdWithCurso(@Param("id") Integer id);
+    
+    // obtener programaciones disponibles por curso/diplomado
+    @Query("SELECT NEW com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoSimpleDTO(" +
+           "pc.idProgramacionCurso, " +
+           "pc.modalidad, " +
+           "pc.duracionCurso, " +
+           "pc.horasSemanales, " +
+           "pc.fechaInicio, " +
+           "pc.fechaFin, " +
+           "pc.monto, " +
+           "pc.duracionMeses, " +
+           "pc.horario, " +
+           "doc.idUsuario, " +
+           "doc.nombre, " +
+           "doc.apellido) " +
+           "FROM ProgramacionCurso pc " +
+           "LEFT JOIN pc.docente doc " +
+           "WHERE pc.cursoDiplomado.idCursoDiplomado = :idCurso " +
+           "AND pc.fechaFin > CURRENT_DATE " +
+           "ORDER BY pc.fechaInicio ASC")
+    List<com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoSimpleDTO> findAvailableByCursoId(@Param("idCurso") Short idCurso);
 }

@@ -45,20 +45,16 @@ public class EmailServiceImpl implements EmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
             helper.setFrom(fromEmail);
             helper.setTo(destinatario);
             helper.setSubject("Restablecer Contraseña - CEPSAC");
-
             String resetUrl = frontendUrl + "/reset-password?token=" + token;
             String htmlContent = cargarTemplate("RecuperarPass.html")
                     .replace("{{RESET_URL}}", resetUrl);
 
             helper.setText(htmlContent, true);
             mailSender.send(message);
-            
             log.info("Email de restablecimiento de contraseña enviado a: {}", destinatario);
-            
         } catch (MessagingException e) {
             log.error("Error al enviar email de restablecimiento a {}: {}", destinatario, e.getMessage());
             throw new RuntimeException("Error al enviar email de restablecimiento", e);

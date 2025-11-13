@@ -6,8 +6,10 @@ import com.example.cepsacbackend.exception.ResourceNotFoundException;
 import com.example.cepsacbackend.mapper.ProgramacionCursoMapper;
 import com.example.cepsacbackend.model.CursoDiplomado;
 import com.example.cepsacbackend.model.ProgramacionCurso;
+import com.example.cepsacbackend.model.Usuario;
 import com.example.cepsacbackend.repository.CursoDiplomadoRepository;
 import com.example.cepsacbackend.repository.ProgramacionCursoRepository;
+import com.example.cepsacbackend.repository.UsuarioRepository;
 import com.example.cepsacbackend.service.ProgramacionCursoService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class ProgramacionCursoServiceImpl implements ProgramacionCursoService {
     private final ProgramacionCursoRepository programacionCursoRepository;
     private final ProgramacionCursoMapper programacionCursoMapper;
     private final CursoDiplomadoRepository cursoDiplomadoRepository;
+    private final UsuarioRepository usuarioRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -51,10 +54,30 @@ public class ProgramacionCursoServiceImpl implements ProgramacionCursoService {
     @Transactional
     public ProgramacionCursoResponseDTO create(ProgramacionCursoRequestDTO programacionCursoRequestDTO) {
         ProgramacionCurso programacionCurso = programacionCursoMapper.toEntity(programacionCursoRequestDTO);
-        CursoDiplomado cursoDiplomado = cursoDiplomadoRepository.findById(programacionCursoRequestDTO.getIdCursoDiplomado())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                    String.format("El curso/diplomado con ID %d no existe. Seleccione un curso válido.", programacionCursoRequestDTO.getIdCursoDiplomado())));
+
+        // validar existencia del curso sin cargarlo completo
+        if (!cursoDiplomadoRepository.existsById(programacionCursoRequestDTO.getIdCursoDiplomado())) {
+            throw new ResourceNotFoundException(
+                String.format("El curso/diplomado con ID %d no existe. Seleccione un curso válido.",
+                    programacionCursoRequestDTO.getIdCursoDiplomado()));
+        }
+
+        // usar getReferenceById
+        CursoDiplomado cursoDiplomado = cursoDiplomadoRepository.getReferenceById(
+            programacionCursoRequestDTO.getIdCursoDiplomado());
         programacionCurso.setCursoDiplomado(cursoDiplomado);
+
+        // asignar docente si se proporciona
+        if (programacionCursoRequestDTO.getIdDocente() != null) {
+            if (!usuarioRepository.existsById(programacionCursoRequestDTO.getIdDocente())) {
+                throw new ResourceNotFoundException(
+                    String.format("El usuario/docente con ID %d no existe.",
+                        programacionCursoRequestDTO.getIdDocente()));
+            }
+            Usuario docente = usuarioRepository.getReferenceById(programacionCursoRequestDTO.getIdDocente());
+            programacionCurso.setDocente(docente);
+        }
+
         ProgramacionCurso nuevaProgramacion = programacionCursoRepository.save(programacionCurso);
         return programacionCursoMapper.toResponseDTO(nuevaProgramacion);
     }
@@ -67,6 +90,20 @@ public class ProgramacionCursoServiceImpl implements ProgramacionCursoService {
                     String.format("No se puede actualizar. La programación de curso con ID %d no existe.", id)));
 
         programacionCursoMapper.updateEntity(programacionCursoRequestDTO, programacionCurso);
+
+        // actualizar docente si se proporciona
+        if (programacionCursoRequestDTO.getIdDocente() != null) {
+            if (!usuarioRepository.existsById(programacionCursoRequestDTO.getIdDocente())) {
+                throw new ResourceNotFoundException(
+                    String.format("El usuario/docente con ID %d no existe.",
+                        programacionCursoRequestDTO.getIdDocente()));
+            }
+            Usuario docente = usuarioRepository.getReferenceById(programacionCursoRequestDTO.getIdDocente());
+            programacionCurso.setDocente(docente);
+        } else {
+            programacionCurso.setDocente(null);
+        }
+
         ProgramacionCurso programacionActualizada = programacionCursoRepository.save(programacionCurso);
         return programacionCursoMapper.toResponseDTO(programacionActualizada);
     }

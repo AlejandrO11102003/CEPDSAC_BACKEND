@@ -34,4 +34,11 @@ public class ProgramacionCursoRequestDTO {
     //campo opcional para generar cuotas automaticas segun los meses del curso
     //si tiene valor se generan cuotas al matricular si es null funciona como antes
     private Short duracionMeses;
+
+    // horario de la programación (ej: "Lunes 8:00 - 11:30 am")
+    private String horario;
+
+    @NotNull(message = "El Docente es Obligatorio en una programcion")
+    // docente asignado a esta progrmacion
+    private Integer idDocente;
 }

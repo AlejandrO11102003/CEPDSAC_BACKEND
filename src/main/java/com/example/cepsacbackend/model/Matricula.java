@@ -12,17 +12,27 @@ import com.example.cepsacbackend.enums.EstadoMatricula;
 import lombok.Getter;
 import lombok.Setter;
 
+// inscripcion de un alumno a una programacion especifica de un curso
+// registra el proceso de matricula, aplicacion de descuentos y generacion de cuotas/pagos
+// una matricula puede estar pendiente, aprobada, rechazada o cancelada
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditoriaListener.class)
-@Table(name = "matricula", indexes = {
-    @Index(name = "idx_matricula_alumno", columnList = "IdAlumno"),
-    @Index(name = "idx_matricula_programacion", columnList = "IdProgramacionCurso"),
-    @Index(name = "idx_matricula_estado", columnList = "Estado")
-})
+@Table(name = "matricula", 
+    indexes = {
+        @Index(name = "idx_matricula_alumno", columnList = "IdAlumno"),
+        @Index(name = "idx_matricula_programacion", columnList = "IdProgramacionCurso"),
+        @Index(name = "idx_matricula_estado", columnList = "Estado")
+    },
+    uniqueConstraints = {
+        // previene matriculas duplicadas: un alumno solo puede tener 1 matricula activa por programacion
+        @UniqueConstraint(name = "uk_mat_alumno_prog_activa", 
+                         columnNames = {"IdAlumno", "IdProgramacionCurso", "Estado"})
+    }
+)
 public class Matricula extends AuditableEntity {
 
     @Id

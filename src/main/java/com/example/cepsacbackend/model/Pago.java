@@ -10,6 +10,9 @@ import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
+// representa una cuota o pago asociado a una matricula
+// puede ser cuota automatica (generada por duracionmeses) o manual (creada por admin)
+// registra el estado de cada cuota: pendiente, pagada, vencida, etc
 @Entity
 @Getter
 @Setter

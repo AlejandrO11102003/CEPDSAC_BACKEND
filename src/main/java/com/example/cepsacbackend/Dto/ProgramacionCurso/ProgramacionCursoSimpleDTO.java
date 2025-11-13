@@ -12,7 +12,7 @@ import com.example.cepsacbackend.enums.ModalidadCurso;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProgramacionCursoResponseDTO {
+public class ProgramacionCursoSimpleDTO {
     private Integer idProgramacionCurso;
     private ModalidadCurso modalidad;
     private BigDecimal duracionCurso;
@@ -20,11 +20,11 @@ public class ProgramacionCursoResponseDTO {
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private BigDecimal monto;
-    private Short idCursoDiplomado;
-    private String nombreCursoDiplomado;
-    
-    // Campo opcional para sistema de cuotas automáticas
     private Short duracionMeses;
+    private String horario;
+    
+    // Información del docente
     private Integer idDocente;
     private String nombreDocente;
+    private String apellidoDocente;
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.cepsacbackend.dto.CursoDiplomado.CursoDiplomadoCreateDTO;
 import com.example.cepsacbackend.dto.CursoDiplomado.CursoDiplomadoResponseDTO;
+import com.example.cepsacbackend.dto.CursoDiplomado.CursoDetalleResponseDTO;
 import com.example.cepsacbackend.dto.CursoDiplomado.CursoIndexResponseDTO;
 import com.example.cepsacbackend.service.CursoDiplomadoService;
 
@@ -33,13 +34,28 @@ public class CursoDiplomadoController {
     }
 
     @GetMapping("/listar-index")
-    public ResponseEntity<List<CursoIndexResponseDTO>> listarIndex() {
+    public ResponseEntity<List<CursoIndexResponseDTO>> listarIndex() { 
         return ResponseEntity.ok(cursoDiplomadoService.listarIndex());
+    }
+
+    @GetMapping("/listar-cursos")
+    public ResponseEntity<List<CursoIndexResponseDTO>> listarCursos() {
+        return ResponseEntity.ok(cursoDiplomadoService.listarCursos());
+    }
+
+    @GetMapping("/listar-diplomados")
+    public ResponseEntity<List<CursoIndexResponseDTO>> listarDiplomados() {
+        return ResponseEntity.ok(cursoDiplomadoService.listarDiplomados());
     }
 
     @GetMapping("/obtener/{id}")
     public ResponseEntity<CursoDiplomadoResponseDTO> obtenerPorId(@PathVariable Short id) {
         return ResponseEntity.ok(cursoDiplomadoService.obtenerPorId(id));
+    }
+
+    @GetMapping("/detalle/{id}")
+    public ResponseEntity<CursoDetalleResponseDTO> obtenerDetalle(@PathVariable Short id) {
+        return ResponseEntity.ok(cursoDiplomadoService.obtenerDetallePorId(id));
     }
 
     @PostMapping("/crear")

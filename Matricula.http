@@ -19,9 +19,9 @@ Authorization: Bearer {{token}}
     "horasSemanales": 8,
     "fechaInicio": "2025-12-01",
     "fechaFin": "2026-03-01",
-    "monto": 400.00,
-    "idCursoDiplomado": 3,
-    "duracionMeses": 4
+    "monto": 500.00,
+    "idCursoDiplomado": 2,
+    "duracionMeses": 5
 }
 
 ### → Resultado: Programación ID=X con 3 meses de duración
@@ -32,7 +32,7 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-    "idProgramacionCurso": 6,
+    "idProgramacionCurso": 7,
     "idAlumno": 30
 }
 ### → Resultado: Matrícula con 3 cuotas automáticas de $100 c/u (por duracionMeses)
@@ -43,7 +43,7 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-    "idProgramacionCurso": 5,
+    "idProgramacionCurso": 6,
     "idAlumno": 22,
     "pagoPersonalizado": true
 }
@@ -51,7 +51,7 @@ Authorization: Bearer {{token}}
 ### → Cada pago incrementa numeroCuota automáticamente (1, 2, 3...)
 
 ### PASO 3: Verificar las cuotas generadas
-GET {{baseUrl}}/api/pagos/matricula/22
+GET {{baseUrl}}/api/pagos/matricula/24
 Authorization: Bearer {{token}}
 ### → Verás 3 cuotas PENDIENTES con fechas de vencimiento
 
@@ -61,7 +61,7 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-    "idMatricula": 22,
+    "idMatricula": 23,
     "idMetodoPago": 1
 }
 ### → Marca cuota #1 como PAGADA con el monto de la cuota automática

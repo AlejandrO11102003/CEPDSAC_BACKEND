@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+// categorias para organizar los cursos/diplomados en la landing page
+// ej: tecnologia, administracion, marketing, diseño, idiomas
 @Entity
 @Data
 @NoArgsConstructor

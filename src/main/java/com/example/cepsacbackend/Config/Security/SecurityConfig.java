@@ -25,7 +25,7 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtFilter filtroJwt;
-
+    private final RateLimitingFilter rateLimitingFilter;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -48,16 +48,22 @@ public class SecurityConfig {
                         //aqui vamos agregando las rutas publicas
                         .requestMatchers("/api/monitor/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll() // registro publico de alumnos
+                        .requestMatchers("/images/**").permitAll() // servir img publicas
+                        .requestMatchers(HttpMethod.GET, "/api/sponsors/listar").permitAll() // sponsors
+                        .requestMatchers(HttpMethod.GET, "/api/cursos-diplomados/listar-index").permitAll() // todos para landing
+                        .requestMatchers(HttpMethod.GET, "/api/cursos-diplomados/listar-cursos").permitAll() // solo cursos
+                        .requestMatchers(HttpMethod.GET, "/api/cursos-diplomados/listar-diplomados").permitAll() // solo diplomados
+                        .requestMatchers(HttpMethod.GET, "/api/cursos-diplomados/detalle/*").permitAll() // detalle curso/diplomado
+                        .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll() // registro de alumnos
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // cors
                         // necesario jwt
                         .anyRequest().authenticated()
                 )
                 // config de stateless
                 .sessionManagement(manejoSesion -> manejoSesion.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // registrar filtro jwt
+                // registrar filtros: primero rate limiting, luego jwt
+                .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(filtroJwt, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 }

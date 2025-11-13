@@ -65,6 +65,24 @@ public class MatriculaServiceImpl implements MatriculaService {
             throw new BadRequestException(
                     "Faltan datos obligatorios. Debe proporcionar el ID del alumno y el ID de la programación del curso.");
         }
+ 
+        // verificar duplicacion en matricula
+        List<EstadoMatricula> estadosActivos = List.of(EstadoMatricula.PENDIENTE, EstadoMatricula.PAGADO);
+        matriculaRepository.findMatriculaActivaByAlumnoAndProgramacion(
+                dto.getIdAlumno(), 
+                dto.getIdProgramacionCurso(), 
+                estadosActivos
+        ).ifPresent(matriculaExistente -> {
+            throw new BadRequestException(
+                String.format(
+                    "Ya existe una matrícula %s (ID: %d) para este alumno en esta programación. " +
+                    "No se permiten matrículas duplicadas mientras haya una activa.",
+                    matriculaExistente.getEstado().name(),
+                    matriculaExistente.getIdMatricula()
+                )
+            );
+        });
+
         // valido que el alumno exista y tenga rol de alumno
         Usuario alumno = usuarioRepository.findById(dto.getIdAlumno())
                 .orElseThrow(() -> new BadRequestException(

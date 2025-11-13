@@ -27,6 +27,11 @@ public interface CursoDiplomadoMapper {
     @Mapping(source = "categoria.nombre", target = "nombreCategoria")
     @Mapping(source = "tipo", target = "tipo")
     CursoDiplomadoResponseDTO toResponseDto(CursoDiplomado entity);
+    
+    @Mapping(source = "categoria.idCategoria", target = "categoria.idCategoria")
+    @Mapping(source = "categoria.nombre", target = "categoria.nombre")
+    CursoIndexResponseDTO toIndexResponseDto(CursoDiplomado entity);
+    
     List<CursoIndexResponseDTO> toIndexResponseDtoList(List<CursoDiplomado> entities);
     List<CursoDiplomadoResponseDTO> toResponseDtoList(List<CursoDiplomado> entities);
 

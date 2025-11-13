@@ -3,13 +3,16 @@ package com.example.cepsacbackend.service.impl;
 import com.example.cepsacbackend.dto.CursoDiplomado.CursoDiplomadoCreateDTO;
 import com.example.cepsacbackend.dto.CursoDiplomado.CursoDiplomadoResponseDTO;
 import com.example.cepsacbackend.dto.CursoDiplomado.CursoDiplomadoUpdateDTO;
+import com.example.cepsacbackend.dto.CursoDiplomado.CursoDetalleResponseDTO;
 import com.example.cepsacbackend.dto.CursoDiplomado.CursoIndexResponseDTO;
+import com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoSimpleDTO;
 import com.example.cepsacbackend.exception.ResourceNotFoundException;
 import com.example.cepsacbackend.mapper.CursoDiplomadoMapper;
 import com.example.cepsacbackend.model.Categoria;
 import com.example.cepsacbackend.model.CursoDiplomado;
 import com.example.cepsacbackend.repository.CategoriaRepository;
 import com.example.cepsacbackend.repository.CursoDiplomadoRepository;
+import com.example.cepsacbackend.repository.ProgramacionCursoRepository;
 import com.example.cepsacbackend.service.CursoDiplomadoService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,7 @@ public class CursoDiplomadoServiceImpl implements CursoDiplomadoService {
 
     private final CursoDiplomadoRepository repository;
     private final CategoriaRepository categoriaRepository;
+    private final ProgramacionCursoRepository programacionRepository;
     private final CursoDiplomadoMapper mapper;
 
     @Override
@@ -39,6 +43,37 @@ public class CursoDiplomadoServiceImpl implements CursoDiplomadoService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                     String.format("No se encontró el curso/diplomado con ID %d. Verifique que el ID sea correcto.", id)));
         return mapper.toResponseDto(entity);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CursoDetalleResponseDTO obtenerDetallePorId(Short id) {
+        CursoDiplomado entity = repository.findByIdWithCategoriaForDetalle(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                    String.format("No se encontró el curso/diplomado con ID %d. Verifique que el ID sea correcto.", id)));
+
+        // obtener programaciones disponibles
+        List<ProgramacionCursoSimpleDTO> programaciones = programacionRepository.findAvailableByCursoId(id);
+
+        // construir DTO de detalle
+        CursoDetalleResponseDTO detalle = new CursoDetalleResponseDTO();
+        detalle.setIdCursoDiplomado(entity.getIdCursoDiplomado());
+        detalle.setTitulo(entity.getTitulo());
+        detalle.setUrlCurso(entity.getUrlCurso());
+        detalle.setObjetivo(entity.getObjetivo());
+        detalle.setMaterialesIncluidos(entity.getMaterialesIncluidos());
+        detalle.setRequisitos(entity.getRequisitos());
+        detalle.setTipo(entity.getTipo());
+        detalle.setOtorgaCertificado(entity.getOtorgaCertificado());
+
+        if (entity.getCategoria() != null) {
+            detalle.setIdCategoria(entity.getCategoria().getIdCategoria());
+            detalle.setNombreCategoria(entity.getCategoria().getNombre());
+        }
+
+        detalle.setProgramaciones(programaciones);
+
+        return detalle;
     }
 
     @Override
@@ -87,6 +122,21 @@ public class CursoDiplomadoServiceImpl implements CursoDiplomadoService {
     @Override
     @Transactional(readOnly = true)
     public List<CursoIndexResponseDTO> listarIndex() {
-        return mapper.toIndexResponseDtoList(repository.findAllWithCategoria());
+        // devuelve solo cursos con programaciones disponibles DTO PROJECTION
+        return repository.findAllWithAvailableProgramacionDTO();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CursoIndexResponseDTO> listarCursos() {
+        // solo CURSOS (tipo=false) con programaciones disponibles
+        return repository.findCursosWithAvailableProgramacionDTO();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CursoIndexResponseDTO> listarDiplomados() {
+        // solo DIPLOMADOS (tipo=true) con programaciones disponibles
+        return repository.findDiplomadosWithAvailableProgramacionDTO();
     }
 }

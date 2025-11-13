@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.cepsacbackend.dto.Matricula.MatriculaListResponseDTO;
+import com.example.cepsacbackend.enums.EstadoMatricula;
 import com.example.cepsacbackend.model.Matricula;
 
 @Repository
@@ -16,6 +17,17 @@ public interface MatriculaRepository extends JpaRepository<Matricula, Integer> {
 
     //verifico si ya existe una matricula para el mismo alumno y programacion de curso
     Optional<Matricula> findByAlumnoIdUsuarioAndProgramacionCursoIdProgramacionCurso(Integer alumnoId, Integer idProgramacionCurso);
+
+    //verifico si existe una matricula activa (no cancelada/rechazada) para el mismo alumno y programacion de curso
+    @Query("SELECT m FROM Matricula m " +
+           "WHERE m.alumno.idUsuario = :idAlumno " +
+           "AND m.programacionCurso.idProgramacionCurso = :idProgramacion " +
+           "AND m.estado IN :estados")
+    Optional<Matricula> findMatriculaActivaByAlumnoAndProgramacion(
+        @Param("idAlumno") Integer idAlumno,
+        @Param("idProgramacion") Integer idProgramacion,
+        @Param("estados") List<EstadoMatricula> estados
+    );
 
     //listo matriculas pendientes de aprobacion por el administrador
     @Query("SELECT m FROM Matricula m WHERE m.estado IN ('PENDIENTE', 'EN_PROCESO')")

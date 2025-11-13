@@ -1,7 +1,7 @@
 ### Variables de entorno
 @baseUrl = http://localhost:8080
 @contentType = application/json
-@token = .eyJzdWIiOiJsdWNoaXRvQGdtYWlsLmNvbSIsImlhdCI6MTc2Mjc3OTczNywiZXhwIjoxNzYyODY2MTM3fQ.uS3zpmyS1lDqkIdzGKFEq-MEjXIMkLy7uXqEXMuYVVQ
+@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGVqYW5kcm9AZ21haWwuY29tIiwiaWF0IjoxNzYyOTIzMDA1LCJleHAiOjE3NjMwMDk0MDV9.QUIK_qi0ZV35YaFYEFeKkDsWERJ5nOg5rHEcjwYk6t8
 ### ===========================================
 ### MONITOR ENDPOINTS
 ### ===========================================
@@ -18,8 +18,8 @@ POST {{baseUrl}}/api/auth/login
 Content-Type: {{contentType}}
 
 {
-    "correo": "u22239328@utp.edu.pe",
-    "password": "Alejandro123!"
+    "correo": "alejandro@gmail.com",
+    "password": "1234"
 }
 
 ### Solicitar restablecimiento de contraseña (olvido de contraseña)
@@ -35,8 +35,8 @@ POST {{baseUrl}}/api/auth/reset-password
 Content-Type: {{contentType}}
 
 {
-    "token": "e99def40-5578-4dfe-9c70-8367732200cf",
-    "nuevaPassword": "Alejandro123!"
+    "token": "7728cc4b-0756-4c95-ac33-f6ac28d4ec84",
+    "nuevaPassword": "Alejandro123!3"
 }
 
 ### ===========================================
@@ -61,13 +61,13 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-    "correo": "u22239328@utp.edu.pe",
-    "password": "",
-    "nombre": "Alejandro",
+    "correo": "luchito2@utp.edu.pe",
+    "password": "123456Aa!",
+    "nombre": "Luchito",
     "apellido": "Castillo J",
     "numeroCelular": "123456789",
-    "rol": "ALUMNO",
-    "numeroIdentificacion": "87654321",
+    "rol": "DOCENTE",
+    "numeroIdentificacion": "87614321",
     "nombrePais": "Perú",
     "idTipoIdentificacion": 1
 }
@@ -152,9 +152,9 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-    "titulo": "Base de Datos 2",
+    "titulo": "Administración de Redes 3",
     "objetivo": "Curso avanzado de Base de Datos para desarrolladores",
-    "idCategoria": 2,
+    "idCategoria": 4,
     "tipo": false,
     "otorgaCertificado": true,
     "urlCurso": "https://ejemplo.com/base-de-datos-2"
@@ -191,9 +191,8 @@ Authorization: Bearer {{token}}
     "horasSemanales": 8,
     "fechaInicio": "2025-12-01",
     "fechaFin": "2026-06-01",
-    "monto": 300.00,
-    "idCursoDiplomado": 4,
-    "duracionMeses": 6
+    "monto": 600.00,
+    "idCursoDiplomado": 25
 }
 
 ###  Campo "duracionMeses" es opcional:
@@ -212,8 +211,7 @@ Authorization: Bearer {{token}}
     "fechaInicio": "2026-01-10",
     "fechaFin": "2026-04-20",
     "monto": 650.00,
-    "idCursoDiplomado": 2,
-    "duracionMeses": 3
+    "idCursoDiplomado": 2
 }
 
 ### Eliminar programación de curso
@@ -246,7 +244,7 @@ PUT {{baseUrl}}/api/matriculas/1/cancelar
 Authorization: Bearer {{token}}
 
 ### Obtener detalle de matrícula (incluye cuotas si las tiene)
-GET {{baseUrl}}/api/matriculas/22/detalle
+GET {{baseUrl}}/api/matriculas/23/detalle
 Authorization: Bearer {{token}}
 
 ### Aplicar descuento personalizado a matrícula existente
@@ -255,7 +253,7 @@ Authorization: Bearer {{token}}
 ### recalcula el monto total con el nuevo descuento
 ### mantiene intactas las cuotas ya pagadas
 ### redistribuye el saldo pendiente entre las cuotas pendientes
-PUT {{baseUrl}}/api/matriculas/22/aplicar-descuento
+PUT {{baseUrl}}/api/matriculas/23/aplicar-descuento
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -492,4 +490,34 @@ Authorization: Bearer {{token}}
 
 ### Eliminar país
 DELETE {{baseUrl}}/api/paises/1
+Authorization: Bearer {{token}}
+
+### ===========================================
+### SPONSOR ENDPOINTS
+### ===========================================
+
+### Listar sponsors (público)
+GET {{baseUrl}}/api/sponsors/listar
+
+### Obtener sponsor por ID
+GET {{baseUrl}}/api/sponsors/obtener/1
+Authorization: Bearer {{token}}
+
+### Crear sponsor
+# Nota: Usar Postman/Thunder Client para subir archivos 
+# - Método: POST
+# - URL: http://localhost:8080/api/sponsors/crear
+# - Body → form-data
+# - Campos: nombre (text) + imagen (file)
+POST {{baseUrl}}/api/sponsors/crear
+Authorization: Bearer {{token}}
+
+### Actualizar sponsor
+# Nota: Usar Postman/Thunder Client
+# - imagen es opcional (si no se envía, mantiene la imagen actual)
+PUT {{baseUrl}}/api/sponsors/actualizar/1
+Authorization: Bearer {{token}}
+
+### Eliminar sponsor (elimina también la imagen física)
+DELETE {{baseUrl}}/api/sponsors/eliminar/1
 Authorization: Bearer {{token}}

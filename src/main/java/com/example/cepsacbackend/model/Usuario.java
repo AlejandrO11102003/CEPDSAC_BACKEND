@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+// tabla de usuarios del sistema, puede ser alumno, docente o admin
+// se usa para login, matriculas, asignacion de docentes y gestion administrativa
 @Entity
 @Getter
 @Setter

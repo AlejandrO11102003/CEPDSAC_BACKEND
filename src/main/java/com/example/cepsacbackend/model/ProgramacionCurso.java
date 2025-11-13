@@ -22,6 +22,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+// programacion concreta de un curso/diplomado con fechas, horarios y docente asignado
+// un mismo curso puede tener multiples programaciones en diferentes fechas/horarios
+// aqui se define cuando se dicta, quien enseña, el precio y las modalidades de pago
 @Entity
 @Getter
 @Setter
@@ -35,32 +38,48 @@ public class ProgramacionCurso extends AuditableEntity {
     @Column(name = "IdProgramacionCurso")
     private Integer idProgramacionCurso;
 
+    // como se dicta: presencial, virtual o virtual 24/7 (asincrono)
     @Enumerated(EnumType.STRING)
     @Column(name = "Modalidad")
     private ModalidadCurso modalidad;
 
+    // total de horas del curso completo (ej: 40 horas)
     @Column(name = "DuracionCurso", precision = 6, scale = 2)
     private BigDecimal duracionCurso;
 
+    // horas de clase por semana (ej: 12 horas semanales)
     @Column(name = "HorasSemanales", precision = 6, scale = 2)
     private BigDecimal horasSemanales;
 
+    // fecha en que empieza esta programacion del curso
     @Column(name = "FechaInicio")
     private LocalDate fechaInicio;
 
+    // fecha en que termina, se usa para filtrar programaciones disponibles (fechafin > hoy)
     @Column(name = "FechaFin")
     private LocalDate fechaFin;
 
-    // precio base del curso programado
+    // precio total de esta programacion del curso
     @Column(name = "Monto", precision = 10, scale = 2)
     private BigDecimal monto;
 
-    //campo opcional para fraccionar el pago en cuotas mensuales (3 4 6 meses etc)
-    //si es null o 0 no se generan cuotas automaticas y funciona como antes
+    // si tiene valor genera cuotas automaticas al matricular (ej: 3 = 3 cuotas mensuales)
+    // si es null el alumno paga el monto completo o el admin crea cuotas manuales
     @Column(name = "DuracionMeses", columnDefinition = "TINYINT UNSIGNED")
     private Short duracionMeses;
 
+    // dias y horas de clase (ej: "lunes y miercoles 8:00 - 11:30 am")
+    @Column(name = "Horario", length = 100)
+    private String horario;
+
+    // curso o diplomado al que pertenece esta programacion
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IdCursoDiplomado", nullable = false)
     private CursoDiplomado cursoDiplomado;
+
+    // docente/profesor asignado para dictar esta programacion especifica
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "IdDocente")
+    private Usuario docente;
 }
+
