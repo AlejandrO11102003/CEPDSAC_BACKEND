@@ -1,7 +1,7 @@
 ### Variables de entorno
 @baseUrl = http://localhost:8080
 @contentType = application/json
-@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGVqYW5kcm9AZ21haWwuY29tIiwiaWF0IjoxNzYyOTIzMDA1LCJleHAiOjE3NjMwMDk0MDV9.QUIK_qi0ZV35YaFYEFeKkDsWERJ5nOg5rHEcjwYk6t8
+@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbHVtbm9AZ21haWwuY29tIiwiaWF0IjoxNzYzMDgwMTM5LCJleHAiOjE3NjMxNjY1Mzl9.ijS1_3T1XzFWJ_lBoQOwt_vYOxY7-D64gjYnurjqJjY
 ### ===========================================
 ### MONITOR ENDPOINTS
 ### ===========================================
@@ -18,8 +18,8 @@ POST {{baseUrl}}/api/auth/login
 Content-Type: {{contentType}}
 
 {
-    "correo": "alejandro@gmail.com",
-    "password": "1234"
+    "correo": "alumno@gmail.com",
+    "password": "123456Aa!"
 }
 
 ### Solicitar restablecimiento de contraseña (olvido de contraseña)
@@ -61,12 +61,12 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-    "correo": "luchito2@utp.edu.pe",
+    "correo": "alumno@gmail.com",
     "password": "123456Aa!",
     "nombre": "Luchito",
     "apellido": "Castillo J",
     "numeroCelular": "123456789",
-    "rol": "DOCENTE",
+    "rol": "ALUMNO",
     "numeroIdentificacion": "87614321",
     "nombrePais": "Perú",
     "idTipoIdentificacion": 1
@@ -232,9 +232,7 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-    "idProgramacionCurso": 1,
-    "idAlumno": 51,
-    "duracionMeses": 3  // depende si quieres cuotas automaticas o no
+    "idProgramacionCurso": 6
 }
 
 ### el estado de la matricula se actualiza automaticamente a EN_PROCESO al ser aprobada.

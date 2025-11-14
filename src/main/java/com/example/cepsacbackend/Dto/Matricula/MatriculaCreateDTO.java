@@ -14,7 +14,6 @@ public class MatriculaCreateDTO{
 
     @NotNull 
     private Integer idProgramacionCurso;
-    @NotNull 
     private Integer idAlumno;
     
     private Boolean pagoPersonalizado; //opcional: true = sin cuotas automáticas, pagos manuales

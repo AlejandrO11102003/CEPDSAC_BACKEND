@@ -11,6 +11,12 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.cache.CacheManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.example.cepsacbackend.config.security.CustomUserDetails;
 
 import com.example.cepsacbackend.dto.Matricula.AplicarDescuentoDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaCreateDTO;
@@ -53,17 +59,38 @@ public class MatriculaServiceImpl implements MatriculaService {
     private final MatriculaMapper matriculaMapper;
     private final PagoRepository pagoRepository;
     private final PagoMapper pagoMapper;
+    private final CacheManager cacheManager;
 
     @Override
     @Transactional
     @Caching(evict = {
-        @CacheEvict(value = "matriculas", key = "'all'"),
-        @CacheEvict(value = "matriculas", key = "'alumno_' + #dto.idAlumno")
+        @CacheEvict(value = "matriculas", key = "'all'")
     })
     public Matricula crearMatricula(MatriculaCreateDTO dto) {
-        if (dto.getIdAlumno() == null || dto.getIdProgramacionCurso() == null) {
+        if (dto.getIdProgramacionCurso() == null) {
             throw new BadRequestException(
-                    "Faltan datos obligatorios. Debe proporcionar el ID del alumno y el ID de la programación del curso.");
+                    "Faltan datos obligatorios. Debe proporcionar el ID de la programación del curso.");
+        }
+
+        // obtener identidad desde el contexto de seguridad 
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !(auth.getPrincipal() instanceof CustomUserDetails)) {
+            throw new BadRequestException("No hay un usuario autenticado válido.");
+        }
+        CustomUserDetails current = (CustomUserDetails) auth.getPrincipal();
+
+        boolean isAdmin = current.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(a -> a.equals("ROLE_ADMINISTRADOR"));
+
+        if (!isAdmin) {
+            // si no es admin, forzamos que el alumno sea el usuario autenticado
+            dto.setIdAlumno(current.getId());
+        } else {
+            // si es admin, permitimos que envíe idAlumno pero lo exigimos
+            if (dto.getIdAlumno() == null) {
+                throw new BadRequestException("Un administrador debe indicar el idAlumno en la solicitud.");
+            }
         }
  
         // verificar duplicacion en matricula
@@ -126,6 +153,17 @@ public class MatriculaServiceImpl implements MatriculaService {
             if (!cuotas.isEmpty()) {
                 pagoRepository.saveAll(cuotas);
             }
+        }
+        // Evitar cache stale: invalidar lista del alumno correspondiente
+        try {
+            if (matriculaGuardada.getAlumno() != null && matriculaGuardada.getAlumno().getIdUsuario() != null) {
+                String key = "alumno_" + matriculaGuardada.getAlumno().getIdUsuario();
+                if (cacheManager.getCache("matriculas") != null) {
+                    cacheManager.getCache("matriculas").evict(key);
+                }
+            }
+        } catch (Exception ignored) {
+            // no interrumpimos la creación por fallos en la invalidación del caché
         }
         return matriculaGuardada;
     }
