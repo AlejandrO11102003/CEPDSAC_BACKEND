@@ -16,7 +16,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,7 +50,6 @@ public class AuthController {
     private final UsuarioRepository usuarioRepository;
     private final RecuperacionTokenPasswordRepository tokenRepository;
     private final EmailService emailService;
-    private final PasswordEncoder passwordEncoder;
     private final UsuarioService usuarioService;
 
     @PostMapping("/login")
@@ -68,7 +66,8 @@ public class AuthController {
             final String tokenJwt = jwtService.generarToken(detallesUsuario); 
             CustomUserDetails customUserDetails = (CustomUserDetails) detallesUsuario;
             Rol rol = Rol.valueOf(customUserDetails.getRol());
-            return ResponseEntity.ok(AuthResponseDTO.builder().token(tokenJwt).rol(rol).build());
+            String username = customUserDetails.getUsername();
+            return ResponseEntity.ok(AuthResponseDTO.builder().token(tokenJwt).rol(rol).username(username).build());
         } catch (BadCredentialsException e) {
             throw new BadRequestException("Correo o contraseña incorrectos. Por favor, verifica tus credenciales e intenta nuevamente.");
         } catch (AuthenticationException e) {
@@ -113,7 +112,6 @@ public class AuthController {
         if (resetToken.isExpirado()) {
             throw new BadRequestException("El token ha expirado. Por favor, solicita un nuevo restablecimiento");
         }
-        // Actualizar la contraseña del usuario usando el service (invalida caché)
         Usuario usuario = resetToken.getUsuario();
         usuarioService.cambiarPassword(usuario.getIdUsuario(), request.getNuevaPassword());
         // inhabilitar el token 
