@@ -5,6 +5,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +21,7 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
+    private static final Logger log = LoggerFactory.getLogger(JwtFilter.class);
 
     private final JwtService servicioJwt;
     private final UserDetailsService servicioDetallesUsuario;
@@ -37,29 +40,43 @@ public class JwtFilter extends OncePerRequestFilter {
         final String nombreUsuario;
         // validamos encabezado
         if (encabezadoAuth == null || !encabezadoAuth.startsWith("Bearer ")) {
+            log.debug("JwtFilter: Authorization header missing or does not start with 'Bearer '");
             cadenaFiltros.doFilter(peticion, respuesta);
             return; //si no hay token detenemos flujo
         }
 
         // traemos token y username
         tokenJwt = encabezadoAuth.substring(7);
-        nombreUsuario = servicioJwt.extraerNombreUsuario(tokenJwt);
+        try {
+            nombreUsuario = servicioJwt.extraerNombreUsuario(tokenJwt);
+        } catch (Exception ex) {
+            log.warn("JwtFilter: error al parsear token JWT: {}", ex.getMessage());
+            cadenaFiltros.doFilter(peticion, respuesta);
+            return;
+        }
 
         // validamos token
         if (nombreUsuario != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails detallesUsuario = this.servicioDetallesUsuario.loadUserByUsername(nombreUsuario);
-            if (servicioJwt.esTokenValido(tokenJwt, detallesUsuario)) {
-                // autenticamos
-                UsernamePasswordAuthenticationToken tokenAutenticacion = new UsernamePasswordAuthenticationToken(
-                        detallesUsuario,
-                        null,
-                        detallesUsuario.getAuthorities()
-                );
-                tokenAutenticacion.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(peticion)
-                );
-                // pasamos autenticacion al security
-                SecurityContextHolder.getContext().setAuthentication(tokenAutenticacion);
+            try {
+                UserDetails detallesUsuario = this.servicioDetallesUsuario.loadUserByUsername(nombreUsuario);
+                if (servicioJwt.esTokenValido(tokenJwt, detallesUsuario)) {
+                    // autenticamos
+                    UsernamePasswordAuthenticationToken tokenAutenticacion = new UsernamePasswordAuthenticationToken(
+                            detallesUsuario,
+                            null,
+                            detallesUsuario.getAuthorities()
+                    );
+                    tokenAutenticacion.setDetails(
+                            new WebAuthenticationDetailsSource().buildDetails(peticion)
+                    );
+                    // pasamos autenticacion al security
+                    SecurityContextHolder.getContext().setAuthentication(tokenAutenticacion);
+                    log.debug("JwtFilter: usuario autenticado {}", nombreUsuario);
+                } else {
+                    log.debug("JwtFilter: token no válido para usuario {}", nombreUsuario);
+                }
+            } catch (Exception ex) {
+                log.warn("JwtFilter: error cargando detalles de usuario {} : {}", nombreUsuario, ex.getMessage());
             }
         }
         cadenaFiltros.doFilter(peticion, respuesta);

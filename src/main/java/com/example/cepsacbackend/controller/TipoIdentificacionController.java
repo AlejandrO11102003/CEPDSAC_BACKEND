@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import lombok.NonNull;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -54,4 +57,18 @@ public class TipoIdentificacionController {
         tipoRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+        @GetMapping("/iniciales")
+        public ResponseEntity<List<Map<String, Object>>> listarIniciales() {
+        List<Map<String, Object>> iniciales = tipoRepository.findAll()
+            .stream()
+            .map(t -> {
+                Map<String, Object> m = new HashMap<>();
+                m.put("idTipoIdentificacion", t.getIdTipoIdentificacion());
+                m.put("iniciales", t.getIniciales());
+                return m;
+            })
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(iniciales);
+        }
 }

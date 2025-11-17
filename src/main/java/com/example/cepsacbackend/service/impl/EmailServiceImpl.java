@@ -61,4 +61,33 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
+    @Async
+    @Override
+    public void enviarEmailNotificacionPago(String destinatario, Integer idMatricula) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setFrom(fromEmail);
+            // si no se especifica destinatario, enviamos al correo configurado como remitente (administrador)
+            String to = destinatario;
+            if (to == null || to.isBlank()) {
+                to = fromEmail;
+            }
+            helper.setTo(to);
+            helper.setSubject("Notificación de pago - Nueva matrícula");
+
+            String adminUrl = frontendUrl + "/admin/matriculas/" + idMatricula;
+            String htmlContent = cargarTemplate("NotificacionPago.html")
+                    .replace("{{MATRICULA_ID}}", idMatricula == null ? "N/A" : idMatricula.toString())
+                    .replace("{{ADMIN_URL}}", adminUrl);
+
+            helper.setText(htmlContent, true);
+            mailSender.send(message);
+            log.info("Email de notificación de pago enviado a: {} para matricula {}", to, idMatricula);
+        } catch (MessagingException e) {
+            log.error("Error al enviar email de notificación de pago a {}: {}", destinatario, e.getMessage());
+            throw new RuntimeException("Error al enviar email de notificación de pago", e);
+        }
+    }
+
 }

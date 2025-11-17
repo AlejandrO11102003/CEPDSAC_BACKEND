@@ -11,7 +11,7 @@ import java.util.List;
 public interface MatriculaService {
 
     Matricula crearMatricula(MatriculaCreateDTO dto);
-    
+    void notificarPago(Integer idMatricula);
     List<MatriculaListResponseDTO> listarMatriculas();
     List<MatriculaListResponseDTO> listarMatriculasPorAlumno(Integer idAlumno);
     Matricula cancelarMatricula(Integer idMatricula);

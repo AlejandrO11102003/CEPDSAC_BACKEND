@@ -44,6 +44,7 @@ import com.example.cepsacbackend.repository.ProgramacionCursoRepository;
 import com.example.cepsacbackend.repository.UsuarioRepository;
 import com.example.cepsacbackend.service.MatriculaService;
 import lombok.NonNull;
+import org.springframework.beans.factory.annotation.Value;
 
 import lombok.RequiredArgsConstructor;
 
@@ -60,6 +61,9 @@ public class MatriculaServiceImpl implements MatriculaService {
     private final PagoRepository pagoRepository;
     private final PagoMapper pagoMapper;
     private final CacheManager cacheManager;
+    private final com.example.cepsacbackend.service.EmailService emailService;
+    @Value("${app.owner.email:${spring.mail.username}}")
+    private String ownerEmail;
 
     @Override
     @Transactional
@@ -71,18 +75,15 @@ public class MatriculaServiceImpl implements MatriculaService {
             throw new BadRequestException(
                     "Faltan datos obligatorios. Debe proporcionar el ID de la programación del curso.");
         }
-
         // obtener identidad desde el contexto de seguridad 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !(auth.getPrincipal() instanceof CustomUserDetails)) {
             throw new BadRequestException("No hay un usuario autenticado válido.");
         }
         CustomUserDetails current = (CustomUserDetails) auth.getPrincipal();
-
         boolean isAdmin = current.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .anyMatch(a -> a.equals("ROLE_ADMINISTRADOR"));
-
         if (!isAdmin) {
             // si no es admin, forzamos que el alumno sea el usuario autenticado
             dto.setIdAlumno(current.getId());
@@ -154,7 +155,6 @@ public class MatriculaServiceImpl implements MatriculaService {
                 pagoRepository.saveAll(cuotas);
             }
         }
-        // Evitar cache stale: invalidar lista del alumno correspondiente
         try {
             if (matriculaGuardada.getAlumno() != null && matriculaGuardada.getAlumno().getIdUsuario() != null) {
                 String key = "alumno_" + matriculaGuardada.getAlumno().getIdUsuario();
@@ -166,6 +166,15 @@ public class MatriculaServiceImpl implements MatriculaService {
             // no interrumpimos la creación por fallos en la invalidación del caché
         }
         return matriculaGuardada;
+    }
+
+    @Override
+    public void notificarPago(Integer idMatricula) {
+        Matricula matricula = matriculaRepository.findById(idMatricula)
+                .orElseThrow(() -> new com.example.cepsacbackend.exception.ResourceNotFoundException(
+                        String.format("No se encontró la matrícula con ID %d.", idMatricula)));
+        Integer id = matricula.getIdMatricula();
+        this.emailService.enviarEmailNotificacionPago(ownerEmail, id);
     }
 
     @Cacheable(value = "descuentos", key = "#programacion.idProgramacionCurso")

@@ -58,8 +58,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/cursos-diplomados/listar-index").permitAll() // todos para landing
                         .requestMatchers(HttpMethod.GET, "/api/cursos-diplomados/listar-cursos").permitAll() // solo cursos
                         .requestMatchers(HttpMethod.GET, "/api/cursos-diplomados/listar-diplomados").permitAll() // solo diplomados
-                        .requestMatchers(HttpMethod.GET, "/api/cursos-diplomados/detalle/*").permitAll() // detalle curso/diplomado
+                        .requestMatchers(HttpMethod.GET, "/api/cursos-diplomados/detalle/**").permitAll() // detalle curso/diplomado
                         .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll() // registro de alumnos
+                        .requestMatchers(HttpMethod.GET, "/api/paises/**").permitAll() //listar paises
+                        .requestMatchers(HttpMethod.GET, "/api/tipos-identificacion/**").permitAll() //listar tipos identificacion
+                        .requestMatchers(HttpMethod.POST, "/api/matriculas").permitAll() // crear matricula
+                        .requestMatchers(HttpMethod.POST, "/api/matriculas/*/notificar-pago").permitAll() // notificar pago
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // cors
                         // necesario jwt
                         .anyRequest().authenticated()
