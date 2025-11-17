@@ -23,12 +23,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.example.cepsacbackend.config.security.CustomUserDetails;
 
 import com.example.cepsacbackend.config.security.JwtService;
 import com.example.cepsacbackend.dto.Login.AuthResponseDTO;
 import com.example.cepsacbackend.dto.Login.LoginRequestDTO;
 import com.example.cepsacbackend.dto.Login.RecuperarPasswordRequestDTO;
 import com.example.cepsacbackend.dto.Login.ResetPasswordRequestDTO;
+import com.example.cepsacbackend.enums.Rol;
+
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +66,9 @@ public class AuthController {
             );
             final UserDetails detallesUsuario = userDetailsService.loadUserByUsername(peticion.getCorreo());
             final String tokenJwt = jwtService.generarToken(detallesUsuario); 
-            return ResponseEntity.ok(AuthResponseDTO.builder().token(tokenJwt).build());
+            CustomUserDetails customUserDetails = (CustomUserDetails) detallesUsuario;
+            Rol rol = Rol.valueOf(customUserDetails.getRol());
+            return ResponseEntity.ok(AuthResponseDTO.builder().token(tokenJwt).rol(rol).build());
         } catch (BadCredentialsException e) {
             throw new BadRequestException("Correo o contraseña incorrectos. Por favor, verifica tus credenciales e intenta nuevamente.");
         } catch (AuthenticationException e) {

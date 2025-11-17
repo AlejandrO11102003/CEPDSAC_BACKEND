@@ -38,6 +38,10 @@ public class CustomUserDetails implements UserDetails {
         return usuario.getCorreo();
     }
 
+    public String getRol(){
+        return usuario.getRol().name();
+    }
+
     @Override
     public boolean isAccountNonLocked() {
         return !usuario.getEstado().equals(EstadoUsuario.SUSPENDIDO);

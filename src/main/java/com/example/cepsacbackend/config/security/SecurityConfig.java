@@ -64,6 +64,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/tipos-identificacion/**").permitAll() //listar tipos identificacion
                         .requestMatchers(HttpMethod.POST, "/api/matriculas").permitAll() // crear matricula
                         .requestMatchers(HttpMethod.POST, "/api/matriculas/*/notificar-pago").permitAll() // notificar pago
+                        .requestMatchers(HttpMethod.GET, "/api/metrics").permitAll() // metrics
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // cors
                         // necesario jwt
                         .anyRequest().authenticated()
