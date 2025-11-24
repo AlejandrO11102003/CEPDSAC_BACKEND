@@ -24,8 +24,8 @@ public class CategoriaServiceImpl implements CategoriaService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CategoriaResponseDTO> listar() {
-        return mapper.toResponseDtoList(repository.findAll());
+    public List<CategoriaResponseDTO> findByEstadoTrue() {
+        return mapper.toResponseDtoList(repository.findByEstadoTrue());
     }
 
     @Override

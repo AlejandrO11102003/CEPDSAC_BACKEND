@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.cepsacbackend.dto.Categoria.CategoriaCreateDTO;
 import com.example.cepsacbackend.dto.Categoria.CategoriaResponseDTO;
 import com.example.cepsacbackend.service.CategoriaService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +26,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CategoriaController {
 
+    private final ObjectMapper objectMapper;
     private final CategoriaService categoriaService;
 
     @GetMapping("/listar")
     public ResponseEntity<List<CategoriaResponseDTO>> listar() {
-        return ResponseEntity.ok(categoriaService.listar());
+        return ResponseEntity.ok(categoriaService.findByEstadoTrue());
+    }
+
+    @GetMapping("/activas")
+    public ResponseEntity<List<CategoriaResponseDTO>> listarActivas() {
+        List<CategoriaResponseDTO> list = categoriaService.findByEstadoTrue();
+        return ResponseEntity.ok(list);
     }
 
     @GetMapping("/obtener/{id}")

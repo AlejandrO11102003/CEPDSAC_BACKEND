@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.cepsacbackend.dto.Metrics.MetricsResponseDTO;
 import com.example.cepsacbackend.enums.Rol;
-import com.example.cepsacbackend.enums.EstadoMatricula;
 import com.example.cepsacbackend.repository.CursoDiplomadoRepository;
+import com.example.cepsacbackend.repository.ProgramacionCursoRepository;
 import com.example.cepsacbackend.repository.MatriculaRepository;
 import com.example.cepsacbackend.repository.PagoRepository;
 import com.example.cepsacbackend.repository.UsuarioRepository;
@@ -22,6 +22,7 @@ public class MetricsServiceImpl implements MetricsService {
     private final PagoRepository pagoRepository;
     private final CursoDiplomadoRepository cursoRepository;
     private final MatriculaRepository matriculaRepository;
+    private final ProgramacionCursoRepository programacionCursoRepository;
     @Value("${metrics.base.unregisteredStudents:200}")
     private int baseUnregisteredStudents;
     @Value("${metrics.base.certifications:500}")
@@ -29,13 +30,17 @@ public class MetricsServiceImpl implements MetricsService {
 
     @Override
     public MetricsResponseDTO getMetrics() {
-        long estudiantesRegistrados = usuarioRepository.findByRolActivoAsDTO(Rol.ALUMNO).size();
-        long estudiantes = estudiantesRegistrados + (long) baseUnregisteredStudents;
+        // estudiantes: ahora representa estudiantes que tienen al menos una matrícula (sin pedestal)
+        long estudiantesConMatricula = matriculaRepository.countDistinctAlumno();
+
+        // instructores: sigue siendo el conteo de docentes registrados
         long instructores = usuarioRepository.findByRolActivoAsDTO(Rol.DOCENTE).size();
-        long certificacionesRegistradas = matriculaRepository.countDistinctAlumnoByEstado(EstadoMatricula.PAGADO);
-        long certificaciones = certificacionesRegistradas + (long) baseCertifications;
+
+        // certificaciones: ahora reutilizado para representar programaciones de cursos activas
+        long programacionesActivas = programacionCursoRepository.findAllAvailable(java.time.LocalDate.now()).size();
+
         long cursos = cursoRepository.count();
 
-        return new MetricsResponseDTO(estudiantes, certificaciones, instructores, cursos);
+        return new MetricsResponseDTO(estudiantesConMatricula, programacionesActivas, instructores, cursos);
     }
 }

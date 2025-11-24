@@ -92,6 +92,9 @@ public interface MatriculaRepository extends JpaRepository<Matricula, Integer> {
        // cuenta matriculas por estado
        long countByEstado(com.example.cepsacbackend.enums.EstadoMatricula estado);
 
-       @org.springframework.data.jpa.repository.Query("SELECT COUNT(DISTINCT m.alumno.idUsuario) FROM Matricula m WHERE m.estado = :estado")
-       long countDistinctAlumnoByEstado(@org.springframework.data.repository.query.Param("estado") com.example.cepsacbackend.enums.EstadoMatricula estado);
+       @Query("SELECT COUNT(DISTINCT m.alumno.idUsuario) FROM Matricula m WHERE m.estado = :estado")
+       long countDistinctAlumnoByEstado(@Param("estado") com.example.cepsacbackend.enums.EstadoMatricula estado);
+
+       @Query("SELECT COUNT(DISTINCT m.alumno.idUsuario) FROM Matricula m")
+       long countDistinctAlumno();
 }

@@ -33,4 +33,7 @@ public class MetodoPago {
     @Column(name = "Activo", nullable = false)
     private Boolean activo = true; // deff true
 
+    @Column(name = "ImagenQR", length = 500)
+    private String imagenQR;
+
 }

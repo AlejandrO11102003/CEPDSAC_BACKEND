@@ -17,4 +17,5 @@ public class MetodoPagoResponseDTO {
     private String descripcion;
     private String requisitos;
     private Boolean activo;
+    private String imagenQR;
 }

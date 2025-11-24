@@ -26,7 +26,7 @@ public class EmailServiceImpl implements EmailService {
     @Value("${spring.mail.username}")
     private String fromEmail;
 
-    @Value("${app.frontend.url:http://localhost:3000}")
+    @Value("${app.frontend.url:http://localhost:4200}")
     private String frontendUrl;
 
     private String cargarTemplate(String nombreArchivo) {

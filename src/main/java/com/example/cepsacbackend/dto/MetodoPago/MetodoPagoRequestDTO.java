@@ -20,4 +20,8 @@ public class MetodoPagoRequestDTO {
 
     @NotNull
     private String requisitos;
+
+    private String imagenQR;
+    
+    private Boolean activo = true;
 }

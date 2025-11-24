@@ -122,8 +122,20 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
-    // Manejo de excepciones generales (500 Internal Server Error)
-    @ExceptionHandler(Exception.class) // Captura cualquier otra excepción no manejada específicamente
+    @ExceptionHandler(WarningException.class)
+    public ResponseEntity<ErrorResponseDTO> handleWarningException(WarningException ex, HttpServletRequest request) {
+        ErrorResponseDTO errorResponse = ErrorResponseDTO.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.OK.value())
+                .error("Warning")
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleGlobalException(Exception ex, HttpServletRequest request) {
         ErrorResponseDTO errorResponse = ErrorResponseDTO.builder()
                 .timestamp(LocalDateTime.now())
@@ -133,9 +145,6 @@ public class GlobalExceptionHandler {
                 .path(request.getRequestURI())
                 .build();
 
-        // Opcional: Loggear el error completo para depuración
-        // log.error("Error interno del servidor: {}", ex.getMessage(), ex);
-
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -143,11 +152,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDTO> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpServletRequest request) {
         String errorMessage = "La solicitud tiene un formato JSON inválido.";
         
-        // Intenta obtener un mensaje de error más específico si es posible
         Throwable cause = ex.getCause();
         if (cause instanceof InvalidFormatException) {
             InvalidFormatException ife = (InvalidFormatException) cause;
-            // Verifica si el error es sobre la deserialización de un Enum
             if (ife.getTargetType() != null && ife.getTargetType().isEnum()) {
                 errorMessage = String.format("Valor inválido '%s' para el campo '%s'. Los valores permitidos son: %s.",
                     ife.getValue(),

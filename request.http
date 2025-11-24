@@ -1,8 +1,7 @@
 ### Variables de entorno
 @baseUrl = http://localhost:8080
 @contentType = application/json
-@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbHVtbm9AZ21haWwuY29tIiwiaWF0IjoxNzYzMDgwMTM5LCJleHAiOjE3NjMxNjY1Mzl9.ijS1_3T1XzFWJ_lBoQOwt_vYOxY7-D64gjYnurjqJjY
-### ===========================================
+@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGVqYW5kcm9jYXN0aWxsb2phcmEzMEBnbWFpbC5jb20iLCJpYXQiOjE3NjM2NjI3MDksImV4cCI6MTc2MzY2NjMwOX0.INtGveBmtrUXs4AIvY0VNyll5e_Feum9i93YnIf_lZ0
 ### MONITOR ENDPOINTS
 ### ===========================================
 
@@ -18,8 +17,8 @@ POST {{baseUrl}}/api/auth/login
 Content-Type: {{contentType}}
 
 {
-    "correo": "alumno@gmail.com",
-    "password": "123456Aa!"
+    "correo": "alejandro@gmail.com",
+    "password": "1234"
 }
 
 ### Solicitar restablecimiento de contraseña (olvido de contraseña)
@@ -89,12 +88,12 @@ Authorization: Bearer {{token}}
 }
 
 ### Actualizar usuario parcialmente (PATCH)
-PATCH {{baseUrl}}/api/usuarios/4
+PATCH {{baseUrl}}/api/usuarios/1
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-    "password": "Luchito13!"
+    "correo" : "alejandrocastillojara30@gmail.com"
 }
 
 ### Eliminar usuario (cambio de estado a SUSPENDIDO)
@@ -111,6 +110,10 @@ Authorization: Bearer {{token}}
 
 ### Listar categorías
 GET {{baseUrl}}/api/categorias/listar
+Authorization: Bearer {{token}}
+
+### Listar categorías activas (solo estado = true)
+GET {{baseUrl}}/api/categorias/activas
 Authorization: Bearer {{token}}
 
 ### Obtener categoría por ID
@@ -192,7 +195,7 @@ Authorization: Bearer {{token}}
     "fechaInicio": "2025-12-01",
     "fechaFin": "2026-06-01",
     "monto": 600.00,
-    "idCursoDiplomado": 25
+    "idCursoDiplomado": 28
 }
 
 ###  Campo "duracionMeses" es opcional:
@@ -518,4 +521,125 @@ Authorization: Bearer {{token}}
 
 ### Eliminar sponsor (elimina también la imagen física)
 DELETE {{baseUrl}}/api/sponsors/eliminar/1
+Authorization: Bearer {{token}}
+
+### ===========================================
+### TESTIMONIO ENDPOINTS
+### ===========================================
+
+### Listar todos los testimonios
+GET {{baseUrl}}/api/testimonios
+Authorization: Bearer {{token}}
+
+### Obtener testimonio por ID
+GET {{baseUrl}}/api/testimonios/1
+Authorization: Bearer {{token}}
+
+### Crear testimonio
+POST {{baseUrl}}/api/testimonios
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "comentario": "Excelente curso, muy útil.",
+    "estadoAprobado": false,
+    "idUsuario": { "idUsuario": 21 }
+}
+
+### Actualizar testimonio (PUT)
+PUT {{baseUrl}}/api/testimonios/1
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "comentario": "Comentario actualizado",
+    "estadoAprobado": false,
+    "idUsuario": { "idUsuario": 21 }
+}
+
+### Eliminar testimonio
+DELETE {{baseUrl}}/api/testimonios/1
+Authorization: Bearer {{token}}
+
+### Asignar aprobador / cambiar estado de aprobación
+PUT {{baseUrl}}/api/testimonios/1/aprobacion
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "idAprobador": 3,
+    "estadoAprobado": true
+}
+
+### ===========================================
+### CONFIGURACIÓN GENERAL ENDPOINTS
+### ===========================================
+
+### Obtener configuración general
+GET {{baseUrl}}/api/configuracion/general
+Authorization: Bearer {{token}}
+
+### Actualizar configuración general
+PUT {{baseUrl}}/api/configuracion/general
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "numeroEstudiantes": 1500,
+    "numeroCertificaciones": 2000,
+    "numeroInstructores": 50,
+    "numeroCursos": 120
+}
+
+### ===========================================
+### CONFIGURACIÓN CONTACTO ENDPOINTS
+### ===========================================
+
+### Obtener configuración de contacto
+GET {{baseUrl}}/api/configuracion/contacto
+Authorization: Bearer {{token}}
+
+### Actualizar configuración de contacto
+PUT {{baseUrl}}/api/configuracion/contacto
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "correoContacto": "contacto@cepsac.edu.pe",
+    "telefono": "+51 999 999 999",
+    "whatsapp": "+51 999 999 999",
+    "direccion": "Av. Principal 123, Lima, Perú",
+    "facebook": "https://facebook.com/cepsac",
+    "instagram": "https://instagram.com/cepsac",
+    "linkedin": "https://linkedin.com/company/cepsac",
+    "twitter": "https://twitter.com/cepsac"
+}
+
+### ===========================================
+### CONFIGURACIÓN SEO ENDPOINTS
+### ===========================================
+
+### Obtener configuración SEO
+GET {{baseUrl}}/api/configuracion/seo
+Authorization: Bearer {{token}}
+
+### Actualizar configuración SEO
+PUT {{baseUrl}}/api/configuracion/seo
+Content-Type: {{contentType}}
+Authorization: Bearer {{token}}
+
+{
+    "tituloSitio": "CEPSAC - Centro de Educación Profesional",
+    "descripcionMeta": "Centro de educación profesional especializado en cursos y diplomados de alta calidad",
+    "keywords": "educación, cursos, diplomados, certificaciones, capacitación profesional",
+    "imagenOG": "https://res.cloudinary.com/..."
+}
+
+### Subir imagen Open Graph
+# Nota: Usar Postman/Thunder Client para subir archivos
+# - Método: POST
+# - URL: http://localhost:8080/api/configuracion/seo/upload-imagen-og
+# - Body → form-data
+# - Campo: file (file)
+POST {{baseUrl}}/api/configuracion/seo/upload-imagen-og
 Authorization: Bearer {{token}}

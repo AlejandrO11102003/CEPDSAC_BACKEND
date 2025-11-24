@@ -65,6 +65,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/matriculas").permitAll() // crear matricula
                         .requestMatchers(HttpMethod.POST, "/api/matriculas/*/notificar-pago").permitAll() // notificar pago
                         .requestMatchers(HttpMethod.GET, "/api/metrics").permitAll() // metrics
+                        .requestMatchers(HttpMethod.GET, "/api/configuracion/general").permitAll() // configuracion general
+                        .requestMatchers(HttpMethod.GET, "/api/configuracion/contacto").permitAll() // configuracion contacto
+                        .requestMatchers(HttpMethod.GET, "/api/configuracion/seo").permitAll() // configuracion seo
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // cors
                         // necesario jwt
                         .anyRequest().authenticated()

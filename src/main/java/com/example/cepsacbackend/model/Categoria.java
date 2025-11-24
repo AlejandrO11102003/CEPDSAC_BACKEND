@@ -24,4 +24,7 @@ public class Categoria {
     @Column(name = "Descripcion", length = 100)
     private String descripcion;
 
+    @Column(name = "Estado")
+    private Boolean estado;  //false: inactivo, true: activo
+
 }
