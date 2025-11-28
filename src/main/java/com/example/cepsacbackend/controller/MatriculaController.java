@@ -1,10 +1,13 @@
 package com.example.cepsacbackend.controller;
 
 import com.example.cepsacbackend.dto.Matricula.AplicarDescuentoDTO;
+import com.example.cepsacbackend.dto.Matricula.CancelacionProgramacionRequestDTO;
+import com.example.cepsacbackend.dto.Matricula.MatriculaAdminListDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaCreateDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaDetalleResponseDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaListResponseDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaResponseDTO;
+import com.example.cepsacbackend.enums.EstadoMatricula;
 import com.example.cepsacbackend.mapper.MatriculaMapper;
 import com.example.cepsacbackend.model.Matricula;
 import com.example.cepsacbackend.service.MatriculaService;
@@ -13,6 +16,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
@@ -26,15 +30,19 @@ public class MatriculaController {
     private final MatriculaService matriculaService;
     private final MatriculaMapper matriculaMapper;
 
-    @GetMapping("/listar")
-    public ResponseEntity<List<MatriculaListResponseDTO>> listarMatriculas() {
-        List<MatriculaListResponseDTO> matriculas = matriculaService.listarMatriculas();
-        return ResponseEntity.ok(matriculas);
-    }
-
     @GetMapping("/alumno/{idAlumno}")
     public ResponseEntity<List<MatriculaListResponseDTO>> listarMatriculasPorAlumno(@PathVariable Integer idAlumno) {
         List<MatriculaListResponseDTO> matriculas = matriculaService.listarMatriculasPorAlumno(idAlumno);
+        return ResponseEntity.ok(matriculas);
+    }
+
+    @GetMapping("/admin/listar")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    public ResponseEntity<Page<MatriculaAdminListDTO>> listarMatriculasAdmin(
+            @RequestParam(required = false) String dni,
+            @RequestParam(required = false) EstadoMatricula estado,
+            @org.springframework.data.web.PageableDefault(size = 10, sort = "fechaMatricula", direction = org.springframework.data.domain.Sort.Direction.DESC) org.springframework.data.domain.Pageable pageable) {
+        Page<MatriculaAdminListDTO> matriculas = matriculaService.listarMatriculasAdmin(dni, estado, pageable);
         return ResponseEntity.ok(matriculas);
     }
 
@@ -69,5 +77,25 @@ public class MatriculaController {
             @RequestBody @Valid AplicarDescuentoDTO dto) {
         Matricula matricula = matriculaService.aplicarDescuentoAMatricula(id, dto);
         return ResponseEntity.ok(matriculaMapper.toResponseDTO(matricula));
+    }
+
+    @PutMapping("/{id}/confirmar-pago")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    public ResponseEntity<Void> confirmarPago(@PathVariable Integer id) {
+        matriculaService.confirmarPagoMatricula(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/cancelar-por-programacion/{idProgramacionCurso}")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    public ResponseEntity<List<MatriculaResponseDTO>> cancelarMatriculasPorProgramacion(
+            @PathVariable Integer idProgramacionCurso,
+            @RequestBody @Valid CancelacionProgramacionRequestDTO dto) {
+        List<com.example.cepsacbackend.model.Matricula> matriculasCanceladas = 
+                matriculaService.cancelarMatriculasPorProgramacion(idProgramacionCurso, dto.getMotivo());
+        List<MatriculaResponseDTO> response = matriculasCanceladas.stream()
+                .map(matriculaMapper::toResponseDTO)
+                .toList();
+        return ResponseEntity.ok(response);
     }
 }

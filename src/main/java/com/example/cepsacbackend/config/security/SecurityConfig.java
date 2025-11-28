@@ -34,6 +34,7 @@ public class SecurityConfig {
             "http://127.0.0.1:3000",
             "http://localhost:4200",
             "http://localhost:4000",
+            "http://192.168.1.34:4200",
             "https://*.ngrok-free.app"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
@@ -68,6 +69,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/configuracion/general").permitAll() // configuracion general
                         .requestMatchers(HttpMethod.GET, "/api/configuracion/contacto").permitAll() // configuracion contacto
                         .requestMatchers(HttpMethod.GET, "/api/configuracion/seo").permitAll() // configuracion seo
+                        .requestMatchers(HttpMethod.GET, "/api/metodos-pago/activos").permitAll() // listar metodos de pago admin
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // cors
                         // necesario jwt
                         .anyRequest().authenticated()

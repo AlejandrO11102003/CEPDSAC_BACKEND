@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancelación de Programación</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #013162 0%, #ff4d00 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: bold;
+            color: black;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .alert-box {
+            background-color: #fff3cd;
+            border-left: 4px solid #ff4d00;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .course-title {
+            color: #013162;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .reason {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #ff4d00;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔔 Notificación Importante</h1>
+        </div>
+        <div class="content">
+            <div class="alert-box">
+                <strong>Cancelación de Programación</strong>
+            </div>
+            
+            <p>Estimado(a) estudiante,</p>
+            
+            <p>Lamentamos informarle que la siguiente programación ha sido cancelada:</p>
+            
+            <div class="course-title">{{TITULO_CURSO}}</div>
+            
+            <div class="reason">
+                <strong>Motivo:</strong><br>
+                {{MOTIVO}}
+            </div>
+            
+            <p>Entendemos que esto puede causar inconvenientes y nos disculpamos por ello. Su matrícula ha sido cancelada automáticamente.</p>
+            
+            <p><strong>¿Qué puedes hacer ahora?</strong></p>
+            <ul>
+                <li>Explora nuestras otras programaciones disponibles</li>
+                <li>Consulta las próximas fechas de inicio</li>
+                <li>Contáctanos si tienes alguna pregunta</li>
+            </ul>
+            
+            <center>
+                <a href="{{CURSOS_URL}}" class="cta-button">Ver Cursos Disponibles</a>
+            </center>
+            
+            <p style="margin-top: 30px;">Si realizaste algún pago, nos pondremos en contacto contigo para coordinar el reembolso o la transferencia a otra programación.</p>
+            
+            <p>Gracias por tu comprensión.</p>
+            
+            <p><strong>Equipo CEPSAC</strong></p>
+        </div>
+        <div class="footer">
+            <p>Este es un correo automático, por favor no responder.</p>
+            <p>&copy; 2024 CEPSAC. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</body>
+</html>

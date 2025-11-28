@@ -59,4 +59,10 @@ public class Pago extends AuditableEntity {
     @Column(name = "EsAutomatico")
     private Boolean esAutomatico = false;
 
+    @Column(name = "NumeroOperacion", length = 50)
+    private String numeroOperacion;
+
+    @Column(name = "Observaciones", columnDefinition = "TEXT")
+    private String observaciones;
+
 }

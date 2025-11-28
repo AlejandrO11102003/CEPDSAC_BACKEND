@@ -14,5 +14,6 @@ public record MatriculaResponseDTO(
     BigDecimal montoBase,
     BigDecimal montoDescontado,
     BigDecimal monto,
-    Boolean pagoPersonalizado
+    Boolean pagoPersonalizado,
+    String alumnoNombre
 ) {}

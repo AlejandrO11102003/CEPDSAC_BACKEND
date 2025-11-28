@@ -26,4 +26,7 @@ public class PagoResponseDTO{
         private EstadoCuota estadoCuota;
         private BigDecimal montoPagado;
         private Boolean esAutomatico;
+
+        private String numeroOperacion;
+        private String observaciones;
 }

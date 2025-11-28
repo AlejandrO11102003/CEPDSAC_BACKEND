@@ -8,7 +8,6 @@ import com.example.cepsacbackend.enums.Rol;
 import com.example.cepsacbackend.repository.CursoDiplomadoRepository;
 import com.example.cepsacbackend.repository.ProgramacionCursoRepository;
 import com.example.cepsacbackend.repository.MatriculaRepository;
-import com.example.cepsacbackend.repository.PagoRepository;
 import com.example.cepsacbackend.repository.UsuarioRepository;
 import com.example.cepsacbackend.service.MetricsService;
 
@@ -19,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 public class MetricsServiceImpl implements MetricsService {
 
     private final UsuarioRepository usuarioRepository;
-    private final PagoRepository pagoRepository;
     private final CursoDiplomadoRepository cursoRepository;
     private final MatriculaRepository matriculaRepository;
     private final ProgramacionCursoRepository programacionCursoRepository;

@@ -9,6 +9,8 @@ import java.util.List;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.cache.CacheManager;
@@ -18,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.example.cepsacbackend.config.security.CustomUserDetails;
 
+import com.example.cepsacbackend.dto.Matricula.MatriculaAdminListDTO;
 import com.example.cepsacbackend.dto.Matricula.AplicarDescuentoDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaCreateDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaDetalleResponseDTO;
@@ -431,5 +434,78 @@ public class MatriculaServiceImpl implements MatriculaService {
 
         BigDecimal saldoPendiente = nuevoMontoFinal.subtract(totalPagado);
         return saldoPendiente.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO : saldoPendiente;
+    }
+
+    // confirmar pago matricula
+    @Override
+    @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "matriculas", key = "'all'"),
+            @CacheEvict(value = "matriculas", key = "'alumno_' + #result.alumno.idUsuario"),
+            @CacheEvict(value = "matriculas-detalle", key = "#idMatricula")
+    })
+    public Matricula confirmarPagoMatricula(Integer idMatricula) {
+        Matricula matricula = matriculaRepository.findByIdWithDetails(idMatricula)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        String.format("No se encontró la matrícula con ID %d.", idMatricula)));
+        //  PENDIENTE
+        if (matricula.getEstado() != EstadoMatricula.PENDIENTE) {
+            throw new BadRequestException(
+                    String.format("Solo se pueden confirmar matrículas en estado PENDIENTE. " +
+                            "La matrícula ID %d está en estado %s.",
+                            idMatricula, matricula.getEstado()));
+        }
+        // cambio el estado a EN_PROCESO //primer pago verificado, cupo separado
+        matricula.setEstado(EstadoMatricula.EN_PROCESO);
+        return matriculaRepository.save(matricula);
+    }
+
+    // cancelar matriculas por programacion
+    @Override
+    @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "matriculas", key = "'all'")
+    })
+    public List<Matricula> cancelarMatriculasPorProgramacion(Integer idProgramacionCurso, String motivo) {
+        // validar que la programacion existe
+        ProgramacionCurso programacion = programacionCursoRepository.findById(idProgramacionCurso)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        String.format("No se encontró la programación de curso con ID %d.", idProgramacionCurso)));
+        // buscar todas las matriculas activas (pendientes y en proceso) de esta programacion
+        List<EstadoMatricula> estadosActivos = List.of(EstadoMatricula.PENDIENTE, EstadoMatricula.EN_PROCESO);
+        List<Matricula> matriculasActivas = matriculaRepository.findByProgramacionAndEstados(
+                idProgramacionCurso, 
+                estadosActivos
+        );
+        // recopilar correos de los alumnos afectados
+        List<String> correosAlumnos = matriculasActivas.stream()
+                .map(m -> m.getAlumno().getCorreo())
+                .filter(correo -> correo != null && !correo.isBlank())
+                .distinct()
+                .toList();
+        // cancelar todas las matriculas
+        for (Matricula matricula : matriculasActivas) {
+            matricula.setEstado(EstadoMatricula.CANCELADO);
+        }
+        List<Matricula> matriculasCanceladas = matriculaRepository.saveAll(matriculasActivas);
+        // enviar notificaciones por email a todos los alumnos afectados
+        if (!correosAlumnos.isEmpty()) {
+            String tituloCurso = programacion.getCursoDiplomado() != null 
+                    ? programacion.getCursoDiplomado().getTitulo() 
+                    : "Curso";
+            String motivoCancelacion = motivo != null && !motivo.isBlank() 
+                    ? motivo 
+                    : "No se alcanzó el cupo mínimo de estudiantes";
+            
+            emailService.enviarEmailCancelacionMasiva(correosAlumnos, tituloCurso, motivoCancelacion);
+        }
+        return matriculasCanceladas;
+    }
+
+    // listar matriculas admin
+    @Override
+    @Transactional(readOnly = true)
+    public Page<MatriculaAdminListDTO> listarMatriculasAdmin(String dni, EstadoMatricula estado, Pageable pageable) {
+        return matriculaRepository.findMatriculasAdmin(dni, estado, pageable);
     }
 }

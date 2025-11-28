@@ -9,7 +9,7 @@ import com.example.cepsacbackend.dto.Matricula.MatriculaDetalleResponseDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaResponseDTO;
 import com.example.cepsacbackend.model.Matricula;
 
-@Mapper(componentModel = "spring", uses = {UsuarioMapper.class, CursoDiplomadoMapper.class})
+@Mapper(componentModel = "spring", uses = {UsuarioMapper.class, CursoDiplomadoMapper.class, DescuentoMapper.class})
 public interface MatriculaMapper {
 
     @Mapping(target = "idMatricula", ignore = true)
@@ -28,10 +28,12 @@ public interface MatriculaMapper {
 
     @Mapping(source = "programacionCurso.idProgramacionCurso", target = "idProgramacionCurso")
     @Mapping(source = "alumno.idUsuario", target = "idAlumno")
+    @Mapping(target = "alumnoNombre", expression = "java(entity.getAlumno().getNombre() + \" \" + entity.getAlumno().getApellido())")
     MatriculaResponseDTO toResponseDTO(Matricula entity);
 
     @Mapping(source = "programacionCurso.cursoDiplomado", target = "cursoDiplomado")
     @Mapping(target = "pagos", ignore = true)
+    @Mapping(source = "descuento", target = "descuento")
     MatriculaDetalleResponseDTO toDetalleResponseDTO(Matricula entity);
 
     List<MatriculaResponseDTO> toResponseDTOList(List<Matricula> entities);

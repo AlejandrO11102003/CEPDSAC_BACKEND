@@ -1,8 +1,8 @@
 package com.example.cepsacbackend.enums;
 
 public enum EstadoMatricula {
-    PENDIENTE,
-    PAGADO,
-    CANCELADO,
-    EN_PROCESO
+    PENDIENTE,   
+    EN_PROCESO,  
+    PAGADO,      
+    CANCELADO    
 }

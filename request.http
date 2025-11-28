@@ -1,7 +1,7 @@
 ### Variables de entorno
 @baseUrl = http://localhost:8080
 @contentType = application/json
-@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGVqYW5kcm9jYXN0aWxsb2phcmEzMEBnbWFpbC5jb20iLCJpYXQiOjE3NjM2NjI3MDksImV4cCI6MTc2MzY2NjMwOX0.INtGveBmtrUXs4AIvY0VNyll5e_Feum9i93YnIf_lZ0
+@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGVqYW5kcm9jYXN0aWxsb2phcmEzMEBnbWFpbC5jb20iLCJpYXQiOjE3NjQxMTYzOTYsImV4cCI6MTc2NDExOTk5Nn0.-BzTErbX9MIYxVFDfH-P4HBwwZrW3A0vdkMYN1kyzok
 ### MONITOR ENDPOINTS
 ### ===========================================
 
@@ -17,7 +17,7 @@ POST {{baseUrl}}/api/auth/login
 Content-Type: {{contentType}}
 
 {
-    "correo": "alejandro@gmail.com",
+    "correo": "alejandrocastillojara30@gmail.com",
     "password": "1234"
 }
 

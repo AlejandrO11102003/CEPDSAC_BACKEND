@@ -9,29 +9,39 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 import org.springframework.data.repository.query.Param;
 
-import com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoResponseDTO;
+import com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoListResponseDTO;
 import com.example.cepsacbackend.model.ProgramacionCurso;
 
 @Repository
 public interface ProgramacionCursoRepository extends JpaRepository<ProgramacionCurso, Integer> {
 
-    @Query("SELECT NEW com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoResponseDTO(" +
+    @Query("SELECT NEW com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoListResponseDTO(" +
            "pc.idProgramacionCurso, " +
-           "pc.modalidad, " +
-           "pc.duracionCurso, " +
-           "pc.horasSemanales, " +
            "pc.fechaInicio, " +
            "pc.fechaFin, " +
            "pc.monto, " +
-           "cd.idCursoDiplomado, " +
            "cd.titulo, " +
            "pc.duracionMeses, " +
-           "doc.idUsuario, " +
            "CONCAT(doc.nombre, ' ', doc.apellido)) " +
            "FROM ProgramacionCurso pc " +
            "JOIN pc.cursoDiplomado cd " +
            "LEFT JOIN pc.docente doc")
-    List<ProgramacionCursoResponseDTO> findAllAsDTO();
+    List<ProgramacionCursoListResponseDTO> findAllAsDTO();
+
+    // obtener programaciones disponibles (fecha fin > fecha actual) como DTO
+    @Query("SELECT NEW com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoListResponseDTO(" +
+           "pc.idProgramacionCurso, " +
+           "pc.fechaInicio, " +
+           "pc.fechaFin, " +
+           "pc.monto, " +
+           "cd.titulo, " +
+           "pc.duracionMeses, " +
+           "CONCAT(doc.nombre, ' ', doc.apellido)) " +
+           "FROM ProgramacionCurso pc " +
+           "JOIN pc.cursoDiplomado cd " +
+           "LEFT JOIN pc.docente doc " +
+           "WHERE pc.fechaFin > :fechaActual")
+    List<ProgramacionCursoListResponseDTO> findAllAvailableAsDTO(@Param("fechaActual") LocalDate fechaActual);
 
     // cargamos la programacion junto con el curso/diplomado
     @Query("SELECT pc FROM ProgramacionCurso pc " +

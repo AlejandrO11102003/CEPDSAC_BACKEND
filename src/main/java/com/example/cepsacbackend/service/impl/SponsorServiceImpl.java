@@ -53,7 +53,6 @@ public class SponsorServiceImpl implements SponsorService {
         }
         
         validarTipoImagen(imagen);
-        
         // subir img
         String urlImagen = subirImagenCloudinary(imagen);
         Sponsor entity = new Sponsor();
