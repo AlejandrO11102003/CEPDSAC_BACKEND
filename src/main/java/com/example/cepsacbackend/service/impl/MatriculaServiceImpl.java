@@ -25,6 +25,7 @@ import com.example.cepsacbackend.dto.Matricula.AplicarDescuentoDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaCreateDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaDetalleResponseDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaListResponseDTO;
+import com.example.cepsacbackend.enums.EstadoProgramacion;
 import com.example.cepsacbackend.dto.Pago.PagoResponseDTO;
 import com.example.cepsacbackend.enums.EstadoCuota;
 import com.example.cepsacbackend.enums.EstadoMatricula;
@@ -96,23 +97,26 @@ public class MatriculaServiceImpl implements MatriculaService {
                 throw new BadRequestException("Un administrador debe indicar el idAlumno en la solicitud.");
             }
         }
- 
         // verificar duplicacion en matricula
         List<EstadoMatricula> estadosActivos = List.of(EstadoMatricula.PENDIENTE, EstadoMatricula.PAGADO);
-        matriculaRepository.findMatriculaActivaByAlumnoAndProgramacion(
+        List<Matricula> matriculasExistentes = matriculaRepository.findMatriculaActivaByAlumnoAndProgramacion(
                 dto.getIdAlumno(), 
                 dto.getIdProgramacionCurso(), 
                 estadosActivos
-        ).ifPresent(matriculaExistente -> {
+        );
+
+        if (!matriculasExistentes.isEmpty()) {
+            Matricula matriculaExistente = matriculasExistentes.get(0);
+            String estadoFormateado = formatearEstado(matriculaExistente.getEstado());
             throw new BadRequestException(
                 String.format(
-                    "Ya existe una matrícula %s (ID: %d) para este alumno en esta programación. " +
-                    "No se permiten matrículas duplicadas mientras haya una activa.",
-                    matriculaExistente.getEstado().name(),
+                    "El alumno ya tiene una matrícula para este curso. " +
+                    "Por favor, cancele la matrícula existente.",
+                    estadoFormateado,
                     matriculaExistente.getIdMatricula()
                 )
             );
-        });
+        }
 
         // valido que el alumno exista y tenga rol de alumno
         Usuario alumno = usuarioRepository.findById(dto.getIdAlumno())
@@ -281,7 +285,7 @@ public class MatriculaServiceImpl implements MatriculaService {
     // verifico si debo generar cuotas automaticas segun la configuracion de la
     // programacion
     private boolean debeGenerarCuotas(ProgramacionCurso programacion) {
-        return programacion.getDuracionMeses() != null && programacion.getDuracionMeses() > 0;
+        return programacion.getNumeroCuotas() != null && programacion.getNumeroCuotas() > 0;
     }
 
     // genero las cuotas automaticas dividiendo el monto total en cuotas mensuales
@@ -289,18 +293,18 @@ public class MatriculaServiceImpl implements MatriculaService {
     private List<Pago> generarCuotasAutomaticas(Matricula matricula, BigDecimal montoTotal) {
         List<Pago> cuotas = new ArrayList<>();
         ProgramacionCurso programacion = matricula.getProgramacionCurso();
-        Short duracionMeses = programacion.getDuracionMeses();
+        Short numeroCuotas = programacion.getNumeroCuotas();
 
-        if (duracionMeses == null || duracionMeses <= 0) {
+        if (numeroCuotas == null || numeroCuotas <= 0) {
             return cuotas;
         }
-        // calculo el monto de cada cuota dividiendo el total entre la cantidad de meses
+        // calculo el monto de cada cuota dividiendo el total entre la cantidad de cuotas
         BigDecimal montoPorCuota = montoTotal.divide(
-                BigDecimal.valueOf(duracionMeses),
+                BigDecimal.valueOf(numeroCuotas),
                 2,
                 RoundingMode.HALF_UP);
         // ajusto la diferencia de redondeo en la ultima cuota para que sume exacto
-        BigDecimal sumaTemporalCuotas = montoPorCuota.multiply(BigDecimal.valueOf(duracionMeses));
+        BigDecimal sumaTemporalCuotas = montoPorCuota.multiply(BigDecimal.valueOf(numeroCuotas));
         BigDecimal diferencia = montoTotal.subtract(sumaTemporalCuotas);
         // obtengo la fecha de inicio del curso para calcular los vencimientos
         LocalDate fechaInicio = programacion.getFechaInicio();
@@ -308,13 +312,13 @@ public class MatriculaServiceImpl implements MatriculaService {
             fechaInicio = LocalDate.now(); // uso fecha actual si no hay fecha de inicio configurada
         }
         // genero una cuota por cada mes de duracion del curso
-        for (short i = 1; i <= duracionMeses; i++) {
+        for (short i = 1; i <= numeroCuotas; i++) {
             Pago cuota = new Pago();
             cuota.setMatricula(matricula);
             cuota.setNumeroCuota(i);
             // ajusto el monto de la ultima cuota si hay diferencia por redondeo
             BigDecimal montoCuota = montoPorCuota;
-            if (i == duracionMeses && diferencia.compareTo(BigDecimal.ZERO) != 0) {
+            if (i == numeroCuotas && diferencia.compareTo(BigDecimal.ZERO) != 0) {
                 montoCuota = montoCuota.add(diferencia);
             }
             cuota.setMonto(montoCuota);
@@ -483,9 +487,17 @@ public class MatriculaServiceImpl implements MatriculaService {
                 .filter(correo -> correo != null && !correo.isBlank())
                 .distinct()
                 .toList();
-        // cancelar todas las matriculas
+        // cancelar todas las matriculas y sus pagos pendientes
         for (Matricula matricula : matriculasActivas) {
             matricula.setEstado(EstadoMatricula.CANCELADO);
+            // cancelar pagos pendientes
+            List<Pago> pagos = pagoRepository.findByMatriculaIdMatricula(matricula.getIdMatricula());
+            for (Pago pago : pagos) {
+                if (pago.getEstadoCuota() == EstadoCuota.PENDIENTE) {
+                    pago.setEstadoCuota(EstadoCuota.CANCELADO);
+                }
+            }
+            pagoRepository.saveAll(pagos);
         }
         List<Matricula> matriculasCanceladas = matriculaRepository.saveAll(matriculasActivas);
         // enviar notificaciones por email a todos los alumnos afectados
@@ -499,6 +511,10 @@ public class MatriculaServiceImpl implements MatriculaService {
             
             emailService.enviarEmailCancelacionMasiva(correosAlumnos, tituloCurso, motivoCancelacion);
         }
+        // actualizar estado de la programacion a CANCELADO
+        programacion.setEstado(EstadoProgramacion.CANCELADO);
+        programacionCursoRepository.save(programacion);
+        
         return matriculasCanceladas;
     }
 
@@ -507,5 +523,16 @@ public class MatriculaServiceImpl implements MatriculaService {
     @Transactional(readOnly = true)
     public Page<MatriculaAdminListDTO> listarMatriculasAdmin(String dni, EstadoMatricula estado, Pageable pageable) {
         return matriculaRepository.findMatriculasAdmin(dni, estado, pageable);
+    }
+
+    private String formatearEstado(EstadoMatricula estado) {
+        if (estado == null) return "DESCONOCIDO";
+        return switch (estado) {
+            case PENDIENTE -> "PENDIENTE";
+            case EN_PROCESO -> "EN PROCESO";
+            case PAGADO -> "PAGADO";
+            case CANCELADO -> "CANCELADO";
+            default -> estado.name();
+        };
     }
 }

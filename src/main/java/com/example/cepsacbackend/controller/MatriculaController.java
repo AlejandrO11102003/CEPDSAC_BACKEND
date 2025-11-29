@@ -1,7 +1,6 @@
 package com.example.cepsacbackend.controller;
 
 import com.example.cepsacbackend.dto.Matricula.AplicarDescuentoDTO;
-import com.example.cepsacbackend.dto.Matricula.CancelacionProgramacionRequestDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaAdminListDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaCreateDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaDetalleResponseDTO;
@@ -90,9 +89,9 @@ public class MatriculaController {
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<List<MatriculaResponseDTO>> cancelarMatriculasPorProgramacion(
             @PathVariable Integer idProgramacionCurso,
-            @RequestBody @Valid CancelacionProgramacionRequestDTO dto) {
+            @RequestParam String motivo) {
         List<com.example.cepsacbackend.model.Matricula> matriculasCanceladas = 
-                matriculaService.cancelarMatriculasPorProgramacion(idProgramacionCurso, dto.getMotivo());
+                matriculaService.cancelarMatriculasPorProgramacion(idProgramacionCurso, motivo);
         List<MatriculaResponseDTO> response = matriculasCanceladas.stream()
                 .map(matriculaMapper::toResponseDTO)
                 .toList();

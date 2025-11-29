@@ -16,7 +16,7 @@ public class ProgramacionCursoResponseDTO {
     private Integer idProgramacionCurso;
     private ModalidadCurso modalidad;
     private BigDecimal duracionCurso;
-    private BigDecimal horasSemanales;
+    private Short duracionMeses;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private BigDecimal monto;
@@ -24,7 +24,7 @@ public class ProgramacionCursoResponseDTO {
     private String nombreCursoDiplomado;
     
     // Campo opcional para sistema de cuotas automáticas
-    private Short duracionMeses;
+    private Short numeroCuotas;
     private Integer idDocente;
     private String nombreDocente;
 }

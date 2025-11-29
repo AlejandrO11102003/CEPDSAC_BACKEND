@@ -26,7 +26,7 @@ public interface MatriculaRepository extends JpaRepository<Matricula, Integer> {
            "WHERE m.alumno.idUsuario = :idAlumno " +
            "AND m.programacionCurso.idProgramacionCurso = :idProgramacion " +
            "AND m.estado IN :estados")
-    Optional<Matricula> findMatriculaActivaByAlumnoAndProgramacion(
+    List<Matricula> findMatriculaActivaByAlumnoAndProgramacion(
         @Param("idAlumno") Integer idAlumno,
         @Param("idProgramacion") Integer idProgramacion,
         @Param("estados") List<EstadoMatricula> estados

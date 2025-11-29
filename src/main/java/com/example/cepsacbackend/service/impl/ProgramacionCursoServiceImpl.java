@@ -34,21 +34,13 @@ public class ProgramacionCursoServiceImpl implements ProgramacionCursoService {
     @Override
     @Transactional(readOnly = true)
     public List<ProgramacionCursoListResponseDTO> getAll() {
-        List<ProgramacionCursoListResponseDTO> list = programacionCursoRepository.findAllAsDTO();
-        list.forEach(dto -> dto.setCantidadInscritos(
-            matriculaRepository.countByProgramacionCursoIdProgramacionCurso(dto.getIdProgramacionCurso())
-        ));
-        return list;
+        return programacionCursoRepository.findAllAsDTO();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<ProgramacionCursoListResponseDTO> getDisponibles() {
-        List<ProgramacionCursoListResponseDTO> list = programacionCursoRepository.findAllAvailableAsDTO(LocalDate.now());
-        list.forEach(dto -> dto.setCantidadInscritos(
-            matriculaRepository.countByProgramacionCursoIdProgramacionCurso(dto.getIdProgramacionCurso())
-        ));
-        return list;
+        return programacionCursoRepository.findAllAvailableAsDTO(LocalDate.now());
     }
 
     @Override

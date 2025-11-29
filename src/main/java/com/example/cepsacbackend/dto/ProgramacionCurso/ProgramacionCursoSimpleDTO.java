@@ -16,11 +16,11 @@ public class ProgramacionCursoSimpleDTO {
     private Integer idProgramacionCurso;
     private ModalidadCurso modalidad;
     private BigDecimal duracionCurso;
-    private BigDecimal horasSemanales;
+    private Short duracionMeses;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private BigDecimal monto;
-    private Short duracionMeses;
+    private Short numeroCuotas;
     private String horario;
     
     // Información del docente

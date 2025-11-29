@@ -16,18 +16,8 @@ public class ProgramacionCursoListResponseDTO {
     private LocalDate fechaFin;
     private BigDecimal monto;
     private String nombreCursoDiplomado;
-    private Short duracionMeses;
+    private Short numeroCuotas;
     private String nombreDocente;
     private Long cantidadInscritos;
 
-    public ProgramacionCursoListResponseDTO(Integer idProgramacionCurso, LocalDate fechaInicio, LocalDate fechaFin, BigDecimal monto, String nombreCursoDiplomado, Short duracionMeses, String nombreDocente) {
-        this.idProgramacionCurso = idProgramacionCurso;
-        this.fechaInicio = fechaInicio;
-        this.fechaFin = fechaFin;
-        this.monto = monto;
-        this.nombreCursoDiplomado = nombreCursoDiplomado;
-        this.duracionMeses = duracionMeses;
-        this.nombreDocente = nombreDocente;
-        this.cantidadInscritos = 0L;
-    }
 }
