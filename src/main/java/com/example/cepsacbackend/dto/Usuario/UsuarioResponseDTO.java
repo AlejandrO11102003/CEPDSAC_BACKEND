@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import com.example.cepsacbackend.enums.Rol;
+import com.example.cepsacbackend.enums.EstadoUsuario;
 
 import lombok.AllArgsConstructor;
 
@@ -17,7 +18,7 @@ public class UsuarioResponseDTO {
     private String nombre;
     private String apellido;
     private String correo;
-    private boolean activo;
+    private EstadoUsuario estado;
     private String numeroCelular;
     private String numeroIdentificacion;
     private Short idPais;

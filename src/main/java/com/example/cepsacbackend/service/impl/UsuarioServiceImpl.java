@@ -6,6 +6,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,7 +81,10 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     @Transactional
-    @CacheEvict(value = "usuarios", key = "'all'")
+    @Caching(evict = {
+        @CacheEvict(value = "usuarios", key = "'all'"),
+        @CacheEvict(value = "usuarios", allEntries = true)
+    })
     @CachePut(value = "usuarios", key = "#result.idUsuario")
     public UsuarioResponseDTO crearUsuario(UsuarioCreateDTO dto) {
         if (usuarioRepository.existsByCorreo(dto.getCorreo())) {
@@ -153,7 +158,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Transactional
     @Caching(evict = {
         @CacheEvict(value = "usuarios", key = "'all'"),
-        @CacheEvict(value = "usuarios", key = "#idUsuario")
+        @CacheEvict(value = "usuarios", key = "#idUsuario"),
+        @CacheEvict(value = "usuarios", allEntries = true)
     })
     public void eliminarUsuario(Integer idUsuario) {
         Usuario usuario = usuarioRepository.findById(idUsuario)
@@ -167,7 +173,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     @Caching(evict = {
         @CacheEvict(value = "usuarios", key = "'all'"),
-        @CacheEvict(value = "usuarios", key = "#idUsuario")
+        @CacheEvict(value = "usuarios", key = "#idUsuario"),
+        @CacheEvict(value = "usuarios", allEntries = true)
     })
     public UsuarioResponseDTO restaurarUsuario(Integer idUsuario) {
         Usuario usuario = usuarioRepository.findByIdActivo(idUsuario)
@@ -196,5 +203,11 @@ public class UsuarioServiceImpl implements UsuarioService {
                 String.format("Usuario con ID %d no encontrado", idUsuario)));
         usuario.setPassword(passwordEncoder.encode(nuevaPassword));
         usuarioRepository.save(usuario);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<UsuarioListResponseDTO> listarAlumnosPaginado(String buscar, boolean soloConMatricula, Pageable pageable) {
+        return usuarioRepository.findAlumnosConFiltros(buscar, soloConMatricula, pageable);
     }
 }

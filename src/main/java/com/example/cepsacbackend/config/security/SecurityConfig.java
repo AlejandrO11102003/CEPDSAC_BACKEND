@@ -30,16 +30,18 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowCredentials(true);
         config.setAllowedOriginPatterns(List.of(
-            "http://127.0.0.1:3000",
-            "http://localhost:4200",
-            "http://localhost:4000",
-            "http://192.168.1.34:4200",
-            "https://*.ngrok-free.app"
+            "http://localhost:*",
+            "http://127.0.0.1:*",
+            "http://192.168.*:*",
+            "https://a3d8650985b2.ngrok-free.app"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
-        config.setAllowCredentials(true);
+        config.setAllowedHeaders(List.of("*"));
+        config.setExposedHeaders(List.of("*"));
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
@@ -77,8 +79,8 @@ public class SecurityConfig {
                 // config de stateless
                 .sessionManagement(manejoSesion -> manejoSesion.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // registrar filtros: primero rate limiting, luego jwt
-                .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(filtroJwt, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(filtroJwt, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(rateLimitingFilter, JwtFilter.class);
         return http.build();
     }
 }

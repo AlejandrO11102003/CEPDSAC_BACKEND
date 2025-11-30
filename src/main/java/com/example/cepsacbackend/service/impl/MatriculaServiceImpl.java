@@ -72,7 +72,7 @@ public class MatriculaServiceImpl implements MatriculaService {
     @Override
     @Transactional
     @Caching(evict = {
-        @CacheEvict(value = "matriculas", key = "'all'")
+        @CacheEvict(value = "matriculas", allEntries = true)
     })
     public Matricula crearMatricula(MatriculaCreateDTO dto) {
         if (dto.getIdProgramacionCurso() == null) {
@@ -239,8 +239,7 @@ public class MatriculaServiceImpl implements MatriculaService {
     @Override
     @Transactional
     @Caching(evict = {
-            @CacheEvict(value = "matriculas", key = "'all'"),
-            @CacheEvict(value = "matriculas", key = "'alumno_' + #result.alumno.idUsuario"),
+            @CacheEvict(value = "matriculas", allEntries = true),
             @CacheEvict(value = "matriculas-detalle", key = "#idMatricula")
     })
     public Matricula cancelarMatricula(Integer idMatricula) {
@@ -336,7 +335,7 @@ public class MatriculaServiceImpl implements MatriculaService {
     @Override
     @Transactional
     @Caching(evict = {
-            @CacheEvict(value = "matriculas", key = "'all'"),
+            @CacheEvict(value = "matriculas", allEntries = true),
             @CacheEvict(value = "matriculas-detalle", key = "#idMatricula")
     })
     public Matricula aplicarDescuentoAMatricula(@NonNull Integer idMatricula, AplicarDescuentoDTO dto) {
@@ -444,8 +443,7 @@ public class MatriculaServiceImpl implements MatriculaService {
     @Override
     @Transactional
     @Caching(evict = {
-            @CacheEvict(value = "matriculas", key = "'all'"),
-            @CacheEvict(value = "matriculas", key = "'alumno_' + #result.alumno.idUsuario"),
+            @CacheEvict(value = "matriculas", allEntries = true),
             @CacheEvict(value = "matriculas-detalle", key = "#idMatricula")
     })
     public Matricula confirmarPagoMatricula(Integer idMatricula) {
@@ -468,7 +466,7 @@ public class MatriculaServiceImpl implements MatriculaService {
     @Override
     @Transactional
     @Caching(evict = {
-            @CacheEvict(value = "matriculas", key = "'all'")
+            @CacheEvict(value = "matriculas", allEntries = true)
     })
     public List<Matricula> cancelarMatriculasPorProgramacion(Integer idProgramacionCurso, String motivo) {
         // validar que la programacion existe

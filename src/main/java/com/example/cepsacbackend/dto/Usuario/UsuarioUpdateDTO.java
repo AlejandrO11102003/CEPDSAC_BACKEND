@@ -2,6 +2,7 @@ package com.example.cepsacbackend.dto.Usuario;
 
 import com.example.cepsacbackend.enums.EstadoUsuario;
 import com.example.cepsacbackend.enums.Rol;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -18,6 +19,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UsuarioUpdateDTO {
 
     @NotNull(message = "El rol es obligatorio")
@@ -38,7 +40,6 @@ public class UsuarioUpdateDTO {
     @Size(max = 255, message = "El correo no puede exceder 255 caracteres")
     private String correo;
 
-    @NotBlank(message = "La contraseña es obligatoria")
     @Size(min = 8, max = 128, message = "La contraseña debe tener entre 8 y 128 caracteres")
     @Pattern(regexp = "(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).*",
         message = "La contraseña debe contener al menos: 1 minúscula, 1 mayúscula, 1 número y 1 carácter especial (@$!%*?&)")

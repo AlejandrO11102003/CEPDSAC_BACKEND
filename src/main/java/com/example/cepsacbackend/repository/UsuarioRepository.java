@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -31,7 +33,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
            "u.apellido, " +
            "u.correo, " +
            "u.rol, " +
-           "CASE WHEN u.estado = com.example.cepsacbackend.enums.EstadoUsuario.ACTIVO THEN true ELSE false END, " +
+           "u.estado, " +
            "u.tipoIdentificacion.iniciales, " +
            "u.numeroIdentificacion) " +
            "FROM Usuario u " +
@@ -46,7 +48,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
            "u.apellido, " +
            "u.correo, " +
            "u.rol, " +
-           "CASE WHEN u.estado = com.example.cepsacbackend.enums.EstadoUsuario.ACTIVO THEN true ELSE false END, " +
+           "u.estado, " +
            "u.tipoIdentificacion.iniciales, " +
            "u.numeroIdentificacion) " +
            "FROM Usuario u " +
@@ -67,4 +69,30 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
            "LEFT JOIN FETCH u.tipoIdentificacion " +
            "WHERE u.estado != com.example.cepsacbackend.enums.EstadoUsuario.SUSPENDIDO AND u.correo = :correo")
     Optional<Usuario> findByCorreoActivo(@Param("correo") String correo);
+
+    // paginacion y filtrado de alumnos
+    @Query("SELECT new com.example.cepsacbackend.dto.Usuario.UsuarioListResponseDTO(" +
+           "u.idUsuario, " +
+           "u.nombre, " +
+           "u.apellido, " +
+           "u.correo, " +
+           "u.rol, " +
+           "u.estado, " +
+           "u.tipoIdentificacion.iniciales, " +
+           "u.numeroIdentificacion) " +
+           "FROM Usuario u " +
+           "WHERE u.estado != com.example.cepsacbackend.enums.EstadoUsuario.SUSPENDIDO " +
+           "AND u.rol = 'ALUMNO' " +
+           "AND (:buscar IS NULL OR LOWER(u.nombre) LIKE LOWER(CONCAT('%', :buscar, '%')) " +
+           "OR LOWER(u.apellido) LIKE LOWER(CONCAT('%', :buscar, '%')) " +
+           "OR u.numeroIdentificacion LIKE CONCAT('%', :buscar, '%')) " +
+           "AND (:soloConMatricula = false OR EXISTS (" +
+           "  SELECT m FROM Matricula m WHERE m.alumno = u " +
+           "  AND m.estado IN (com.example.cepsacbackend.enums.EstadoMatricula.PENDIENTE, " +
+           "                   com.example.cepsacbackend.enums.EstadoMatricula.EN_PROCESO, " +
+           "                   com.example.cepsacbackend.enums.EstadoMatricula.PAGADO)))")
+    Page<com.example.cepsacbackend.dto.Usuario.UsuarioListResponseDTO> findAlumnosConFiltros(
+            @Param("buscar") String buscar, 
+            @Param("soloConMatricula") boolean soloConMatricula, 
+            Pageable pageable);
 }
