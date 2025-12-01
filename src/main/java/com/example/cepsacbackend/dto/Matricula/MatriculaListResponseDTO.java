@@ -35,4 +35,8 @@ public class MatriculaListResponseDTO {
     
     // Información adicional
     private Boolean pagoPersonalizado;
+
+    // AGREGA ESTOS DOS:
+    private String horario;
+    private String nombreDocente;
 }
