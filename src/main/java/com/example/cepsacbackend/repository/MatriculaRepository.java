@@ -46,52 +46,63 @@ public interface MatriculaRepository extends JpaRepository<Matricula, Integer> {
            "WHERE m.idMatricula = :id")
     Optional<Matricula> findByIdWithDetails(@Param("id") Integer id);
     
-    //uso dto projection para optimizar la consulta y traer solo los campos necesarios
-    @Query("SELECT NEW com.example.cepsacbackend.dto.Matricula.MatriculaListResponseDTO(" +
-           "m.idMatricula, " +
-           "m.fechaMatricula, " +
-           "m.estado, " +
-           "m.monto, " +
-           "a.nombre, " +
-           "a.apellido, " +
-           "a.correo, " +
-           "cd.titulo, " +
-           "c.nombre, " +
-           "COALESCE(d.valor, 0), " +
-           "COALESCE(m.montoDescontado, 0), " +
-           "m.pagoPersonalizado) " +
-           "FROM Matricula m " +
-           "JOIN m.alumno a " +
-           "JOIN m.programacionCurso pc " +
-           "JOIN pc.cursoDiplomado cd " +
-           "LEFT JOIN cd.categoria c " +
-           "LEFT JOIN m.descuento d " +
-           "ORDER BY m.fechaMatricula DESC")
-    List<MatriculaListResponseDTO> findAllAsListDTO();
-    
-    //uso dto projection para optimizar la consulta y traer solo los campos necesarios
-    @Query("SELECT NEW com.example.cepsacbackend.dto.Matricula.MatriculaListResponseDTO(" +
-           "m.idMatricula, " +
-           "m.fechaMatricula, " +
-           "m.estado, " +
-           "m.monto, " +
-           "a.nombre, " +
-           "a.apellido, " +
-           "a.correo, " +
-           "cd.titulo, " +
-           "c.nombre, " +
-           "COALESCE(d.valor, 0), " +
-           "COALESCE(m.montoDescontado, 0), " +
-           "m.pagoPersonalizado) " +
-           "FROM Matricula m " +
-           "JOIN m.alumno a " +
-           "JOIN m.programacionCurso pc " +
-           "JOIN pc.cursoDiplomado cd " +
-           "LEFT JOIN cd.categoria c " +
-           "LEFT JOIN m.descuento d " +
-           "WHERE a.idUsuario = :idAlumno " +
-           "ORDER BY m.fechaMatricula DESC")
-    List<MatriculaListResponseDTO> findByAlumnoIdAsListDTO(@Param("idAlumno") Integer idAlumno);
+    // 1. Para el ADMIN (Listar todas) - La que me pasaste modificada
+       @Query("SELECT NEW com.example.cepsacbackend.dto.Matricula.MatriculaListResponseDTO(" +
+              "m.idMatricula, " +
+              "m.fechaMatricula, " +
+              "m.estado, " +
+              "m.monto, " +
+              "a.nombre, " +
+              "a.apellido, " +
+              "a.correo, " +
+              "cd.titulo, " +
+              "c.nombre, " +
+              "COALESCE(d.valor, 0), " +
+              "COALESCE(m.montoDescontado, 0), " +
+              "m.pagoPersonalizado, " +
+              // --- NUEVOS CAMPOS ---
+              "pc.horario, " +                         // Agregamos horario
+              "CONCAT(doc.nombre, ' ', doc.apellido) " + // Agregamos nombre completo del docente
+              ") " +
+              "FROM Matricula m " +
+              "JOIN m.alumno a " +
+              "JOIN m.programacionCurso pc " +
+              "JOIN pc.cursoDiplomado cd " +
+              "LEFT JOIN pc.docente doc " +  // <--- IMPORTANTE: Unimos con la tabla docente
+              "LEFT JOIN cd.categoria c " +
+              "LEFT JOIN m.descuento d " +
+              "ORDER BY m.fechaMatricula DESC")
+       List<MatriculaListResponseDTO> findAllAsListDTO();
+
+
+       // 2. Para el ALUMNO (La que usa tu pantalla "UserCursos")
+       @Query("SELECT NEW com.example.cepsacbackend.dto.Matricula.MatriculaListResponseDTO(" +
+              "m.idMatricula, " +
+              "m.fechaMatricula, " +
+              "m.estado, " +
+              "m.monto, " +
+              "a.nombre, " +
+              "a.apellido, " +
+              "a.correo, " +
+              "cd.titulo, " +
+              "c.nombre, " +
+              "COALESCE(d.valor, 0), " +
+              "COALESCE(m.montoDescontado, 0), " +
+              "m.pagoPersonalizado, " +
+              // --- NUEVOS CAMPOS ---
+              "pc.horario, " +
+              "CONCAT(doc.nombre, ' ', doc.apellido) " +
+              ") " +
+              "FROM Matricula m " +
+              "JOIN m.alumno a " +
+              "JOIN m.programacionCurso pc " +
+              "JOIN pc.cursoDiplomado cd " +
+              "LEFT JOIN pc.docente doc " + // Unimos docente
+              "LEFT JOIN cd.categoria c " +
+              "LEFT JOIN m.descuento d " +
+              "WHERE a.idUsuario = :idAlumno " + // Filtramos por el alumno logueado
+              "ORDER BY m.fechaMatricula DESC")
+       List<MatriculaListResponseDTO> findByAlumnoIdAsListDTO(@Param("idAlumno") Integer idAlumno);
 
        // cuenta matriculas por estado
        long countByEstado(com.example.cepsacbackend.enums.EstadoMatricula estado);

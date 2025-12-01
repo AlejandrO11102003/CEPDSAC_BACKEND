@@ -1,11 +1,7 @@
 ### Variables de entorno
 @baseUrl = http://localhost:8080
 @contentType = application/json
-<<<<<<< HEAD
 @token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJpb0BnbWFpbC5jb20iLCJpYXQiOjE3NjQyOTI3NDQsImV4cCI6MTc2NDI5NjM0NH0.Zuy9h1AYFu0DqYpfa3eEO82mAh28LsBb3q6z_zZFrM4
-=======
-@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGVqYW5kcm9jYXN0aWxsb2phcmEzMEBnbWFpbC5jb20iLCJpYXQiOjE3NjQxMTYzOTYsImV4cCI6MTc2NDExOTk5Nn0.-BzTErbX9MIYxVFDfH-P4HBwwZrW3A0vdkMYN1kyzok
->>>>>>> 0adf8a673cbd805181cfc8473cbd5701e5f6a3e6
 ### MONITOR ENDPOINTS
 ### ===========================================
 

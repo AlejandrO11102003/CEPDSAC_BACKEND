@@ -39,4 +39,7 @@ public class MatriculaListResponseDTO {
     public String getNombreCompletoAlumno() {
         return this.nombreAlumno + " " + this.apellidoAlumno;
     }
+    // AGREGA ESTOS DOS:
+    private String horario;
+    private String nombreDocente;
 }

@@ -13,8 +13,7 @@ import java.util.List;
 @Repository
 public interface DescuentoAplicacionRepository extends JpaRepository<DescuentoAplicacion, Integer> {
 
-    // buscamos descuentos vigentes que apliquen a un curso o categoría 
-    // o que sean generales, ordenados por valor descendente
+    // Se eliminó el ORDER BY para evitar el error SQL 3065
     @Query("""
         SELECT DISTINCT d FROM DescuentoAplicacion da
         JOIN da.descuento d
@@ -27,14 +26,6 @@ public interface DescuentoAplicacionRepository extends JpaRepository<DescuentoAp
                 OR (da.tipoAplicacion = 'CATEGORIA' AND da.categoria.idCategoria = :idCategoria)
                 OR (da.tipoAplicacion = 'MATRICULA' AND da.matricula.idMatricula = :idMatricula)
             )
-            ORDER BY 
-                CASE 
-                    WHEN da.tipoAplicacion = 'MATRICULA' THEN 1
-                    WHEN da.tipoAplicacion = 'CURSO' THEN 2
-                    WHEN da.tipoAplicacion = 'CATEGORIA' THEN 3
-                    ELSE 4
-                END,
-                d.valor DESC
         """)
     List<Descuento> findDescuentosVigentes(@Param("idCurso") Short idCurso, @Param("idCategoria") Short idCategoria, @Param("idMatricula") Integer idMatricula);
 }
