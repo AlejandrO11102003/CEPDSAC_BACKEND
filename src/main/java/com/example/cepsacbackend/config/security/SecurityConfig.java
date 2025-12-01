@@ -57,7 +57,12 @@ public class SecurityConfig {
                         .requestMatchers("/api/monitor/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/images/**").permitAll() // servir img publicas
+                        .requestMatchers("/api/aplicaciondescuento/listar").permitAll() // config publica
+                        .requestMatchers("/api/aplicaciondescuento/obtener/**").permitAll() // config publica
+                        .requestMatchers("/api/descuentos/listar").permitAll() // descuentos publicos
+                        .requestMatchers("/api/descuentos/obtener/**").permitAll() // descuentos publicos
                         .requestMatchers(HttpMethod.GET, "/api/sponsors/listar").permitAll() // sponsors
+                        .requestMatchers(HttpMethod.GET, "/api/testimonios").permitAll() // testimonios publicos
                         .requestMatchers(HttpMethod.GET, "/api/cursos-diplomados/listar-index").permitAll() // todos para landing
                         .requestMatchers(HttpMethod.GET, "/api/cursos-diplomados/listar-cursos").permitAll() // solo cursos
                         .requestMatchers(HttpMethod.GET, "/api/cursos-diplomados/listar-diplomados").permitAll() // solo diplomados
