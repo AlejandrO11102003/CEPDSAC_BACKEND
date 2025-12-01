@@ -65,9 +65,10 @@ public class AuthController {
             final UserDetails detallesUsuario = userDetailsService.loadUserByUsername(peticion.getCorreo());
             final String tokenJwt = jwtService.generarToken(detallesUsuario); 
             CustomUserDetails customUserDetails = (CustomUserDetails) detallesUsuario;
+            Integer idUsuario = customUserDetails.getIdUsuario();
             Rol rol = Rol.valueOf(customUserDetails.getRol());
             String username = customUserDetails.getUsername();
-            return ResponseEntity.ok(AuthResponseDTO.builder().token(tokenJwt).rol(rol).username(username).build());
+            return ResponseEntity.ok(AuthResponseDTO.builder().token(tokenJwt).rol(rol).username(username).idUsuario(idUsuario).build());
         } catch (BadCredentialsException e) {
             throw new BadRequestException("Correo o contraseña incorrectos. Por favor, verifica tus credenciales e intenta nuevamente.");
         } catch (AuthenticationException e) {

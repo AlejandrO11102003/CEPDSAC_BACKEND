@@ -21,8 +21,8 @@ POST {{baseUrl}}/api/auth/login
 Content-Type: {{contentType}}
 
 {
-    "correo": "mario@gmail.com",
-    "password": "123456Aa@"
+    "correo": "alejandrocastillojara30@gmail.com",
+    "password": "1234"
 }
 
 ### Solicitar restablecimiento de contraseña (olvido de contraseña)

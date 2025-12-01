@@ -15,4 +15,5 @@ public class AuthResponseDTO {
     private String token; // jwt para devolver al user
     private Rol rol;
     private String username;
+    private Integer idUsuario;
 }
