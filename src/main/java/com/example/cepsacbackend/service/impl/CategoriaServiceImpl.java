@@ -30,6 +30,12 @@ public class CategoriaServiceImpl implements CategoriaService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<CategoriaResponseDTO> findAll() {
+        return mapper.toResponseDtoList(repository.findAll());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public CategoriaResponseDTO obtenerPorId(@NonNull Short id) {
         Categoria entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -53,5 +59,15 @@ public class CategoriaServiceImpl implements CategoriaService {
                 String.format("No se puede eliminar. La categoría con ID %d no existe.", id));
         }
         repository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public void cambiarEstado(@NonNull Short id) {
+        Categoria entity = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                    String.format("No se encontró la categoría con ID %d.", id)));
+        entity.setEstado(!entity.getEstado());
+        repository.save(entity);
     }
 }

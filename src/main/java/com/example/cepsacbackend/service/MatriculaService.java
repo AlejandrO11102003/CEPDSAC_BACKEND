@@ -6,6 +6,7 @@ import com.example.cepsacbackend.dto.Matricula.MatriculaCreateDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaDetalleResponseDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaListResponseDTO;
 import com.example.cepsacbackend.model.Matricula;
+import com.example.cepsacbackend.dto.Matricula.AlumnoMatriculadoDTO;
 
 import com.example.cepsacbackend.enums.EstadoMatricula;
 import org.springframework.data.domain.Page;
@@ -25,5 +26,6 @@ public interface MatriculaService {
     Matricula aplicarDescuentoAMatricula(Integer idMatricula, AplicarDescuentoDTO dto);
     Page<MatriculaAdminListDTO> listarMatriculasAdmin(String dni, EstadoMatricula estado, Pageable pageable);
     List<Matricula> cancelarMatriculasPorProgramacion(Integer idProgramacionCurso, String motivo);
+    List<AlumnoMatriculadoDTO> listarAlumnosPorProgramacion(Integer idProgramacion);
 
 }

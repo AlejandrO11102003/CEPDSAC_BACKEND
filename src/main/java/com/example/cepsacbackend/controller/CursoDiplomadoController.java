@@ -19,6 +19,8 @@ import com.example.cepsacbackend.dto.CursoDiplomado.CursoDiplomadoUpdateDTO;
 import com.example.cepsacbackend.dto.CursoDiplomado.CursoDetalleResponseDTO;
 import com.example.cepsacbackend.dto.CursoDiplomado.CursoIndexResponseDTO;
 import com.example.cepsacbackend.service.CursoDiplomadoService;
+import com.example.cepsacbackend.config.security.CustomUserDetails;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -84,5 +86,15 @@ public class CursoDiplomadoController {
     public ResponseEntity<Void> eliminar(@PathVariable Short id) {
         cursoDiplomadoService.eliminar(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/listar-cursos-docente")
+    public ResponseEntity<List<CursoIndexResponseDTO>> listarCursosDocente(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseEntity.ok(cursoDiplomadoService.listarCursosDocente(userDetails.getIdUsuario()));
+    }
+
+    @GetMapping("/listar-diplomados-docente")
+    public ResponseEntity<List<CursoIndexResponseDTO>> listarDiplomadosDocente(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseEntity.ok(cursoDiplomadoService.listarDiplomadosDocente(userDetails.getIdUsuario()));
     }
 }

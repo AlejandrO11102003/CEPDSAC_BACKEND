@@ -185,4 +185,29 @@ public class PagoServiceImpl implements PagoService {
         
         matriculaRepository.save(matricula);
     }
+    @Override
+    @Transactional(readOnly = true)
+    public List<PagoResponseDTO> listarPagosPorDevolver() {
+        return pagoMapper.toResponseDTOList(pagoRepository.findPagosPorDevolver());
+    }
+
+    @Override
+    @Transactional
+    public void marcarComoDevuelto(Integer idPago) {
+        Pago pago = pagoRepository.findById(idPago)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        String.format("No se encontró el pago con ID %d.", idPago)));
+        
+        if (pago.getEstadoCuota() != EstadoCuota.PAGADO) {
+            throw new BadRequestException("Solo se pueden devolver pagos que estén en estado PAGADO.");
+        }
+
+        if (pago.getMatricula().getEstado() != EstadoMatricula.CANCELADO) {
+            throw new BadRequestException("Solo se pueden devolver pagos de matrículas CANCELADAS.");
+        }
+
+        pago.setEstadoCuota(EstadoCuota.DEVUELTO);
+        pagoRepository.save(pago);
+        log.info("✓ Pago {} marcado como DEVUELTO", idPago);
+    }
 }

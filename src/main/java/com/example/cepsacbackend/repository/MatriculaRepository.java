@@ -14,6 +14,7 @@ import com.example.cepsacbackend.dto.Matricula.MatriculaAdminListDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaListResponseDTO;
 import com.example.cepsacbackend.enums.EstadoMatricula;
 import com.example.cepsacbackend.model.Matricula;
+import com.example.cepsacbackend.dto.Matricula.AlumnoMatriculadoDTO;
 
 @Repository
 public interface MatriculaRepository extends JpaRepository<Matricula, Integer> {
@@ -156,5 +157,25 @@ public interface MatriculaRepository extends JpaRepository<Matricula, Integer> {
 
        // contar inscritos por programacion
        long countByProgramacionCursoIdProgramacionCurso(Integer idProgramacionCurso);
+
+       // listar alumnos matriculados por programacion
+       @Query("SELECT NEW com.example.cepsacbackend.dto.Matricula.AlumnoMatriculadoDTO(" +
+              "m.idMatricula, " +
+              "a.idUsuario, " +
+              "a.nombre, " +
+              "a.apellido, " +
+              "a.correo, " +
+              "a.numeroIdentificacion, " +
+              "m.fechaMatricula, " +
+              "CAST(m.estado AS string)) " +
+              "FROM Matricula m " +
+              "JOIN m.alumno a " +
+              "WHERE m.programacionCurso.idProgramacionCurso = :idProgramacion " +
+              "AND m.estado IN :estados " +
+              "ORDER BY a.apellido ASC, a.nombre ASC")
+       List<AlumnoMatriculadoDTO> findAlumnosByProgramacionId(@Param("idProgramacion") Integer idProgramacion, @Param("estados") List<EstadoMatricula> estados);
+
+       // Debug method
+       List<Matricula> findByProgramacionCursoIdProgramacionCurso(Integer idProgramacionCurso);
 
 }

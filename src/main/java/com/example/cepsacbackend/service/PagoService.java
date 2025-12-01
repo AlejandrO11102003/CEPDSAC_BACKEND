@@ -15,4 +15,8 @@ public interface PagoService {
     List<PagoResponseDTO> listarPagosPorMatricula(Integer idMatricula);
     
     PagoResponseDTO actualizarPago(Integer id, PagoUpdateDTO dto);
+
+    List<PagoResponseDTO> listarPagosPorDevolver();
+
+    void marcarComoDevuelto(Integer idPago);
 }

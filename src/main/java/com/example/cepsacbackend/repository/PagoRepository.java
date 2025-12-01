@@ -22,4 +22,20 @@ public interface PagoRepository extends JpaRepository<Pago, Integer> {
             "JOIN FETCH p.matricula m " +
             "WHERE m.idMatricula = :idMatricula")
     List<Pago> findPagosConMatricula(@Param("idMatricula") Integer idMatricula);
+
+    @Query("SELECT p FROM Pago p WHERE p.estadoCuota = 'PAGADO' AND p.matricula.estado = 'CANCELADO'")
+    List<Pago> findPagosPorDevolver();
+
+    @Query("SELECT COALESCE(SUM(p.montoPagado), 0) FROM Pago p WHERE p.estadoCuota = 'PAGADO'")
+    Double sumTotalIngresos();
+
+    @Query(value = "SELECT " +
+            "DATE_FORMAT(p.fecha_pago, '%Y-%m') as mes, " +
+            "SUM(p.monto_pagado) as total " +
+            "FROM pago p " +
+            "WHERE p.estado_cuota = 'PAGADO' " +
+            "AND p.fecha_pago >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH) " +
+            "GROUP BY DATE_FORMAT(p.fecha_pago, '%Y-%m') " +
+            "ORDER BY mes ASC", nativeQuery = true)
+    List<Object[]> findIngresosPorMes();
 }

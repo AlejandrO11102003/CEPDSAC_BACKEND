@@ -23,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.example.cepsacbackend.config.security.CustomUserDetails;
 
 import com.example.cepsacbackend.dto.Matricula.MatriculaAdminListDTO;
+import com.example.cepsacbackend.dto.Matricula.AlumnoMatriculadoDTO;
 import com.example.cepsacbackend.dto.Matricula.AplicarDescuentoDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaCreateDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaDetalleResponseDTO;
@@ -564,5 +565,20 @@ public class MatriculaServiceImpl implements MatriculaService {
             case CANCELADO -> "CANCELADO";
             default -> estado.name();
         };
+    }
+    
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<AlumnoMatriculadoDTO> listarAlumnosPorProgramacion(Integer idProgramacion) {
+        // DEBUG: Check what exists in DB
+        List<Matricula> all = matriculaRepository.findByProgramacionCursoIdProgramacionCurso(idProgramacion);
+        System.out.println("DEBUG: Total matriculas found for programacion " + idProgramacion + ": " + all.size());
+        for (Matricula m : all) {
+            System.out.println("DEBUG: Matricula " + m.getIdMatricula() + " - Estado: " + m.getEstado() + " - Alumno: " + (m.getAlumno() != null ? m.getAlumno().getIdUsuario() : "null"));
+        }
+
+        List<EstadoMatricula> estadosActivos = List.of(EstadoMatricula.EN_PROCESO, EstadoMatricula.PAGADO, EstadoMatricula.PENDIENTE);
+        return matriculaRepository.findAlumnosByProgramacionId(idProgramacion, estadosActivos);
     }
 }

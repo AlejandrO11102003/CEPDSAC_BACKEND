@@ -67,12 +67,13 @@ public interface CursoDiplomadoRepository extends JpaRepository<CursoDiplomado, 
            "c.urlCurso, " +
            "c.titulo, " +
            "cat.idCategoria, " +
-           "cat.nombre) " +
+           "cat.nombre, " +
+           "cat.estado) " +
            "FROM CursoDiplomado c " +
            "LEFT JOIN c.categoria cat " +
            "JOIN ProgramacionCurso pc ON pc.cursoDiplomado.idCursoDiplomado = c.idCursoDiplomado " +
            "WHERE pc.fechaFin > CURRENT_DATE " +
-           "GROUP BY c.idCursoDiplomado, c.urlCurso, c.titulo, cat.idCategoria, cat.nombre")
+           "GROUP BY c.idCursoDiplomado, c.urlCurso, c.titulo, cat.idCategoria, cat.nombre, cat.estado")
     List<CursoIndexResponseDTO> findAllWithAvailableProgramacionDTO();
     
     // obtener SOLO CURSOS (tipo=false) con programaciones disponibles
@@ -81,12 +82,13 @@ public interface CursoDiplomadoRepository extends JpaRepository<CursoDiplomado, 
            "c.urlCurso, " +
            "c.titulo, " +
            "cat.idCategoria, " +
-           "cat.nombre) " +
+           "cat.nombre, " +
+           "cat.estado) " +
            "FROM CursoDiplomado c " +
            "LEFT JOIN c.categoria cat " +
            "JOIN ProgramacionCurso pc ON pc.cursoDiplomado.idCursoDiplomado = c.idCursoDiplomado " +
            "WHERE pc.fechaFin > CURRENT_DATE AND c.tipo = false " +
-           "GROUP BY c.idCursoDiplomado, c.urlCurso, c.titulo, cat.idCategoria, cat.nombre")
+           "GROUP BY c.idCursoDiplomado, c.urlCurso, c.titulo, cat.idCategoria, cat.nombre, cat.estado")
     List<CursoIndexResponseDTO> findCursosWithAvailableProgramacionDTO();
     
     // obtener SOLO DIPLOMADOS (tipo=true) con programaciones disponibles
@@ -95,11 +97,40 @@ public interface CursoDiplomadoRepository extends JpaRepository<CursoDiplomado, 
            "c.urlCurso, " +
            "c.titulo, " +
            "cat.idCategoria, " +
-           "cat.nombre) " +
+           "cat.nombre, " +
+           "cat.estado) " +
            "FROM CursoDiplomado c " +
            "LEFT JOIN c.categoria cat " +
            "JOIN ProgramacionCurso pc ON pc.cursoDiplomado.idCursoDiplomado = c.idCursoDiplomado " +
            "WHERE pc.fechaFin > CURRENT_DATE AND c.tipo = true " +
-           "GROUP BY c.idCursoDiplomado, c.urlCurso, c.titulo, cat.idCategoria, cat.nombre")
+           "GROUP BY c.idCursoDiplomado, c.urlCurso, c.titulo, cat.idCategoria, cat.nombre, cat.estado")
     List<CursoIndexResponseDTO> findDiplomadosWithAvailableProgramacionDTO();
+
+    @Query("SELECT new com.example.cepsacbackend.dto.CursoDiplomado.CursoIndexResponseDTO(" +
+           "c.idCursoDiplomado, " +
+           "c.urlCurso, " +
+           "c.titulo, " +
+           "cat.idCategoria, " +
+           "cat.nombre, " +
+           "cat.estado) " +
+           "FROM CursoDiplomado c " +
+           "LEFT JOIN c.categoria cat " +
+           "JOIN ProgramacionCurso pc ON pc.cursoDiplomado.idCursoDiplomado = c.idCursoDiplomado " +
+           "WHERE c.tipo = false AND pc.docente.idUsuario = :idDocente " +
+           "GROUP BY c.idCursoDiplomado, c.urlCurso, c.titulo, cat.idCategoria, cat.nombre, cat.estado")
+    List<CursoIndexResponseDTO> findAllCursosDocente(@Param("idDocente") Integer idDocente);
+
+    @Query("SELECT new com.example.cepsacbackend.dto.CursoDiplomado.CursoIndexResponseDTO(" +
+           "c.idCursoDiplomado, " +
+           "c.urlCurso, " +
+           "c.titulo, " +
+           "cat.idCategoria, " +
+           "cat.nombre, " +
+           "cat.estado) " +
+           "FROM CursoDiplomado c " +
+           "LEFT JOIN c.categoria cat " +
+           "JOIN ProgramacionCurso pc ON pc.cursoDiplomado.idCursoDiplomado = c.idCursoDiplomado " +
+           "WHERE c.tipo = true AND pc.docente.idUsuario = :idDocente " +
+           "GROUP BY c.idCursoDiplomado, c.urlCurso, c.titulo, cat.idCategoria, cat.nombre, cat.estado")
+    List<CursoIndexResponseDTO> findAllDiplomadosDocente(@Param("idDocente") Integer idDocente);
 }

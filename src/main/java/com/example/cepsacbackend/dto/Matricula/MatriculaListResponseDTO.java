@@ -35,4 +35,8 @@ public class MatriculaListResponseDTO {
     
     // Información adicional
     private Boolean pagoPersonalizado;
+
+    public String getNombreCompletoAlumno() {
+        return this.nombreAlumno + " " + this.apellidoAlumno;
+    }
 }

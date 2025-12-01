@@ -29,4 +29,10 @@ public class PagoResponseDTO{
 
         private String numeroOperacion;
         private String observaciones;
+
+        // Campos adicionales para devoluciones
+        private String nombreAlumno;
+        private String emailAlumno;
+        private String nombreCurso;
+        private String nombreMetodoPago;
 }

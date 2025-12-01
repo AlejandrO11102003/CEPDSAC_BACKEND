@@ -36,4 +36,15 @@ public class PagoController {
         PagoResponseDTO response = pagoService.actualizarPago(id, dto);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/por-devolver")
+    public ResponseEntity<List<PagoResponseDTO>> listarPagosPorDevolver() {
+        return ResponseEntity.ok(pagoService.listarPagosPorDevolver());
+    }
+
+    @PostMapping("/{id}/devolver")
+    public ResponseEntity<Void> marcarComoDevuelto(@PathVariable Integer id) {
+        pagoService.marcarComoDevuelto(id);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -97,4 +97,10 @@ public class MatriculaController {
                 .toList();
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/listar-alumnos-programacion/{idProgramacion}")
+    public ResponseEntity<List<com.example.cepsacbackend.dto.Matricula.AlumnoMatriculadoDTO>> listarAlumnosPorProgramacion(
+            @PathVariable Integer idProgramacion) {
+        return ResponseEntity.ok(matriculaService.listarAlumnosPorProgramacion(idProgramacion));
+    }
 }

@@ -12,6 +12,10 @@ public interface PagoMapper {
 
     @Mapping(target = "metodoPagoDescripcion", source = "metodoPago.descripcion")
     @Mapping(target = "tipoMetodo", source = "metodoPago.tipoMetodo")
+    @Mapping(target = "nombreAlumno", source = "matricula.alumno.nombre")
+    @Mapping(target = "emailAlumno", source = "matricula.alumno.correo")
+    @Mapping(target = "nombreCurso", expression = "java(pago.getMatricula().getProgramacionCurso().getCursoDiplomado() != null ? pago.getMatricula().getProgramacionCurso().getCursoDiplomado().getTitulo() : \"\")")
+    @Mapping(target = "nombreMetodoPago", source = "metodoPago.descripcion")
     PagoResponseDTO toResponseDTO(Pago pago);
 
     List<PagoResponseDTO> toResponseDTOList(List<Pago> pagos);

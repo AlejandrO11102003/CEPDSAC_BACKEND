@@ -4,5 +4,6 @@ public enum EstadoCuota {
     PENDIENTE,
     PAGADO,
     VENCIDO,
-    CANCELADO
+    CANCELADO,
+    DEVUELTO
 }

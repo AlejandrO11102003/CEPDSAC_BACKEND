@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoRequestDTO;
 import com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoListResponseDTO;
 import com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoResponseDTO;
+import com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoSimpleDTO;
 import com.example.cepsacbackend.service.ProgramacionCursoService;
+import com.example.cepsacbackend.config.security.CustomUserDetails;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -58,5 +61,12 @@ public class ProgramacionCursoController {
     public ResponseEntity<Void> deleteProgramacionCurso(@PathVariable int id) {
         programacionCursoService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/docente/curso/{idCurso}")
+    public ResponseEntity<List<ProgramacionCursoSimpleDTO>> listarProgramacionesPorCursoDocente(
+            @PathVariable Short idCurso,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseEntity.ok(programacionCursoService.listarProgramacionesPorCursoDocente(idCurso, userDetails.getIdUsuario()));
     }
 }

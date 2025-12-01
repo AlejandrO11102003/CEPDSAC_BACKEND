@@ -1,3 +1,4 @@
+
 package com.example.cepsacbackend.service.impl;
 
 import com.example.cepsacbackend.dto.CursoDiplomado.CursoDiplomadoCreateDTO;
@@ -149,5 +150,17 @@ public class CursoDiplomadoServiceImpl implements CursoDiplomadoService {
     public List<CursoIndexResponseDTO> listarDiplomados() {
         // solo DIPLOMADOS (tipo=true) con programaciones disponibles
         return repository.findDiplomadosWithAvailableProgramacionDTO();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CursoIndexResponseDTO> listarCursosDocente(Integer idDocente) {
+        return repository.findAllCursosDocente(idDocente);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CursoIndexResponseDTO> listarDiplomadosDocente(Integer idDocente) {
+        return repository.findAllDiplomadosDocente(idDocente);
     }
 }

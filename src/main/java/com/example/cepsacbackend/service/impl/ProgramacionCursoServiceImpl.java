@@ -13,6 +13,7 @@ import com.example.cepsacbackend.repository.UsuarioRepository;
 import com.example.cepsacbackend.repository.MatriculaRepository;
 import com.example.cepsacbackend.service.ProgramacionCursoService;
 import com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoListResponseDTO;
+import com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoSimpleDTO;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -118,5 +119,11 @@ public class ProgramacionCursoServiceImpl implements ProgramacionCursoService {
                 String.format("No se puede eliminar. La programación de curso con ID %d no existe.", id));
         }
         programacionCursoRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProgramacionCursoSimpleDTO> listarProgramacionesPorCursoDocente(Short idCurso, Integer idDocente) {
+        return programacionCursoRepository.findAvailableByCursoIdAndDocenteId(idCurso, idDocente);
     }
 }

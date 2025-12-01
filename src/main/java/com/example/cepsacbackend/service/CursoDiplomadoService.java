@@ -20,4 +20,6 @@ public interface CursoDiplomadoService {
     List<CursoIndexResponseDTO> listarDiplomados();
     List<CursoDiplomadoResponseDTO> listarCursosAdmin();
     List<CursoDiplomadoResponseDTO> listarDiplomadosAdmin();
+    List<CursoIndexResponseDTO> listarCursosDocente(Integer idDocente);
+    List<CursoIndexResponseDTO> listarDiplomadosDocente(Integer idDocente);
 }

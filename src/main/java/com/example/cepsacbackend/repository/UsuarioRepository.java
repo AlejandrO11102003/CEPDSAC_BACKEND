@@ -110,4 +110,5 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
            "AND u.rol = 'ALUMNO' " +
            "ORDER BY u.nombre")
     List<com.example.cepsacbackend.dto.Usuario.UsuarioListResponseDTO> findAlumnosSuspendidos();
+    long countByRol(Rol rol);
 }

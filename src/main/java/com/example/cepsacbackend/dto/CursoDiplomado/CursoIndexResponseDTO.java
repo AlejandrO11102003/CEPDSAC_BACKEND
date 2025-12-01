@@ -13,13 +13,12 @@ public class CursoIndexResponseDTO {
     private String titulo;
     private CategoriaSimpleDTO categoria;
 
-    // Constructor para DTO projection (sin categoria anidada)
     public CursoIndexResponseDTO(Short idCursoDiplomado, String urlCurso, String titulo, 
-                                  Short idCategoria, String nombreCategoria) {
+                                  Short idCategoria, String nombreCategoria, Boolean estadoCategoria) {
         this.idCursoDiplomado = idCursoDiplomado;
         this.urlCurso = urlCurso;
         this.titulo = titulo;
-        this.categoria = new CategoriaSimpleDTO(idCategoria, nombreCategoria);
+        this.categoria = new CategoriaSimpleDTO(idCategoria, nombreCategoria, estadoCategoria);
     }
 
     @Data
@@ -28,5 +27,6 @@ public class CursoIndexResponseDTO {
     public static class CategoriaSimpleDTO {
         private Short idCategoria;
         private String nombre;
+        private Boolean estado;
     }
 }
