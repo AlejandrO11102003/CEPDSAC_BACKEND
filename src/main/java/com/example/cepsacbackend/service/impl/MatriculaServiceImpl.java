@@ -2,7 +2,9 @@ package com.example.cepsacbackend.service.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -293,7 +295,6 @@ public class MatriculaServiceImpl implements MatriculaService {
         List<Pago> cuotas = new ArrayList<>();
         ProgramacionCurso programacion = matricula.getProgramacionCurso();
         Short numeroCuotas = programacion.getNumeroCuotas();
-
         if (numeroCuotas == null || numeroCuotas <= 0) {
             return cuotas;
         }
@@ -305,11 +306,17 @@ public class MatriculaServiceImpl implements MatriculaService {
         // ajusto la diferencia de redondeo en la ultima cuota para que sume exacto
         BigDecimal sumaTemporalCuotas = montoPorCuota.multiply(BigDecimal.valueOf(numeroCuotas));
         BigDecimal diferencia = montoTotal.subtract(sumaTemporalCuotas);
-        // obtengo la fecha de inicio del curso para calcular los vencimientos
-        LocalDate fechaInicio = programacion.getFechaInicio();
-        if (fechaInicio == null) {
-            fechaInicio = LocalDate.now(); // uso fecha actual si no hay fecha de inicio configurada
+        // obtengo la fecha de inicio y fin del curso para calcular los vencimientos
+        LocalDate fechaInicioCurso = programacion.getFechaInicio();
+        LocalDate fechaFinCurso = programacion.getFechaFin();
+        if (fechaInicioCurso == null) {
+            fechaInicioCurso = LocalDate.now(); // uso fecha actual si no hay fecha de inicio configurada
         }
+        if (fechaFinCurso == null) {
+            fechaFinCurso = fechaInicioCurso.plusMonths(numeroCuotas - 1); //disminuir 1 cuota en agregacion de meses
+        }
+        // put fechavencimiento 4 dias despues del inicio del curso
+        LocalDate primerVencimientoBase = addBusinessDays(fechaInicioCurso, 4);
         // genero una cuota por cada mes de duracion del curso
         for (short i = 1; i <= numeroCuotas; i++) {
             Pago cuota = new Pago();
@@ -321,7 +328,20 @@ public class MatriculaServiceImpl implements MatriculaService {
                 montoCuota = montoCuota.add(diferencia);
             }
             cuota.setMonto(montoCuota);
-            cuota.setFechaVencimiento(fechaInicio.plusMonths(i - 1)); // vencimiento mensual desde el inicio
+            //validacion para numero de cuotas
+            LocalDate fechaVencimiento;
+            if (i == 1) {
+                // Primer pago: 4 días hábiles después de la fecha de inicio del curso
+                fechaVencimiento = primerVencimientoBase;
+            } else if (i == numeroCuotas) {
+                // Último pago: 4 días antes de la fecha de fin del curso
+                fechaVencimiento = fechaFinCurso.minusDays(4);
+            } else {
+                long diasTotales = ChronoUnit.DAYS.between(fechaInicioCurso, fechaFinCurso);
+                long diasPorCuota = diasTotales / numeroCuotas;
+                fechaVencimiento = fechaInicioCurso.plusDays(diasPorCuota * (i - 1));
+            }
+            cuota.setFechaVencimiento(fechaVencimiento);
             cuota.setEstadoCuota(EstadoCuota.PENDIENTE);
             cuota.setMontoPagado(BigDecimal.ZERO);
             cuota.setEsAutomatico(true);
@@ -332,6 +352,19 @@ public class MatriculaServiceImpl implements MatriculaService {
         return cuotas;
     }
 
+    // metodo para añadir dias a las fechas usadas reuslday response
+    private LocalDate addBusinessDays(LocalDate initialDate, int daysToAdd) {
+        LocalDate resultDate = initialDate;
+        int addedDays = 0;
+        while (addedDays < daysToAdd) {
+            resultDate = resultDate.plusDays(1);
+            if (resultDate.getDayOfWeek() != DayOfWeek.SATURDAY && resultDate.getDayOfWeek() != DayOfWeek.SUNDAY) {
+                addedDays++;
+            }
+        }
+        return resultDate;
+    }
+
     @Override
     @Transactional
     @Caching(evict = {
@@ -339,7 +372,8 @@ public class MatriculaServiceImpl implements MatriculaService {
             @CacheEvict(value = "matriculas-detalle", key = "#idMatricula")
     })
     public Matricula aplicarDescuentoAMatricula(@NonNull Integer idMatricula, AplicarDescuentoDTO dto) {
-        // cargo la matricula con todos sus detalles
+        // cargo la matricula  // Pagos intermedios: mensual desde la fecha de inicio del curso
+                // Se mantiene la lógica anterior para mantener la consistencia mensualcon todos sus detalles
         Matricula matricula = matriculaRepository.findByIdWithDetails(idMatricula)
                 .orElseThrow(() -> new com.example.cepsacbackend.exception.ResourceNotFoundException(
                         String.format("No se encontró la matrícula con ID %d.", idMatricula)));
@@ -506,13 +540,11 @@ public class MatriculaServiceImpl implements MatriculaService {
             String motivoCancelacion = motivo != null && !motivo.isBlank() 
                     ? motivo 
                     : "No se alcanzó el cupo mínimo de estudiantes";
-            
             emailService.enviarEmailCancelacionMasiva(correosAlumnos, tituloCurso, motivoCancelacion);
         }
         // actualizar estado de la programacion a CANCELADO
         programacion.setEstado(EstadoProgramacion.CANCELADO);
         programacionCursoRepository.save(programacion);
-        
         return matriculasCanceladas;
     }
 

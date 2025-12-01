@@ -24,7 +24,6 @@ import com.example.cepsacbackend.repository.MetodoPagoRepository;
 import com.example.cepsacbackend.repository.PagoRepository;
 import com.example.cepsacbackend.service.PagoService;
 import com.example.cepsacbackend.exception.BadRequestException;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +58,10 @@ public class PagoServiceImpl implements PagoService {
                 .filter(p -> EstadoCuota.PENDIENTE.equals(p.getEstadoCuota()))
                 .findFirst()
                 .orElse(null);
-
+        if (EstadoMatricula.CANCELADO.equals(matricula.getEstado())) {
+            throw new BadRequestException(
+                "La matrícula ya está cancelada. No se puede registrar un nuevo pago.");
+        }
         //determino el monto real a pagar
         BigDecimal montoPagar;
         if (cuotaPendiente != null) {
