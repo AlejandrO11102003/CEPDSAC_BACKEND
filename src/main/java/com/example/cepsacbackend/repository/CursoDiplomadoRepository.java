@@ -87,7 +87,7 @@ public interface CursoDiplomadoRepository extends JpaRepository<CursoDiplomado, 
            "FROM CursoDiplomado c " +
            "LEFT JOIN c.categoria cat " +
            "JOIN ProgramacionCurso pc ON pc.cursoDiplomado.idCursoDiplomado = c.idCursoDiplomado " +
-           "WHERE pc.fechaFin > CURRENT_DATE AND c.tipo = false " +
+           "WHERE pc.fechaFin > CURRENT_DATE AND pc.fechaInicio >= CURRENT_DATE AND pc.estado = com.example.cepsacbackend.enums.EstadoProgramacion.ACTIVO AND c.tipo = false " +
            "GROUP BY c.idCursoDiplomado, c.urlCurso, c.titulo, cat.idCategoria, cat.nombre, cat.estado")
     List<CursoIndexResponseDTO> findCursosWithAvailableProgramacionDTO();
     
@@ -102,7 +102,7 @@ public interface CursoDiplomadoRepository extends JpaRepository<CursoDiplomado, 
            "FROM CursoDiplomado c " +
            "LEFT JOIN c.categoria cat " +
            "JOIN ProgramacionCurso pc ON pc.cursoDiplomado.idCursoDiplomado = c.idCursoDiplomado " +
-           "WHERE pc.fechaFin > CURRENT_DATE AND c.tipo = true " +
+           "WHERE pc.fechaFin > CURRENT_DATE AND pc.fechaInicio >= CURRENT_DATE AND pc.estado = com.example.cepsacbackend.enums.EstadoProgramacion.ACTIVO AND c.tipo = true " +
            "GROUP BY c.idCursoDiplomado, c.urlCurso, c.titulo, cat.idCategoria, cat.nombre, cat.estado")
     List<CursoIndexResponseDTO> findDiplomadosWithAvailableProgramacionDTO();
 
