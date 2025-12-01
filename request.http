@@ -1,7 +1,11 @@
 ### Variables de entorno
 @baseUrl = http://localhost:8080
 @contentType = application/json
+<<<<<<< HEAD
+@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJpb0BnbWFpbC5jb20iLCJpYXQiOjE3NjQyOTI3NDQsImV4cCI6MTc2NDI5NjM0NH0.Zuy9h1AYFu0DqYpfa3eEO82mAh28LsBb3q6z_zZFrM4
+=======
 @token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGVqYW5kcm9jYXN0aWxsb2phcmEzMEBnbWFpbC5jb20iLCJpYXQiOjE3NjQxMTYzOTYsImV4cCI6MTc2NDExOTk5Nn0.-BzTErbX9MIYxVFDfH-P4HBwwZrW3A0vdkMYN1kyzok
+>>>>>>> 0adf8a673cbd805181cfc8473cbd5701e5f6a3e6
 ### MONITOR ENDPOINTS
 ### ===========================================
 
@@ -17,8 +21,8 @@ POST {{baseUrl}}/api/auth/login
 Content-Type: {{contentType}}
 
 {
-    "correo": "alejandrocastillojara30@gmail.com",
-    "password": "1234"
+    "correo": "mario@gmail.com",
+    "password": "123456Aa@"
 }
 
 ### Solicitar restablecimiento de contraseña (olvido de contraseña)
@@ -51,7 +55,7 @@ GET {{baseUrl}}/api/usuarios/listar/ADMINISTRADOR
 Authorization: Bearer {{token}}
 
 ### Obtener usuario por ID
-GET {{baseUrl}}/api/usuarios/21
+GET {{baseUrl}}/api/usuarios/118
 Authorization: Bearer {{token}}
 
 ### Crear usuario
@@ -60,19 +64,19 @@ Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
 {
-    "correo": "alumno@gmail.com",
-    "password": "123456Aa!",
-    "nombre": "Luchito",
-    "apellido": "Castillo J",
+    "correo": "mario@gmail.com",
+    "password": "123456Aa@",
+    "nombre": "Mario",
+    "apellido": "Pinzón",
     "numeroCelular": "123456789",
-    "rol": "ALUMNO",
-    "numeroIdentificacion": "87614321",
+    "rol": "ADMINISTRADOR",
+    "numeroIdentificacion": "12345678",
     "nombrePais": "Perú",
     "idTipoIdentificacion": 1
 }
 
 ### Actualizar usuario (PUT)
-PUT {{baseUrl}}/api/usuarios/28
+PUT {{baseUrl}}/api/usuarios/118
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
