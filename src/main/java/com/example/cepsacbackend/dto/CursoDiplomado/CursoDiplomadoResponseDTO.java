@@ -15,4 +15,15 @@ public class CursoDiplomadoResponseDTO {
     private String titulo;
     private String urlCurso;
     private String objetivo;
+
+    public CursoDiplomadoResponseDTO(Short idCursoDiplomado, Short idCategoria, String nombreCategoria, Boolean tipo, Boolean otorgaCertificado, String titulo, String urlCurso, String objetivo) {
+        this.idCursoDiplomado = idCursoDiplomado;
+        this.idCategoria = idCategoria;
+        this.nombreCategoria = nombreCategoria;
+        this.tipo = Boolean.TRUE.equals(tipo) ? "DIPLOMADO" : "CURSO";
+        this.otorgaCertificado = otorgaCertificado;
+        this.titulo = titulo;
+        this.urlCurso = urlCurso;
+        this.objetivo = objetivo;
+    }
 }

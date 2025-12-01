@@ -38,6 +38,18 @@ public class CursoDiplomadoServiceImpl implements CursoDiplomadoService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<CursoDiplomadoResponseDTO> listarDiplomadosAdmin() {
+        return repository.findAllDiplomadosAdmin();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CursoDiplomadoResponseDTO> listarCursosAdmin() {
+        return repository.findAllCursosAdmin();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public CursoDiplomadoResponseDTO obtenerPorId(Short id) {
         CursoDiplomado entity = repository.findByIdWithCategoria(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -96,7 +108,6 @@ public class CursoDiplomadoServiceImpl implements CursoDiplomadoService {
         CursoDiplomado entity = repository.findById(idCursoDiplomado)
                 .orElseThrow(() -> new ResourceNotFoundException(
                     String.format("No se puede actualizar. El curso/diplomado con ID %d no existe.", idCursoDiplomado)));
-
         mapper.updateEntityFromDto(dto, entity);
         if (dto.getIdCategoria() != null) {
             Categoria categoria = categoriaRepository.findById(dto.getIdCategoria())

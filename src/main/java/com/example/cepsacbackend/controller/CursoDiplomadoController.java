@@ -50,6 +50,16 @@ public class CursoDiplomadoController {
         return ResponseEntity.ok(cursoDiplomadoService.listarDiplomados());
     }
 
+    @GetMapping("/listar-cursos-admin")
+    public ResponseEntity<List<CursoDiplomadoResponseDTO>> listarCursosAdmin() {
+        return ResponseEntity.ok(cursoDiplomadoService.listarCursosAdmin());
+    }
+
+    @GetMapping("/listar-diplomados-admin")
+    public ResponseEntity<List<CursoDiplomadoResponseDTO>> listarDiplomadosAdmin() {
+        return ResponseEntity.ok(cursoDiplomadoService.listarDiplomadosAdmin());
+    }
+
     @GetMapping("/obtener/{id}")
     public ResponseEntity<CursoDiplomadoResponseDTO> obtenerPorId(@PathVariable Short id) {
         return ResponseEntity.ok(cursoDiplomadoService.obtenerPorId(id));
