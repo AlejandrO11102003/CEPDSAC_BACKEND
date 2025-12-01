@@ -26,4 +26,6 @@ public class CursoDiplomadoCreateDTO {
     private String titulo;
     private String urlCurso;
     private String objetivo;
+    private String materialesIncluidos;
+    private String requisitos;
 }

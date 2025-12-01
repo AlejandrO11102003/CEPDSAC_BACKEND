@@ -27,7 +27,9 @@ public interface CursoDiplomadoRepository extends JpaRepository<CursoDiplomado, 
            "c.otorgaCertificado, " +
            "c.titulo, " +
            "c.urlCurso, " +
-           "c.objetivo) " +
+           "c.objetivo, " +
+           "c.materialesIncluidos, " +
+           "c.requisitos) " +
            "FROM CursoDiplomado c " +
            "LEFT JOIN c.categoria cat " +
            "WHERE c.tipo = false")
@@ -41,7 +43,9 @@ public interface CursoDiplomadoRepository extends JpaRepository<CursoDiplomado, 
            "c.otorgaCertificado, " +
            "c.titulo, " +
            "c.urlCurso, " +
-           "c.objetivo) " +
+           "c.objetivo, " +
+           "c.materialesIncluidos, " +
+           "c.requisitos) " +
            "FROM CursoDiplomado c " +
            "LEFT JOIN c.categoria cat " +
            "WHERE c.tipo = true")
