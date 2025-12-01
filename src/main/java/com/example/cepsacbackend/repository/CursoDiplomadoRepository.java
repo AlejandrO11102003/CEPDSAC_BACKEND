@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.cepsacbackend.dto.CursoDiplomado.CursoIndexResponseDTO;
+import com.example.cepsacbackend.dto.CursoDiplomado.CursoDiplomadoResponseDTO;
 import com.example.cepsacbackend.model.CursoDiplomado;
 
 import java.util.Optional;
@@ -17,6 +18,38 @@ public interface CursoDiplomadoRepository extends JpaRepository<CursoDiplomado, 
     // cargamos la categoria junto con el curso/diplomado
     @Query("SELECT c FROM CursoDiplomado c LEFT JOIN FETCH c.categoria")
     List<CursoDiplomado> findAllWithCategoria();
+
+    @Query("SELECT new com.example.cepsacbackend.dto.CursoDiplomado.CursoDiplomadoResponseDTO(" +
+           "c.idCursoDiplomado, " +
+           "cat.idCategoria, " +
+           "cat.nombre, " +
+           "c.tipo, " +
+           "c.otorgaCertificado, " +
+           "c.titulo, " +
+           "c.urlCurso, " +
+           "c.objetivo, " +
+           "c.materialesIncluidos, " +
+           "c.requisitos) " +
+           "FROM CursoDiplomado c " +
+           "LEFT JOIN c.categoria cat " +
+           "WHERE c.tipo = false")
+    List<CursoDiplomadoResponseDTO> findAllCursosAdmin();
+
+    @Query("SELECT new com.example.cepsacbackend.dto.CursoDiplomado.CursoDiplomadoResponseDTO(" +
+           "c.idCursoDiplomado, " +
+           "cat.idCategoria, " +
+           "cat.nombre, " +
+           "c.tipo, " +
+           "c.otorgaCertificado, " +
+           "c.titulo, " +
+           "c.urlCurso, " +
+           "c.objetivo, " +
+           "c.materialesIncluidos, " +
+           "c.requisitos) " +
+           "FROM CursoDiplomado c " +
+           "LEFT JOIN c.categoria cat " +
+           "WHERE c.tipo = true")
+    List<CursoDiplomadoResponseDTO> findAllDiplomadosAdmin();
     
     // cargamos la categoria junto con el curso/diplomado por id
     @Query("SELECT c FROM CursoDiplomado c LEFT JOIN FETCH c.categoria WHERE c.idCursoDiplomado = :id")

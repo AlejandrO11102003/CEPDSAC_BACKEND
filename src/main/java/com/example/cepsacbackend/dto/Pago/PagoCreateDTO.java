@@ -20,4 +20,8 @@ public class PagoCreateDTO{
     
     @Positive(message = "El monto debe ser mayor a cero")
     private BigDecimal monto; //opcional , si no lo enviamos usa el automatico creado en cuota
+
+    private String numeroOperacion;
+    private String observaciones;
+    private java.time.LocalDateTime fechaPago;
 }

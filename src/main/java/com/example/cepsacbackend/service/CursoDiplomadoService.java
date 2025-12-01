@@ -18,4 +18,6 @@ public interface CursoDiplomadoService {
     List<CursoIndexResponseDTO> listarIndex();
     List<CursoIndexResponseDTO> listarCursos();
     List<CursoIndexResponseDTO> listarDiplomados();
+    List<CursoDiplomadoResponseDTO> listarCursosAdmin();
+    List<CursoDiplomadoResponseDTO> listarDiplomadosAdmin();
 }

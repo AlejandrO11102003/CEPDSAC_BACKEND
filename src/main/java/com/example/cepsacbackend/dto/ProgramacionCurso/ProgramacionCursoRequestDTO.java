@@ -16,8 +16,8 @@ public class ProgramacionCursoRequestDTO {
     @NotNull(message = "La duración del curso no puede ser nula")
     private BigDecimal duracionCurso;
 
-    @NotNull(message = "Las horas semanales no pueden ser nulas")
-    private BigDecimal horasSemanales;
+    @NotNull(message = "La duración en meses no puede ser nula")
+    private Short duracionMeses;
 
     @NotNull(message = "La fecha de inicio no puede ser nula")
     private LocalDate fechaInicio;
@@ -31,9 +31,9 @@ public class ProgramacionCursoRequestDTO {
     @NotNull(message = "El ID del curso diplomado no puede ser nulo")
     private Short idCursoDiplomado;
 
-    //campo opcional para generar cuotas automaticas segun los meses del curso
-    //si tiene valor se generan cuotas al matricular si es null funciona como antes
-    private Short duracionMeses;
+    //campo opcional para generar cuotas automaticas
+    //si tiene valor se generan cuotas al matricular, si es null el pago es completo o manual
+    private Short numeroCuotas;
 
     // horario de la programación (ej: "Lunes 8:00 - 11:30 am")
     private String horario;

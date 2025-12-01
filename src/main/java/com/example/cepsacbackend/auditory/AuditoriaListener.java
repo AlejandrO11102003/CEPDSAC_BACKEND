@@ -2,7 +2,6 @@ package com.example.cepsacbackend.auditory;
 
 import com.example.cepsacbackend.config.security.CustomUserDetails;
 import com.example.cepsacbackend.model.AuditableEntity; 
-import com.example.cepsacbackend.repository.UsuarioRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreRemove;

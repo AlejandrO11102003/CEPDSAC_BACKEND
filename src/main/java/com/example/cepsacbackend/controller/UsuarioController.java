@@ -2,6 +2,8 @@ package com.example.cepsacbackend.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -41,6 +43,16 @@ public class UsuarioController {
     @GetMapping("/listar/{rol}")
     public ResponseEntity<List<UsuarioListResponseDTO>> listarUsuariosPorRol(@PathVariable Rol rol) {
         return ResponseEntity.ok(usuarioService.listarUsuariosPorRol(rol));
+    }
+
+    // EP modulo administracion y profesor
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @GetMapping("/alumnos")
+    public ResponseEntity<Page<UsuarioListResponseDTO>> listarAlumnosPaginado(
+            @RequestParam(required = false) String buscar,
+            @RequestParam(defaultValue = "false") boolean soloConMatricula,
+            Pageable pageable) {
+        return ResponseEntity.ok(usuarioService.listarAlumnosPaginado(buscar, soloConMatricula, pageable));
     }
 
     //EP modulo administracion y usuario mismo

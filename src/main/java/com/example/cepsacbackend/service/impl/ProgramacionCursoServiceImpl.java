@@ -10,7 +10,9 @@ import com.example.cepsacbackend.model.Usuario;
 import com.example.cepsacbackend.repository.CursoDiplomadoRepository;
 import com.example.cepsacbackend.repository.ProgramacionCursoRepository;
 import com.example.cepsacbackend.repository.UsuarioRepository;
+import com.example.cepsacbackend.repository.MatriculaRepository;
 import com.example.cepsacbackend.service.ProgramacionCursoService;
+import com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoListResponseDTO;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,18 +29,18 @@ public class ProgramacionCursoServiceImpl implements ProgramacionCursoService {
     private final ProgramacionCursoMapper programacionCursoMapper;
     private final CursoDiplomadoRepository cursoDiplomadoRepository;
     private final UsuarioRepository usuarioRepository;
+    private final MatriculaRepository matriculaRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProgramacionCursoResponseDTO> getAll() {
+    public List<ProgramacionCursoListResponseDTO> getAll() {
         return programacionCursoRepository.findAllAsDTO();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProgramacionCursoResponseDTO> getDisponibles() {
-        List<ProgramacionCurso> programaciones = programacionCursoRepository.findAllAvailable(LocalDate.now());
-        return programacionCursoMapper.toResponseDTOList(programaciones);
+    public List<ProgramacionCursoListResponseDTO> getDisponibles() {
+        return programacionCursoRepository.findAllAvailableAsDTO(LocalDate.now());
     }
 
     @Override

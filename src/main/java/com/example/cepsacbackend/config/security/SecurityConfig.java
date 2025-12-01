@@ -30,15 +30,18 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
+
+        config.setAllowCredentials(true);
         config.setAllowedOriginPatterns(List.of(
-            "http://127.0.0.1:3000",
-            "http://localhost:4200",
-            "http://localhost:4000",
-            "https://*.ngrok-free.app"
+            "http://localhost:*",
+            "http://127.0.0.1:*",
+            "http://192.168.*:*",
+            "https://a3d8650985b2.ngrok-free.app"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
-        config.setAllowCredentials(true);
+        config.setAllowedHeaders(List.of("*"));
+        config.setExposedHeaders(List.of("*"));
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
@@ -68,6 +71,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/configuracion/general").permitAll() // configuracion general
                         .requestMatchers(HttpMethod.GET, "/api/configuracion/contacto").permitAll() // configuracion contacto
                         .requestMatchers(HttpMethod.GET, "/api/configuracion/seo").permitAll() // configuracion seo
+                        .requestMatchers(HttpMethod.GET, "/api/metodos-pago/activos").permitAll() // listar metodos de pago admin
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // cors
                         // necesario jwt
                         .anyRequest().authenticated()
@@ -75,8 +79,8 @@ public class SecurityConfig {
                 // config de stateless
                 .sessionManagement(manejoSesion -> manejoSesion.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // registrar filtros: primero rate limiting, luego jwt
-                .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(filtroJwt, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(filtroJwt, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(rateLimitingFilter, JwtFilter.class);
         return http.build();
     }
 }

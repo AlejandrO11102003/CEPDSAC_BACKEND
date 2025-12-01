@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoRequestDTO;
+import com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoListResponseDTO;
 import com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoResponseDTO;
 import com.example.cepsacbackend.service.ProgramacionCursoService;
 
@@ -29,12 +30,12 @@ public class ProgramacionCursoController {
 
     //EP modulo administracion,
     @GetMapping
-    public ResponseEntity<List<ProgramacionCursoResponseDTO>> getAllProgramacionCursos() {
+    public ResponseEntity<List<ProgramacionCursoListResponseDTO>> getAllProgramacionCursos() {
         return ResponseEntity.ok(programacionCursoService.getAll());
     }
 
     @GetMapping("/disponibles")
-    public ResponseEntity<List<ProgramacionCursoResponseDTO>> getProgramacionesDisponibles() {
+    public ResponseEntity<List<ProgramacionCursoListResponseDTO>> getProgramacionesDisponibles() {
         return ResponseEntity.ok(programacionCursoService.getDisponibles());
     }
 

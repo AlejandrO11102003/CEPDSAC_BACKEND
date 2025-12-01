@@ -24,7 +24,6 @@ import com.example.cepsacbackend.repository.MetodoPagoRepository;
 import com.example.cepsacbackend.repository.PagoRepository;
 import com.example.cepsacbackend.service.PagoService;
 import com.example.cepsacbackend.exception.BadRequestException;
-
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,7 +58,10 @@ public class PagoServiceImpl implements PagoService {
                 .filter(p -> EstadoCuota.PENDIENTE.equals(p.getEstadoCuota()))
                 .findFirst()
                 .orElse(null);
-
+        if (EstadoMatricula.CANCELADO.equals(matricula.getEstado())) {
+            throw new BadRequestException(
+                "La matrícula ya está cancelada. No se puede registrar un nuevo pago.");
+        }
         //determino el monto real a pagar
         BigDecimal montoPagar;
         if (cuotaPendiente != null) {
@@ -118,9 +120,11 @@ public class PagoServiceImpl implements PagoService {
             Integer ultimaCuota = pagoRepository.findMaxNumeroCuotaByMatriculaId(matricula.getIdMatricula());
             short siguienteNumeroCuota = (short) ((ultimaCuota == null ? 0 : ultimaCuota) + 1);
             pago.setNumeroCuota(siguienteNumeroCuota);
-            
-            log.info("○ Registrando pago manual (cuota #{}) para matrícula {}", 
-                     siguienteNumeroCuota, matricula.getIdMatricula());
+        }
+        pago.setNumeroOperacion(dto.getNumeroOperacion());
+        pago.setObservaciones(dto.getObservaciones());
+        if (dto.getFechaPago() != null) {
+            pago.setFechaPago(dto.getFechaPago());
         }
 
         Pago saved = pagoRepository.save(pago);
@@ -155,9 +159,7 @@ public class PagoServiceImpl implements PagoService {
 
 
 
-    /**
-     * calculo el total ya pagado de una matricula sumando todos los pagos efectivos
-     */
+    // calculo el total ya pagado de una matricula sumando todos los pagos efectivos    
     private BigDecimal calcularTotalPagado(Integer idMatricula) {
         List<Pago> pagos = pagoRepository.findByMatriculaIdMatricula(idMatricula);
         return pagos.stream()
@@ -166,9 +168,7 @@ public class PagoServiceImpl implements PagoService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    /**
-     * actualizo el estado de la matricula comparando el total pagado con el monto total
-     */
+     //actualizo el estado de la matricula comparando el total pagado con el monto total
     private void actualizarEstadoMatricula(Matricula matricula) {
         //calculo el total ya pagado
         BigDecimal totalPagado = calcularTotalPagado(matricula.getIdMatricula());

@@ -90,4 +90,35 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
+    // enviar email de cancelación de programacion
+    @Async
+    @Override
+    public void enviarEmailCancelacionMasiva(java.util.List<String> correosAlumnos, String tituloCurso, String motivoCancelacion) {
+        if (correosAlumnos == null || correosAlumnos.isEmpty()) {
+            log.warn("No hay correos de alumnos para enviar notificación de cancelación masiva");
+            return;
+        }
+        String cursosUrl = frontendUrl + "/cursos";
+        String htmlContent = cargarTemplate("CancelacionMasiva.html")
+                .replace("{{TITULO_CURSO}}", tituloCurso != null ? tituloCurso : "Curso")
+                .replace("{{MOTIVO}}", motivoCancelacion != null ? motivoCancelacion : "No se alcanzó el cupo mínimo de estudiantes")
+                .replace("{{CURSOS_URL}}", cursosUrl);
+
+        for (String correo : correosAlumnos) {
+            try {
+                MimeMessage message = mailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+                helper.setFrom(fromEmail);
+                helper.setTo(correo);
+                helper.setSubject("Cancelación de Programación - CEPSAC");
+                helper.setText(htmlContent, true);
+                mailSender.send(message);
+                log.info("Email de cancelación masiva enviado a: {} para curso: {}", correo, tituloCurso);
+            } catch (MessagingException e) {
+                log.error("Error al enviar email de cancelación masiva a {}: {}", correo, e.getMessage());
+                // Continúo enviando a los demás aunque falle uno
+            }
+        }
+    }
+
 }

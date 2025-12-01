@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 // representa una cuota o pago asociado a una matricula
-// puede ser cuota automatica (generada por duracionmeses) o manual (creada por admin)
+// puede ser cuota automatica (generada por numeroCuotas) o manual (creada por admin)
 // registra el estado de cada cuota: pendiente, pagada, vencida, etc
 @Entity
 @Getter
@@ -58,5 +58,11 @@ public class Pago extends AuditableEntity {
     
     @Column(name = "EsAutomatico")
     private Boolean esAutomatico = false;
+
+    @Column(name = "NumeroOperacion", length = 50)
+    private String numeroOperacion;
+
+    @Column(name = "Observaciones", columnDefinition = "TEXT")
+    private String observaciones;
 
 }

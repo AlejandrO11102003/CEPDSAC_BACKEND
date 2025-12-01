@@ -2,6 +2,9 @@ package com.example.cepsacbackend.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.example.cepsacbackend.dto.Usuario.UsuarioCreateDTO;
 import com.example.cepsacbackend.dto.Usuario.UsuarioListResponseDTO;
 import com.example.cepsacbackend.dto.Usuario.UsuarioPatchDTO;
@@ -20,5 +23,6 @@ public interface UsuarioService {
     UsuarioResponseDTO restaurarUsuario(Integer idUsuario);
     List<UsuarioListResponseDTO> listarUsuariosPorRol(Rol rol);
     void cambiarPassword(Integer idUsuario, String nuevaPassword);
+    Page<UsuarioListResponseDTO> listarAlumnosPaginado(String buscar, boolean soloConMatricula, Pageable pageable);
 
 }

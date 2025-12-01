@@ -1,6 +1,5 @@
 package com.example.cepsacbackend.service.impl;
 
-import com.example.cepsacbackend.exception.ResourceNotFoundException;
 import com.example.cepsacbackend.model.ConfiguracionContacto;
 import com.example.cepsacbackend.repository.ConfiguracionContactoRepository;
 import com.example.cepsacbackend.service.ConfiguracionContactoService;

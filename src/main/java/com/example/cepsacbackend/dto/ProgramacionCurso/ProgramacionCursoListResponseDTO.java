@@ -7,24 +7,17 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.example.cepsacbackend.enums.ModalidadCurso;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProgramacionCursoResponseDTO {
+public class ProgramacionCursoListResponseDTO {
     private Integer idProgramacionCurso;
-    private ModalidadCurso modalidad;
-    private BigDecimal duracionCurso;
-    private Short duracionMeses;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private BigDecimal monto;
-    private Short idCursoDiplomado;
     private String nombreCursoDiplomado;
-    
-    // Campo opcional para sistema de cuotas automáticas
     private Short numeroCuotas;
-    private Integer idDocente;
     private String nombreDocente;
+    private Long cantidadInscritos;
+
 }

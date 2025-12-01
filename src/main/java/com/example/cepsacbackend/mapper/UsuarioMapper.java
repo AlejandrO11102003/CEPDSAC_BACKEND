@@ -28,6 +28,7 @@ public interface UsuarioMapper {
     Usuario toEntity(UsuarioCreateDTO dto);
 
     // para actualizar con PUT
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "idUsuario", ignore = true)
     @Mapping(target = "pais", ignore = true)
     @Mapping(target = "tipoIdentificacion", ignore = true)
@@ -50,13 +51,13 @@ public interface UsuarioMapper {
     @Mapping(source = "tipoIdentificacion.iniciales", target = "inicialesTipoIdentificacion")
     @Mapping(source = "pais.idPais", target = "idPais")
     @Mapping(source = "pais.codigoTelefono", target = "codigoTelefono")
-    @Mapping(target = "activo", expression = "java(usuario.getEstado() == com.example.cepsacbackend.enums.EstadoUsuario.ACTIVO)")
+    @Mapping(source = "estado", target = "estado")
     UsuarioResponseDTO toResponseDTO(Usuario usuario);
 
     List<UsuarioResponseDTO> toResponseDTOList(List<Usuario> usuarios);
 
     // mapeo de entidad a listResponseDTO
-    @Mapping(target = "activo", expression = "java(usuario.getEstado() == com.example.cepsacbackend.enums.EstadoUsuario.ACTIVO)")
+    @Mapping(source = "estado", target = "estado")
     @Mapping(source = "numeroIdentificacion", target = "numeroIdentificacion")
     @Mapping(source = "tipoIdentificacion.iniciales", target = "inicialesTipoIdentificacion")
     UsuarioListResponseDTO toListResponseDTO(Usuario usuario);

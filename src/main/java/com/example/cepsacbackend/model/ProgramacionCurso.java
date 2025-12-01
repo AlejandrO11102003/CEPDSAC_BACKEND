@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 import com.example.cepsacbackend.auditory.AuditoriaListener;
 import com.example.cepsacbackend.enums.ModalidadCurso;
+import com.example.cepsacbackend.enums.EstadoProgramacion;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -47,9 +48,9 @@ public class ProgramacionCurso extends AuditableEntity {
     @Column(name = "DuracionCurso", precision = 6, scale = 2)
     private BigDecimal duracionCurso;
 
-    // horas de clase por semana (ej: 12 horas semanales)
-    @Column(name = "HorasSemanales", precision = 6, scale = 2)
-    private BigDecimal horasSemanales;
+    // duracion academica del curso en meses (ej: 4 meses)
+    @Column(name = "DuracionMeses", columnDefinition = "TINYINT UNSIGNED")
+    private Short duracionMeses;
 
     // fecha en que empieza esta programacion del curso
     @Column(name = "FechaInicio")
@@ -63,10 +64,11 @@ public class ProgramacionCurso extends AuditableEntity {
     @Column(name = "Monto", precision = 10, scale = 2)
     private BigDecimal monto;
 
-    // si tiene valor genera cuotas automaticas al matricular (ej: 3 = 3 cuotas mensuales)
+    // numero de cuotas de pago (ej: 3 = 3 cuotas)
+    // si tiene valor genera cuotas automaticas al matricular
     // si es null el alumno paga el monto completo o el admin crea cuotas manuales
-    @Column(name = "DuracionMeses", columnDefinition = "TINYINT UNSIGNED")
-    private Short duracionMeses;
+    @Column(name = "NumeroCuotas", columnDefinition = "TINYINT UNSIGNED")
+    private Short numeroCuotas;
 
     // dias y horas de clase (ej: "lunes y miercoles 8:00 - 11:30 am")
     @Column(name = "Horario", length = 100)
@@ -81,5 +83,9 @@ public class ProgramacionCurso extends AuditableEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IdDocente")
     private Usuario docente;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "Estado", nullable = false)
+    private EstadoProgramacion estado = EstadoProgramacion.ACTIVO;
 }
 

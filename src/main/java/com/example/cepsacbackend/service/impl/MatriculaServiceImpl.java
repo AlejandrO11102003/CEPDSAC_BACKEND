@@ -2,13 +2,17 @@ package com.example.cepsacbackend.service.impl;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.cache.CacheManager;
@@ -18,10 +22,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.example.cepsacbackend.config.security.CustomUserDetails;
 
+import com.example.cepsacbackend.dto.Matricula.MatriculaAdminListDTO;
 import com.example.cepsacbackend.dto.Matricula.AplicarDescuentoDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaCreateDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaDetalleResponseDTO;
 import com.example.cepsacbackend.dto.Matricula.MatriculaListResponseDTO;
+import com.example.cepsacbackend.enums.EstadoProgramacion;
 import com.example.cepsacbackend.dto.Pago.PagoResponseDTO;
 import com.example.cepsacbackend.enums.EstadoCuota;
 import com.example.cepsacbackend.enums.EstadoMatricula;
@@ -68,7 +74,7 @@ public class MatriculaServiceImpl implements MatriculaService {
     @Override
     @Transactional
     @Caching(evict = {
-        @CacheEvict(value = "matriculas", key = "'all'")
+        @CacheEvict(value = "matriculas", allEntries = true)
     })
     public Matricula crearMatricula(MatriculaCreateDTO dto) {
         if (dto.getIdProgramacionCurso() == null) {
@@ -93,23 +99,26 @@ public class MatriculaServiceImpl implements MatriculaService {
                 throw new BadRequestException("Un administrador debe indicar el idAlumno en la solicitud.");
             }
         }
- 
         // verificar duplicacion en matricula
         List<EstadoMatricula> estadosActivos = List.of(EstadoMatricula.PENDIENTE, EstadoMatricula.PAGADO);
-        matriculaRepository.findMatriculaActivaByAlumnoAndProgramacion(
+        List<Matricula> matriculasExistentes = matriculaRepository.findMatriculaActivaByAlumnoAndProgramacion(
                 dto.getIdAlumno(), 
                 dto.getIdProgramacionCurso(), 
                 estadosActivos
-        ).ifPresent(matriculaExistente -> {
+        );
+
+        if (!matriculasExistentes.isEmpty()) {
+            Matricula matriculaExistente = matriculasExistentes.get(0);
+            String estadoFormateado = formatearEstado(matriculaExistente.getEstado());
             throw new BadRequestException(
                 String.format(
-                    "Ya existe una matrícula %s (ID: %d) para este alumno en esta programación. " +
-                    "No se permiten matrículas duplicadas mientras haya una activa.",
-                    matriculaExistente.getEstado().name(),
+                    "El alumno ya tiene una matrícula para este curso. " +
+                    "Por favor, cancele la matrícula existente.",
+                    estadoFormateado,
                     matriculaExistente.getIdMatricula()
                 )
             );
-        });
+        }
 
         // valido que el alumno exista y tenga rol de alumno
         Usuario alumno = usuarioRepository.findById(dto.getIdAlumno())
@@ -232,8 +241,7 @@ public class MatriculaServiceImpl implements MatriculaService {
     @Override
     @Transactional
     @Caching(evict = {
-            @CacheEvict(value = "matriculas", key = "'all'"),
-            @CacheEvict(value = "matriculas", key = "'alumno_' + #result.alumno.idUsuario"),
+            @CacheEvict(value = "matriculas", allEntries = true),
             @CacheEvict(value = "matriculas-detalle", key = "#idMatricula")
     })
     public Matricula cancelarMatricula(Integer idMatricula) {
@@ -278,7 +286,7 @@ public class MatriculaServiceImpl implements MatriculaService {
     // verifico si debo generar cuotas automaticas segun la configuracion de la
     // programacion
     private boolean debeGenerarCuotas(ProgramacionCurso programacion) {
-        return programacion.getDuracionMeses() != null && programacion.getDuracionMeses() > 0;
+        return programacion.getNumeroCuotas() != null && programacion.getNumeroCuotas() > 0;
     }
 
     // genero las cuotas automaticas dividiendo el monto total en cuotas mensuales
@@ -286,36 +294,54 @@ public class MatriculaServiceImpl implements MatriculaService {
     private List<Pago> generarCuotasAutomaticas(Matricula matricula, BigDecimal montoTotal) {
         List<Pago> cuotas = new ArrayList<>();
         ProgramacionCurso programacion = matricula.getProgramacionCurso();
-        Short duracionMeses = programacion.getDuracionMeses();
-
-        if (duracionMeses == null || duracionMeses <= 0) {
+        Short numeroCuotas = programacion.getNumeroCuotas();
+        if (numeroCuotas == null || numeroCuotas <= 0) {
             return cuotas;
         }
-        // calculo el monto de cada cuota dividiendo el total entre la cantidad de meses
+        // calculo el monto de cada cuota dividiendo el total entre la cantidad de cuotas
         BigDecimal montoPorCuota = montoTotal.divide(
-                BigDecimal.valueOf(duracionMeses),
+                BigDecimal.valueOf(numeroCuotas),
                 2,
                 RoundingMode.HALF_UP);
         // ajusto la diferencia de redondeo en la ultima cuota para que sume exacto
-        BigDecimal sumaTemporalCuotas = montoPorCuota.multiply(BigDecimal.valueOf(duracionMeses));
+        BigDecimal sumaTemporalCuotas = montoPorCuota.multiply(BigDecimal.valueOf(numeroCuotas));
         BigDecimal diferencia = montoTotal.subtract(sumaTemporalCuotas);
-        // obtengo la fecha de inicio del curso para calcular los vencimientos
-        LocalDate fechaInicio = programacion.getFechaInicio();
-        if (fechaInicio == null) {
-            fechaInicio = LocalDate.now(); // uso fecha actual si no hay fecha de inicio configurada
+        // obtengo la fecha de inicio y fin del curso para calcular los vencimientos
+        LocalDate fechaInicioCurso = programacion.getFechaInicio();
+        LocalDate fechaFinCurso = programacion.getFechaFin();
+        if (fechaInicioCurso == null) {
+            fechaInicioCurso = LocalDate.now(); // uso fecha actual si no hay fecha de inicio configurada
         }
+        if (fechaFinCurso == null) {
+            fechaFinCurso = fechaInicioCurso.plusMonths(numeroCuotas - 1); //disminuir 1 cuota en agregacion de meses
+        }
+        // put fechavencimiento 4 dias despues del inicio del curso
+        LocalDate primerVencimientoBase = addBusinessDays(fechaInicioCurso, 4);
         // genero una cuota por cada mes de duracion del curso
-        for (short i = 1; i <= duracionMeses; i++) {
+        for (short i = 1; i <= numeroCuotas; i++) {
             Pago cuota = new Pago();
             cuota.setMatricula(matricula);
             cuota.setNumeroCuota(i);
             // ajusto el monto de la ultima cuota si hay diferencia por redondeo
             BigDecimal montoCuota = montoPorCuota;
-            if (i == duracionMeses && diferencia.compareTo(BigDecimal.ZERO) != 0) {
+            if (i == numeroCuotas && diferencia.compareTo(BigDecimal.ZERO) != 0) {
                 montoCuota = montoCuota.add(diferencia);
             }
             cuota.setMonto(montoCuota);
-            cuota.setFechaVencimiento(fechaInicio.plusMonths(i - 1)); // vencimiento mensual desde el inicio
+            //validacion para numero de cuotas
+            LocalDate fechaVencimiento;
+            if (i == 1) {
+                // Primer pago: 4 días hábiles después de la fecha de inicio del curso
+                fechaVencimiento = primerVencimientoBase;
+            } else if (i == numeroCuotas) {
+                // Último pago: 4 días antes de la fecha de fin del curso
+                fechaVencimiento = fechaFinCurso.minusDays(4);
+            } else {
+                long diasTotales = ChronoUnit.DAYS.between(fechaInicioCurso, fechaFinCurso);
+                long diasPorCuota = diasTotales / numeroCuotas;
+                fechaVencimiento = fechaInicioCurso.plusDays(diasPorCuota * (i - 1));
+            }
+            cuota.setFechaVencimiento(fechaVencimiento);
             cuota.setEstadoCuota(EstadoCuota.PENDIENTE);
             cuota.setMontoPagado(BigDecimal.ZERO);
             cuota.setEsAutomatico(true);
@@ -326,14 +352,28 @@ public class MatriculaServiceImpl implements MatriculaService {
         return cuotas;
     }
 
+    // metodo para añadir dias a las fechas usadas reuslday response
+    private LocalDate addBusinessDays(LocalDate initialDate, int daysToAdd) {
+        LocalDate resultDate = initialDate;
+        int addedDays = 0;
+        while (addedDays < daysToAdd) {
+            resultDate = resultDate.plusDays(1);
+            if (resultDate.getDayOfWeek() != DayOfWeek.SATURDAY && resultDate.getDayOfWeek() != DayOfWeek.SUNDAY) {
+                addedDays++;
+            }
+        }
+        return resultDate;
+    }
+
     @Override
     @Transactional
     @Caching(evict = {
-            @CacheEvict(value = "matriculas", key = "'all'"),
+            @CacheEvict(value = "matriculas", allEntries = true),
             @CacheEvict(value = "matriculas-detalle", key = "#idMatricula")
     })
     public Matricula aplicarDescuentoAMatricula(@NonNull Integer idMatricula, AplicarDescuentoDTO dto) {
-        // cargo la matricula con todos sus detalles
+        // cargo la matricula  // Pagos intermedios: mensual desde la fecha de inicio del curso
+                // Se mantiene la lógica anterior para mantener la consistencia mensualcon todos sus detalles
         Matricula matricula = matriculaRepository.findByIdWithDetails(idMatricula)
                 .orElseThrow(() -> new com.example.cepsacbackend.exception.ResourceNotFoundException(
                         String.format("No se encontró la matrícula con ID %d.", idMatricula)));
@@ -431,5 +471,98 @@ public class MatriculaServiceImpl implements MatriculaService {
 
         BigDecimal saldoPendiente = nuevoMontoFinal.subtract(totalPagado);
         return saldoPendiente.compareTo(BigDecimal.ZERO) < 0 ? BigDecimal.ZERO : saldoPendiente;
+    }
+
+    // confirmar pago matricula
+    @Override
+    @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "matriculas", allEntries = true),
+            @CacheEvict(value = "matriculas-detalle", key = "#idMatricula")
+    })
+    public Matricula confirmarPagoMatricula(Integer idMatricula) {
+        Matricula matricula = matriculaRepository.findByIdWithDetails(idMatricula)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        String.format("No se encontró la matrícula con ID %d.", idMatricula)));
+        //  PENDIENTE
+        if (matricula.getEstado() != EstadoMatricula.PENDIENTE) {
+            throw new BadRequestException(
+                    String.format("Solo se pueden confirmar matrículas en estado PENDIENTE. " +
+                            "La matrícula ID %d está en estado %s.",
+                            idMatricula, matricula.getEstado()));
+        }
+        // cambio el estado a EN_PROCESO //primer pago verificado, cupo separado
+        matricula.setEstado(EstadoMatricula.EN_PROCESO);
+        return matriculaRepository.save(matricula);
+    }
+
+    // cancelar matriculas por programacion
+    @Override
+    @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "matriculas", allEntries = true)
+    })
+    public List<Matricula> cancelarMatriculasPorProgramacion(Integer idProgramacionCurso, String motivo) {
+        // validar que la programacion existe
+        ProgramacionCurso programacion = programacionCursoRepository.findById(idProgramacionCurso)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        String.format("No se encontró la programación de curso con ID %d.", idProgramacionCurso)));
+        // buscar todas las matriculas activas (pendientes y en proceso) de esta programacion
+        List<EstadoMatricula> estadosActivos = List.of(EstadoMatricula.PENDIENTE, EstadoMatricula.EN_PROCESO);
+        List<Matricula> matriculasActivas = matriculaRepository.findByProgramacionAndEstados(
+                idProgramacionCurso, 
+                estadosActivos
+        );
+        // recopilar correos de los alumnos afectados
+        List<String> correosAlumnos = matriculasActivas.stream()
+                .map(m -> m.getAlumno().getCorreo())
+                .filter(correo -> correo != null && !correo.isBlank())
+                .distinct()
+                .toList();
+        // cancelar todas las matriculas y sus pagos pendientes
+        for (Matricula matricula : matriculasActivas) {
+            matricula.setEstado(EstadoMatricula.CANCELADO);
+            // cancelar pagos pendientes
+            List<Pago> pagos = pagoRepository.findByMatriculaIdMatricula(matricula.getIdMatricula());
+            for (Pago pago : pagos) {
+                if (pago.getEstadoCuota() == EstadoCuota.PENDIENTE) {
+                    pago.setEstadoCuota(EstadoCuota.CANCELADO);
+                }
+            }
+            pagoRepository.saveAll(pagos);
+        }
+        List<Matricula> matriculasCanceladas = matriculaRepository.saveAll(matriculasActivas);
+        // enviar notificaciones por email a todos los alumnos afectados
+        if (!correosAlumnos.isEmpty()) {
+            String tituloCurso = programacion.getCursoDiplomado() != null 
+                    ? programacion.getCursoDiplomado().getTitulo() 
+                    : "Curso";
+            String motivoCancelacion = motivo != null && !motivo.isBlank() 
+                    ? motivo 
+                    : "No se alcanzó el cupo mínimo de estudiantes";
+            emailService.enviarEmailCancelacionMasiva(correosAlumnos, tituloCurso, motivoCancelacion);
+        }
+        // actualizar estado de la programacion a CANCELADO
+        programacion.setEstado(EstadoProgramacion.CANCELADO);
+        programacionCursoRepository.save(programacion);
+        return matriculasCanceladas;
+    }
+
+    // listar matriculas admin
+    @Override
+    @Transactional(readOnly = true)
+    public Page<MatriculaAdminListDTO> listarMatriculasAdmin(String dni, EstadoMatricula estado, Pageable pageable) {
+        return matriculaRepository.findMatriculasAdmin(dni, estado, pageable);
+    }
+
+    private String formatearEstado(EstadoMatricula estado) {
+        if (estado == null) return "DESCONOCIDO";
+        return switch (estado) {
+            case PENDIENTE -> "PENDIENTE";
+            case EN_PROCESO -> "EN PROCESO";
+            case PAGADO -> "PAGADO";
+            case CANCELADO -> "CANCELADO";
+            default -> estado.name();
+        };
     }
 }
