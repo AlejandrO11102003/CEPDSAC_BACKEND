@@ -55,6 +55,13 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.listarAlumnosPaginado(buscar, soloConMatricula, pageable));
     }
 
+    //EP modulo administracion
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @GetMapping("/alumnos/suspendidos")
+    public ResponseEntity<List<UsuarioListResponseDTO>> listarAlumnosSuspendidos() {
+        return ResponseEntity.ok(usuarioService.listarAlumnosSuspendidos());
+    }
+
     //EP modulo administracion y usuario mismo
     @GetMapping("/{idUsuario}")
     public ResponseEntity<UsuarioResponseDTO> obtenerUsuario(@PathVariable Integer idUsuario) {

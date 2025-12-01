@@ -24,5 +24,6 @@ public interface UsuarioService {
     List<UsuarioListResponseDTO> listarUsuariosPorRol(Rol rol);
     void cambiarPassword(Integer idUsuario, String nuevaPassword);
     Page<UsuarioListResponseDTO> listarAlumnosPaginado(String buscar, boolean soloConMatricula, Pageable pageable);
+    List<UsuarioListResponseDTO> listarAlumnosSuspendidos();
 
 }

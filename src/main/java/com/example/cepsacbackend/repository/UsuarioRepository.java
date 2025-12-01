@@ -95,4 +95,19 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
             @Param("buscar") String buscar, 
             @Param("soloConMatricula") boolean soloConMatricula, 
             Pageable pageable);
+
+    @Query("SELECT new com.example.cepsacbackend.dto.Usuario.UsuarioListResponseDTO(" +
+           "u.idUsuario, " +
+           "u.nombre, " +
+           "u.apellido, " +
+           "u.correo, " +
+           "u.rol, " +
+           "u.estado, " +
+           "u.tipoIdentificacion.iniciales, " +
+           "u.numeroIdentificacion) " +
+           "FROM Usuario u " +
+           "WHERE u.estado = com.example.cepsacbackend.enums.EstadoUsuario.SUSPENDIDO " +
+           "AND u.rol = 'ALUMNO' " +
+           "ORDER BY u.nombre")
+    List<com.example.cepsacbackend.dto.Usuario.UsuarioListResponseDTO> findAlumnosSuspendidos();
 }

@@ -177,7 +177,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         @CacheEvict(value = "usuarios", allEntries = true)
     })
     public UsuarioResponseDTO restaurarUsuario(Integer idUsuario) {
-        Usuario usuario = usuarioRepository.findByIdActivo(idUsuario)
+        Usuario usuario = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + idUsuario));
         if (usuario.getEstado() != EstadoUsuario.SUSPENDIDO) {
             throw new BadRequestException("El usuario no está suspendido/eliminado");
@@ -209,5 +209,11 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Transactional(readOnly = true)
     public Page<UsuarioListResponseDTO> listarAlumnosPaginado(String buscar, boolean soloConMatricula, Pageable pageable) {
         return usuarioRepository.findAlumnosConFiltros(buscar, soloConMatricula, pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UsuarioListResponseDTO> listarAlumnosSuspendidos() {
+        return usuarioRepository.findAlumnosSuspendidos();
     }
 }
