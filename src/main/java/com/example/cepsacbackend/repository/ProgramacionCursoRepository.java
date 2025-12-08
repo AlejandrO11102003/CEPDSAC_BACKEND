@@ -15,15 +15,15 @@ import com.example.cepsacbackend.model.ProgramacionCurso;
 @Repository
 public interface ProgramacionCursoRepository extends JpaRepository<ProgramacionCurso, Integer> {
 
-       @Query("SELECT NEW com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoListResponseDTO(" +
-              "pc.idProgramacionCurso, " +
-              "pc.fechaInicio, " +
-              "pc.fechaFin, " +
-              "pc.monto, " +
-              "cd.titulo, " +
-              "pc.duracionMeses, " +
-              "CONCAT(doc.nombre, ' ', doc.apellido), " +
-              "COUNT(m)) " +
+       @Query("SELECT " +
+              "pc.idProgramacionCurso AS idProgramacionCurso, " +
+              "pc.fechaInicio AS fechaInicio, " +
+              "pc.fechaFin AS fechaFin, " +
+              "pc.monto AS monto, " +
+              "cd.titulo AS nombreCursoDiplomado, " +
+              "pc.duracionMeses AS numeroCuotas, " +
+              "CONCAT(doc.nombre, ' ', doc.apellido) AS nombreDocente, " +
+              "COUNT(m) AS cantidadInscritos " +
               "FROM ProgramacionCurso pc " +
               "JOIN pc.cursoDiplomado cd " +
               "LEFT JOIN pc.docente doc " +
@@ -32,15 +32,15 @@ public interface ProgramacionCursoRepository extends JpaRepository<ProgramacionC
        List<ProgramacionCursoListResponseDTO> findAllAsDTO();
 
        // obtener programaciones disponibles (fecha fin > fecha actual y estado ACTIVO) como DTO
-       @Query("SELECT NEW com.example.cepsacbackend.dto.ProgramacionCurso.ProgramacionCursoListResponseDTO(" +
-              "pc.idProgramacionCurso, " +
-              "pc.fechaInicio, " +
-              "pc.fechaFin, " +
-              "pc.monto, " +
-              "cd.titulo, " +
-              "pc.duracionMeses, " +
-              "CONCAT(doc.nombre, ' ', doc.apellido), " +
-              "COUNT(m)) " +
+       @Query("SELECT " +
+              "pc.idProgramacionCurso AS idProgramacionCurso, " +
+              "pc.fechaInicio AS fechaInicio, " +
+              "pc.fechaFin AS fechaFin, " +
+              "pc.monto AS monto, " +
+              "cd.titulo AS nombreCursoDiplomado, " +
+              "pc.duracionMeses AS numeroCuotas, " +
+              "CONCAT(doc.nombre, ' ', doc.apellido) AS nombreDocente, " +
+              "COUNT(m) AS cantidadInscritos " +
               "FROM ProgramacionCurso pc " +
               "JOIN pc.cursoDiplomado cd " +
               "LEFT JOIN pc.docente doc " +
