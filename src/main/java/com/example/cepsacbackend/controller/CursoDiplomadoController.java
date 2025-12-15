@@ -32,68 +32,68 @@ public class CursoDiplomadoController {
 
     private final CursoDiplomadoService cursoDiplomadoService;
 
-    @GetMapping("/listar")
+    @GetMapping
     public ResponseEntity<List<CursoDiplomadoResponseDTO>> listar() {
         return ResponseEntity.ok(cursoDiplomadoService.listar());
     }
 
-    @GetMapping("/listar-index")
+    @GetMapping("/index")
     public ResponseEntity<List<CursoIndexResponseDTO>> listarIndex() { 
         return ResponseEntity.ok(cursoDiplomadoService.listarIndex());
     }
 
-    @GetMapping("/listar-cursos")
+    @GetMapping("/cursos")
     public ResponseEntity<List<CursoIndexResponseDTO>> listarCursos() {
         return ResponseEntity.ok(cursoDiplomadoService.listarCursos());
     }
 
-    @GetMapping("/listar-diplomados")
+    @GetMapping("/diplomados")
     public ResponseEntity<List<CursoIndexResponseDTO>> listarDiplomados() {
         return ResponseEntity.ok(cursoDiplomadoService.listarDiplomados());
     }
 
-    @GetMapping("/listar-cursos-admin")
+    @GetMapping("/admin/cursos")
     public ResponseEntity<List<CursoDiplomadoResponseDTO>> listarCursosAdmin() {
         return ResponseEntity.ok(cursoDiplomadoService.listarCursosAdmin());
     }
 
-    @GetMapping("/listar-diplomados-admin")
+    @GetMapping("/admin/diplomados")
     public ResponseEntity<List<CursoDiplomadoResponseDTO>> listarDiplomadosAdmin() {
         return ResponseEntity.ok(cursoDiplomadoService.listarDiplomadosAdmin());
     }
 
-    @GetMapping("/obtener/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<CursoDiplomadoResponseDTO> obtenerPorId(@PathVariable Short id) {
         return ResponseEntity.ok(cursoDiplomadoService.obtenerPorId(id));
     }
 
-    @GetMapping("/detalle/{id}")
+    @GetMapping("/{id}/detalle")
     public ResponseEntity<CursoDetalleResponseDTO> obtenerDetalle(@PathVariable Short id) {
         return ResponseEntity.ok(cursoDiplomadoService.obtenerDetallePorId(id));
     }
 
-    @PostMapping("/crear")
+    @PostMapping
     public ResponseEntity<CursoDiplomadoResponseDTO> crear(@Valid @RequestBody CursoDiplomadoCreateDTO dto) {
         return new ResponseEntity<>(cursoDiplomadoService.crear(dto), HttpStatus.CREATED);
     }
 
-    @PutMapping("/actualizar/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<CursoDiplomadoResponseDTO> actualizar(@PathVariable Short id, @Valid @RequestBody CursoDiplomadoUpdateDTO dto) {
         return ResponseEntity.ok(cursoDiplomadoService.actualizar(id, dto));
     }
 
-    @DeleteMapping("/eliminar/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Short id) {
         cursoDiplomadoService.eliminar(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/listar-cursos-docente")
+    @GetMapping("/docente/cursos")
     public ResponseEntity<List<CursoIndexResponseDTO>> listarCursosDocente(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return ResponseEntity.ok(cursoDiplomadoService.listarCursosDocente(userDetails.getIdUsuario()));
     }
 
-    @GetMapping("/listar-diplomados-docente")
+    @GetMapping("/docente/diplomados")
     public ResponseEntity<List<CursoIndexResponseDTO>> listarDiplomadosDocente(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return ResponseEntity.ok(cursoDiplomadoService.listarDiplomadosDocente(userDetails.getIdUsuario()));
     }

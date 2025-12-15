@@ -33,15 +33,15 @@ public class UsuarioController {
 
     //EP modulo administracion 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    @GetMapping("/listar")
+    @GetMapping
     public ResponseEntity<List<UsuarioListResponseDTO>> listarUsuarios() {
         return ResponseEntity.ok(usuarioService.listarUsuarios());
     }
 
     //EP modulo administracion
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    @GetMapping("/listar/{rol}")
-    public ResponseEntity<List<UsuarioListResponseDTO>> listarUsuariosPorRol(@PathVariable Rol rol) {
+    @GetMapping(params = "rol")
+    public ResponseEntity<List<UsuarioListResponseDTO>> listarUsuariosPorRol(@RequestParam Rol rol) {
         return ResponseEntity.ok(usuarioService.listarUsuariosPorRol(rol));
     }
 

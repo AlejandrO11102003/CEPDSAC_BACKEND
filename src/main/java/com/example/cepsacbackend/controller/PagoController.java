@@ -26,8 +26,8 @@ public class PagoController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping("/matricula/{idMatricula}")
-    public ResponseEntity<List<PagoResponseDTO>> listarPagosPorMatricula(@PathVariable Integer idMatricula) {
+    @GetMapping(params = "matriculaId")
+    public ResponseEntity<List<PagoResponseDTO>> listarPagosPorMatricula(@RequestParam("matriculaId") Integer idMatricula) {
         return ResponseEntity.ok(pagoService.listarPagosPorMatricula(idMatricula));
     }
 
@@ -42,7 +42,7 @@ public class PagoController {
         return ResponseEntity.ok(pagoService.listarPagosPorDevolver());
     }
 
-    @PostMapping("/{id}/devolver")
+    @PostMapping("/{id}/devolucion")
     public ResponseEntity<Void> marcarComoDevuelto(@PathVariable Integer id) {
         pagoService.marcarComoDevuelto(id);
         return ResponseEntity.noContent().build();

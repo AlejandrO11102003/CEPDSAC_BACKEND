@@ -35,7 +35,7 @@ public class MatriculaController {
         return ResponseEntity.ok(matriculas);
     }
 
-    @GetMapping("/admin/listar")
+    @GetMapping
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     public ResponseEntity<Page<MatriculaAdminListDTO>> listarMatriculasAdmin(
             @RequestParam(required = false) String dni,
@@ -64,7 +64,7 @@ public class MatriculaController {
         return ResponseEntity.ok(matriculaMapper.toResponseDTO(matricula));
     }
 
-    @GetMapping("/{id}/detalle")
+    @GetMapping("/{id}")
     public ResponseEntity<MatriculaDetalleResponseDTO> obtenerDetalle(@PathVariable Integer id) {
         MatriculaDetalleResponseDTO detalle = matriculaService.obtenerDetalle(id);
         return ResponseEntity.ok(detalle);
@@ -98,7 +98,7 @@ public class MatriculaController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/listar-alumnos-programacion/{idProgramacion}")
+    @GetMapping("/por-programacion/{idProgramacion}")
     public ResponseEntity<List<com.example.cepsacbackend.dto.Matricula.AlumnoMatriculadoDTO>> listarAlumnosPorProgramacion(
             @PathVariable Integer idProgramacion) {
         return ResponseEntity.ok(matriculaService.listarAlumnosPorProgramacion(idProgramacion));

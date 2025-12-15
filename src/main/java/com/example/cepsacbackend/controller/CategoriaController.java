@@ -30,7 +30,7 @@ public class CategoriaController {
     private final ObjectMapper objectMapper;
     private final CategoriaService categoriaService;
 
-    @GetMapping("/listar")
+    @GetMapping
     public ResponseEntity<List<CategoriaResponseDTO>> listar() {
         return ResponseEntity.ok(categoriaService.findAll());
     }
@@ -41,23 +41,23 @@ public class CategoriaController {
         return ResponseEntity.ok(list);
     }
 
-    @GetMapping("/obtener/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<CategoriaResponseDTO> obtenerPorId(@PathVariable Short id) {
         return ResponseEntity.ok(categoriaService.obtenerPorId(id));
     }
 
-    @PostMapping("/crear")
+    @PostMapping
     public ResponseEntity<CategoriaResponseDTO> crear(@Valid @RequestBody CategoriaCreateDTO dto) {
         return new ResponseEntity<>(categoriaService.crear(dto), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/eliminar/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Short id) {
         categoriaService.eliminar(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/cambiar-estado/{id}")
+    @PutMapping("/{id}/estado")
     public ResponseEntity<Void> cambiarEstado(@PathVariable Short id) {
         categoriaService.cambiarEstado(id);
         return ResponseEntity.ok().build();

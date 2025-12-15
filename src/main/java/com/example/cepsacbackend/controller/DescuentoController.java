@@ -30,29 +30,29 @@ public class DescuentoController {
 
     private final DescuentoService descuentoService;
 
-    @GetMapping("/listar")
+    @GetMapping
     public List<DescuentoResponseDTO> listar() {
         return descuentoService.listar();
     }
 
-    @GetMapping("/obtener/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<DescuentoResponseDTO> obtener(@PathVariable("id") Short id) {
         return ResponseEntity.ok(descuentoService.obtener(id));
     }
 
-    @PostMapping("/crear")
+    @PostMapping
     public ResponseEntity<DescuentoResponseDTO> crear(@Valid @RequestBody DescuentoCreateDTO dto) {
         DescuentoResponseDTO creado = descuentoService.crear(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(creado);
     }
 
-    @PutMapping("/actualizar")
+    @PutMapping
     public ResponseEntity<DescuentoResponseDTO> actualizar(@Valid @RequestBody DescuentoUpdateDTO dto) {
         DescuentoResponseDTO actualizado = descuentoService.actualizar(dto);
         return ResponseEntity.ok(actualizado);
     }
 
-    @DeleteMapping("/eliminar/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable("id") Short id) {
         descuentoService.eliminar(id);
         return ResponseEntity.noContent().build();

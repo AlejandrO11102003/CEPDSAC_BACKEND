@@ -18,24 +18,24 @@ public class SponsorController {
 
     private final SponsorService sponsorService;
 
-    @GetMapping("/listar")
+    @GetMapping
     public ResponseEntity<List<Sponsor>> listar() {
         return ResponseEntity.ok(sponsorService.listar());
     }
 
-    @GetMapping("/obtener/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Sponsor> obtenerPorId(@PathVariable Integer id) {
         return ResponseEntity.ok(sponsorService.obtenerPorId(id));
     }
 
-    @PostMapping(value = "/crear", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Sponsor> crear(
             @RequestParam("nombre") String nombre,
             @RequestPart("imagen") MultipartFile imagen) {
         return new ResponseEntity<>(sponsorService.crear(nombre, imagen), HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/actualizar/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Sponsor> actualizar(
             @PathVariable Integer id,
             @RequestParam("nombre") String nombre,
@@ -43,7 +43,7 @@ public class SponsorController {
         return ResponseEntity.ok(sponsorService.actualizar(id, nombre, imagen));
     }
 
-    @DeleteMapping("/eliminar/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         sponsorService.eliminar(id);
         return ResponseEntity.noContent().build();
