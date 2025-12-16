@@ -1,7 +1,7 @@
 ### Variables de entorno
 @baseUrl = http://localhost:8080
 @contentType = application/json
-@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGVqYW5kcm9jYXN0aWxsb2phcmEzMEBnbWFpbC5jb20iLCJpYXQiOjE3NjUxNDkyNjUsImV4cCI6MTc2NTE1Mjg2NX0.CMHCTnzqEQgicD8ZPUc4Sqov7swe-uNgjojjw0jIPLg
+@token = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGVqYW5kcm9jYXN0aWxsb2phcmEzMEBnbWFpbC5jb20iLCJpYXQiOjE3NjU4Mzk1MDEsImV4cCI6MTc2NTg0MzEwMX0.UciK5p42kEs_SN5Ifpc56crZXJe3JunfZaDt4ilcNZk
 
 ### ===========================================
 ### MONITOR ENDPOINTS
@@ -45,11 +45,11 @@ Content-Type: {{contentType}}
 ### ===========================================
 
 ### Listar todos los usuarios
-GET {{baseUrl}}/api/usuarios/listar
+GET {{baseUrl}}/api/usuarios
 Authorization: Bearer {{token}}
 
 ### Listar usuarios por rol
-GET {{baseUrl}}/api/usuarios/listar/ADMINISTRADOR
+GET {{baseUrl}}/api/usuarios?rol=ADMINISTRADOR
 Authorization: Bearer {{token}}
 
 ### Obtener usuario por ID
@@ -111,7 +111,7 @@ Authorization: Bearer {{token}}
 ### ===========================================
 
 ### Listar categorías
-GET {{baseUrl}}/api/categorias/listar
+GET {{baseUrl}}/api/categorias
 Authorization: Bearer {{token}}
 
 ### Listar categorías activas (solo estado = true)
@@ -119,11 +119,11 @@ GET {{baseUrl}}/api/categorias/activas
 Authorization: Bearer {{token}}
 
 ### Obtener categoría por ID
-GET {{baseUrl}}/api/categorias/obtener/5
+GET {{baseUrl}}/api/categorias/5
 Authorization: Bearer {{token}}
 
 ### Crear categoría
-POST {{baseUrl}}/api/categorias/crear
+POST {{baseUrl}}/api/categorias
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -132,7 +132,7 @@ Authorization: Bearer {{token}}
 }
 
 ### Eliminar categoría
-DELETE {{baseUrl}}/api/categorias/eliminar/1
+DELETE {{baseUrl}}/api/categorias/1
 Authorization: Bearer {{token}}
 
 ### ===========================================
@@ -140,19 +140,19 @@ Authorization: Bearer {{token}}
 ### ===========================================
 
 ###  Listar cursos/diplomados
-GET {{baseUrl}}/api/cursos-diplomados/listar
+GET {{baseUrl}}/api/cursos-diplomados
 Authorization: Bearer {{token}}
 
 ### Listar cursos/diplomados para index
-GET {{baseUrl}}/api/cursos-diplomados/listar-index
+GET {{baseUrl}}/api/cursos-diplomados/index
 Authorization: Bearer {{token}}
 
 ### Obtener curso/diplomado por ID
-GET {{baseUrl}}/api/cursos-diplomados/obtener/5
+GET {{baseUrl}}/api/cursos-diplomados/5
 Authorization: Bearer {{token}}
 
 ### Crear curso/diplomado
-POST {{baseUrl}}/api/cursos-diplomados/crear
+POST {{baseUrl}}/api/cursos-diplomados
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -166,7 +166,7 @@ Authorization: Bearer {{token}}
 }
 
 ### Eliminar curso/diplomado
-DELETE {{baseUrl}}/api/cursos-diplomados/eliminar/1
+DELETE {{baseUrl}}/api/cursos-diplomados/1
 Authorization: Bearer {{token}}
 
 ### ===========================================
@@ -228,7 +228,7 @@ Authorization: Bearer {{token}}
 ### ===========================================
 
 ### Listar matrículas
-GET {{baseUrl}}/api/matriculas/listar
+GET {{baseUrl}}/api/matriculas
 Authorization: Bearer {{token}}
 
 ### Crear matrícula 
@@ -247,7 +247,7 @@ PUT {{baseUrl}}/api/matriculas/1/cancelar
 Authorization: Bearer {{token}}
 
 ### Obtener detalle de matrícula (incluye cuotas si las tiene)
-GET {{baseUrl}}/api/matriculas/23/detalle
+GET {{baseUrl}}/api/matriculas/23
 Authorization: Bearer {{token}}
 
 ### Aplicar descuento personalizado a matrícula existente
@@ -270,15 +270,15 @@ Authorization: Bearer {{token}}
 ### ===========================================
 
 ### Listar descuentos
-GET {{baseUrl}}/api/descuentos/listar
+GET {{baseUrl}}/api/descuentos
 Authorization: Bearer {{token}}
 
 ### Obtener descuento por ID
-GET {{baseUrl}}/api/descuentos/obtener/1
+GET {{baseUrl}}/api/descuentos/1
 Authorization: Bearer {{token}}
 
 ### Crear descuento
-POST {{baseUrl}}/api/descuentos/crear
+POST {{baseUrl}}/api/descuentos
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -291,7 +291,7 @@ Authorization: Bearer {{token}}
 }
 
 ### Actualizar descuento
-PUT {{baseUrl}}/api/descuentos/actualizar
+PUT {{baseUrl}}/api/descuentos
 Content-Type: {{contentType}}
 Authorization: Bearer {{token}}
 
@@ -305,7 +305,7 @@ Authorization: Bearer {{token}}
 }
 
 ### Eliminar descuento
-DELETE {{baseUrl}}/api/descuentos/eliminar/1
+DELETE {{baseUrl}}/api/descuentos/1
 Authorization: Bearer {{token}}
 
 ### ===========================================
@@ -363,7 +363,7 @@ Authorization: Bearer {{token}}
 
 ### El endpoint POST /api/pagos detecta automáticamente cuotas pendientes
 ### Listar pagos por matrícula automaticas y las normales
-GET {{baseUrl}}/api/pagos/matricula/7
+GET {{baseUrl}}/api/pagos?matriculaId=7
 Authorization: Bearer {{token}}
 
 ### Actualizar pago
@@ -500,29 +500,29 @@ Authorization: Bearer {{token}}
 ### ===========================================
 
 ### Listar sponsors (público)
-GET {{baseUrl}}/api/sponsors/listar
+GET {{baseUrl}}/api/sponsors
 
 ### Obtener sponsor por ID
-GET {{baseUrl}}/api/sponsors/obtener/1
+GET {{baseUrl}}/api/sponsors/1
 Authorization: Bearer {{token}}
 
 ### Crear sponsor
 # Nota: Usar Postman/Thunder Client para subir archivos 
 # - Método: POST
-# - URL: http://localhost:8080/api/sponsors/crear
+# - URL: http://localhost:8080/api/sponsors
 # - Body → form-data
 # - Campos: nombre (text) + imagen (file)
-POST {{baseUrl}}/api/sponsors/crear
+POST {{baseUrl}}/api/sponsors
 Authorization: Bearer {{token}}
 
 ### Actualizar sponsor
 # Nota: Usar Postman/Thunder Client
 # - imagen es opcional (si no se envía, mantiene la imagen actual)
-PUT {{baseUrl}}/api/sponsors/actualizar/1
+PUT {{baseUrl}}/api/sponsors/1
 Authorization: Bearer {{token}}
 
 ### Eliminar sponsor (elimina también la imagen física)
-DELETE {{baseUrl}}/api/sponsors/eliminar/1
+DELETE {{baseUrl}}/api/sponsors/1
 Authorization: Bearer {{token}}
 
 ### ===========================================

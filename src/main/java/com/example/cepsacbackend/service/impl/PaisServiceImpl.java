@@ -1,6 +1,5 @@
 package com.example.cepsacbackend.service.impl;
 
-import com.example.cepsacbackend.exception.BadRequestException;
 import com.example.cepsacbackend.exception.ConflictException;
 import com.example.cepsacbackend.exception.ResourceNotFoundException;
 import com.example.cepsacbackend.model.Pais;

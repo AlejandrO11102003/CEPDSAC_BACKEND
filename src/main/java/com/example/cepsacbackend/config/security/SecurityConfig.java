@@ -59,14 +59,14 @@ public class SecurityConfig {
                         .requestMatchers("/images/**").permitAll() // servir img publicas
                         .requestMatchers("/api/aplicaciondescuento/listar").permitAll() // config publica
                         .requestMatchers("/api/aplicaciondescuento/obtener/**").permitAll() // config publica
-                        .requestMatchers("/api/descuentos/listar").permitAll() // descuentos publicos
-                        .requestMatchers("/api/descuentos/obtener/**").permitAll() // descuentos publicos
-                        .requestMatchers(HttpMethod.GET, "/api/sponsors/listar").permitAll() // sponsors
+                        .requestMatchers(HttpMethod.GET, "/api/descuentos").permitAll() // descuentos publicos
+                        .requestMatchers(HttpMethod.GET, "/api/descuentos/**").permitAll() // descuentos publicos
+                        .requestMatchers(HttpMethod.GET, "/api/sponsors").permitAll() // sponsors
                         .requestMatchers(HttpMethod.GET, "/api/testimonios").permitAll() // testimonios publicos
-                        .requestMatchers(HttpMethod.GET, "/api/cursos-diplomados/listar-index").permitAll() // todos para landing
-                        .requestMatchers(HttpMethod.GET, "/api/cursos-diplomados/listar-cursos").permitAll() // solo cursos
-                        .requestMatchers(HttpMethod.GET, "/api/cursos-diplomados/listar-diplomados").permitAll() // solo diplomados
-                        .requestMatchers(HttpMethod.GET, "/api/cursos-diplomados/detalle/**").permitAll() // detalle curso/diplomado
+                        .requestMatchers(HttpMethod.GET, "/api/cursos-diplomados/index").permitAll() // todos para landing
+                        .requestMatchers(HttpMethod.GET, "/api/cursos-diplomados/cursos").permitAll() // solo cursos
+                        .requestMatchers(HttpMethod.GET, "/api/cursos-diplomados/diplomados").permitAll() // solo diplomados
+                        .requestMatchers(HttpMethod.GET, "/api/cursos-diplomados/*/detalle").permitAll() // detalle curso/diplomado
                         .requestMatchers(HttpMethod.POST, "/api/usuarios").permitAll() // registro de alumnos
                         .requestMatchers(HttpMethod.GET, "/api/paises/**").permitAll() //listar paises
                         .requestMatchers(HttpMethod.GET, "/api/tipos-identificacion/**").permitAll() //listar tipos identificacion
